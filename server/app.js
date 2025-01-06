@@ -4,6 +4,7 @@ require('dotenv').config();
 
 const connectDatabase = require('./config/database');
 const authRoutes = require('./routes/authRoutes');
+const activityRoutes = require('./routes/activityRoutes');
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(express.json());
 
 // Routes
 app.use('/auth', authRoutes);
+app.use('/activity', activityRoutes);
 
 // Connect to database
 connectDatabase();

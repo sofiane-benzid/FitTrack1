@@ -6,7 +6,13 @@ const Register = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    profile: {
+      fullName: '',
+      age: '',
+      gender: 'other',
+      fitnessLevel: 'beginner'
+    }
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -14,7 +20,22 @@ const Register = () => {
   const { login } = useAuth();
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    if (name.includes('profile.')) {
+      const profileField = name.split('.')[1];
+      setFormData(prev => ({
+        ...prev,
+        profile: {
+          ...prev.profile,
+          [profileField]: value
+        }
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -33,7 +54,8 @@ const Register = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: formData.email,
-          password: formData.password
+          password: formData.password,
+          profile: formData.profile
         }),
       });
       
@@ -43,14 +65,12 @@ const Register = () => {
         throw new Error(data.message || 'Registration failed');
       }
 
-      // Create user object from registration response
       const userData = {
         id: data.userId,
         email: formData.email,
-        profile: {}  // Initialize empty profile
+        profile: formData.profile
       };
       
-      // Login with the new user data and token
       await login(userData, data.token);
       navigate('/profile-setup');
     } catch (err) {
@@ -86,6 +106,52 @@ const Register = () => {
                 value={formData.email}
                 onChange={handleChange}
               />
+            </div>
+            <div>
+              <input
+                name="profile.fullName"
+                type="text"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Full Name"
+                value={formData.profile.fullName}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <input
+                name="profile.age"
+                type="number"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Age"
+                value={formData.profile.age}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <select
+                name="profile.gender"
+                value={formData.profile.gender}
+                onChange={handleChange}
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+              >
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div>
+              <select
+                name="profile.fitnessLevel"
+                value={formData.profile.fitnessLevel}
+                onChange={handleChange}
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+              >
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+              </select>
             </div>
             <div>
               <input

@@ -66,6 +66,12 @@ const Dashboard = () => {
               <button className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                 View Progress
               </button>
+              <button
+                onClick={() => navigate('/fitness')}
+                className="w-full bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600"
+              >
+                Track Fitness
+              </button>
             </div>
           </div>
           <div className="bg-white p-6 rounded-lg shadow">

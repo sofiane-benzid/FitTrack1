@@ -2,6 +2,7 @@
 import { AuthProvider } from './context/AuthProvider';
 import { Login, Register, ProfileSetup, ProtectedRoute } from './components/auth';
 import Dashboard from './pages/Dashboard';
+import FitnessTrackerPage from './pages/FitnessTrackerPage';
 
 function App() {
   return (
@@ -11,26 +12,32 @@ function App() {
           {/* Public routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          
+
           {/* Protected routes */}
-          <Route 
-            path="/profile-setup" 
+          <Route
+            path="/profile-setup"
             element={
               <ProtectedRoute>
                 <ProfileSetup />
               </ProtectedRoute>
-            } 
+            }
           />
-          
-          <Route 
-            path="/dashboard" 
+
+          <Route
+            path="/dashboard"
             element={
               <ProtectedRoute>
                 <Dashboard />
               </ProtectedRoute>
-            } 
+            }
           />
-          
+
+          <Route path="/fitness" element={
+            <ProtectedRoute>
+              <FitnessTrackerPage />
+            </ProtectedRoute>
+          } />
+
           {/* Redirect root to dashboard */}
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
         </Routes>

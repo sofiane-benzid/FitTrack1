@@ -43,7 +43,19 @@ export function AuthProvider({ children }) {
       const normalizedUserData = {
         id: userData.id || userData.userId, // Handle both formats
         email: userData.email,
-        profile: userData.profile || {}
+        profile: userData.profile || {},
+        fitness: userData.fitness || {
+          weeklyGoal: {
+            workouts: 3,
+            minutes: 150
+          },
+          statistics: {
+            totalWorkouts: 0,
+            totalMinutes: 0,
+            totalCalories: 0,
+            workoutStreak: 0
+          }
+        }
       };
 
       setUser(normalizedUserData);
