@@ -3,7 +3,7 @@ import { useAuth } from '../../../hooks/useAuth';
 import Feedback from '../../common/Feedback';
 
 const ActivityLogger = () => {
-  const { user } = useAuth();
+  useAuth();
   const [formData, setFormData] = useState({
     type: 'running',
     duration: '',

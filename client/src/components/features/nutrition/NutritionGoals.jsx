@@ -3,7 +3,7 @@ import { useAuth } from '../../../hooks/useAuth';
 import Feedback from '../../common/Feedback';
 
 const NutritionGoals = () => {
-  const { user } = useAuth();
+  useAuth();
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState(null);
   const [goals, setGoals] = useState({

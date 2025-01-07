@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
 const PageHeader = ({ title, showBack = true, previousPage = -1 }) => {
@@ -27,6 +28,15 @@ const PageHeader = ({ title, showBack = true, previousPage = -1 }) => {
             <h1 className="text-3xl font-bold text-gray-900">{title}</h1>
         </div>
     );
+};
+
+PageHeader.propTypes = {
+    title: PropTypes.string.isRequired,
+    showBack: PropTypes.bool,
+    previousPage: PropTypes.oneOfType([
+        PropTypes.number, 
+        PropTypes.string
+    ])
 };
 
 export default PageHeader;

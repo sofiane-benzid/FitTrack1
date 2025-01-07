@@ -4,6 +4,8 @@ import { Login, Register, ProfileSetup, ProtectedRoute } from './components/auth
 import Dashboard from './pages/Dashboard';
 import FitnessTrackerPage from './pages/FitnessTrackerPage';
 import NutritionPage from './pages/NutritionPage';
+import GamificationPage from './pages/GamificationPage';
+import SocialPage from './pages/SocialPage';
 
 function App() {
   return (
@@ -47,6 +49,24 @@ function App() {
             element={
               <ProtectedRoute>
                 <NutritionPage />
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
+            path="/social" 
+            element={
+              <ProtectedRoute>
+                <SocialPage />
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
+            path="/gamification" 
+            element={
+              <ProtectedRoute>
+                <GamificationPage />
               </ProtectedRoute>
             } 
           />

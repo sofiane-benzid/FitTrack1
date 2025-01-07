@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 const Feedback = ({ message, type = 'success', duration = 3000, onClose }) => {
     const [isVisible, setIsVisible] = useState(true);
@@ -39,6 +40,13 @@ const Feedback = ({ message, type = 'success', duration = 3000, onClose }) => {
             </span>
         </div>
     );
+};
+
+Feedback.propTypes = {
+    message: PropTypes.string.isRequired,
+    type: PropTypes.oneOf(['success', 'error', 'warning', 'info']),
+    duration: PropTypes.number,
+    onClose: PropTypes.func
 };
 
 export default Feedback;

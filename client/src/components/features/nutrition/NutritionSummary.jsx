@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 const NutritionSummary = ({ refresh }) => {
     const [summary, setSummary] = useState(null);
@@ -93,7 +94,7 @@ const NutritionSummary = ({ refresh }) => {
 
     return (
         <div className="bg-white p-6 rounded-lg shadow-sm">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">Today's Nutrition Summary</h2>
+            <h2 className="text-lg font-medium text-gray-900 mb-4">Today&apos;s Nutrition Summary</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 {/* Calories */}
@@ -175,7 +176,12 @@ const NutritionSummary = ({ refresh }) => {
                 </div>
             </div>
         </div>
-    );
+    
+);
 };
+NutritionSummary.propTypes = {
+    refresh: PropTypes.bool.isRequired,
+};
+
 
 export default NutritionSummary;

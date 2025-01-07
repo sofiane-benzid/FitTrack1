@@ -1,5 +1,6 @@
 ﻿import { useState } from 'react';
 import Feedback from '../../common/Feedback';
+import PropTypes from 'prop-types';
 
 const MealTracker = ({ onMealLogged }) => {
   const [formData, setFormData] = useState({
@@ -123,7 +124,7 @@ const MealTracker = ({ onMealLogged }) => {
         throw new Error(errorData.message || 'Failed to log meal');
       }
 
-      const data = await response.json();
+      await response.json();
 
       setFeedback({
         type: 'success',
@@ -344,6 +345,10 @@ const MealTracker = ({ onMealLogged }) => {
       </form>
     </div>
   );
+};
+
+MealTracker.propTypes = {
+  onMealLogged: PropTypes.func.isRequired,
 };
 
 export default MealTracker;

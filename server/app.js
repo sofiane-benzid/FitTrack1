@@ -6,6 +6,8 @@ const connectDatabase = require('./config/database');
 const authRoutes = require('./routes/authRoutes');
 const activityRoutes = require('./routes/activityRoutes');
 const nutritionRoutes = require('./routes/nutritionRoutes');
+const socialRoutes = require('./routes/socialRoutes');
+const gamificationRoutes = require('./routes/gamificationRoutes');
 
 const app = express();
 
@@ -17,6 +19,8 @@ app.use(express.json());
 app.use('/auth', authRoutes);
 app.use('/activity', activityRoutes);
 app.use('/nutrition', nutritionRoutes);
+app.use('/social', socialRoutes);
+app.use('/gamification', gamificationRoutes);
 
 // Connect to database
 connectDatabase();

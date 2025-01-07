@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Feedback from '../../common/Feedback';
+import PropTypes from 'prop-types';
 
 const MealList = ({ refresh }) => {
     const [meals, setMeals] = useState([]);
@@ -266,5 +267,9 @@ const MealList = ({ refresh }) => {
         </div>
     );
 };
+
+MealList.propTypes ={
+    refresh: PropTypes.func.isRequired
+}
 
 export default MealList;
