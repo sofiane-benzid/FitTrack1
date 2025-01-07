@@ -1,17 +1,17 @@
 ﻿import { useState } from 'react';
 import ActivityLogger from '../components/features/fitness/ActivityLogger';
 import ActivityList from '../components/features/fitness/ActivityList';
+import  PageHeader  from '../components/common/PageHeader';
+
 
 const FitnessTrackerPage = () => {
-  const [activeTab, setActiveTab] = useState('log'); // 'log' or 'history'
+  const [activeTab, setActiveTab] = useState('log');
 
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
-          <div className="mb-6">
-            <h1 className="text-3xl font-bold text-gray-900">Fitness Tracker</h1>
-          </div>
+          <PageHeader title="Fitness Tracker" />
 
           {/* Tab Navigation */}
           <div className="border-b border-gray-200 mb-6">

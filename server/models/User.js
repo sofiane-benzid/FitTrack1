@@ -57,6 +57,32 @@ const UserSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Activity'
   }],
+  nutritionGoals: {
+    calories: {
+      type: Number,
+      default: 2000
+    },
+    protein: {
+      type: Number,
+      default: 150
+    },
+    carbs: {
+      type: Number,
+      default: 250
+    },
+    fat: {
+      type: Number,
+      default: 70
+    },
+    waterIntake: {
+      type: Number,
+      default: 2000
+    },
+    mealsPerDay: {
+      type: Number,
+      default: 3
+    }
+  },
   achievements: [{
     name: String,
     description: String,

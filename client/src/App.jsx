@@ -3,6 +3,7 @@ import { AuthProvider } from './context/AuthProvider';
 import { Login, Register, ProfileSetup, ProtectedRoute } from './components/auth';
 import Dashboard from './pages/Dashboard';
 import FitnessTrackerPage from './pages/FitnessTrackerPage';
+import NutritionPage from './pages/NutritionPage';
 
 function App() {
   return (
@@ -32,11 +33,23 @@ function App() {
             }
           />
 
-          <Route path="/fitness" element={
-            <ProtectedRoute>
-              <FitnessTrackerPage />
-            </ProtectedRoute>
-          } />
+          <Route 
+            path="/fitness" 
+            element={
+              <ProtectedRoute>
+                <FitnessTrackerPage />
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
+            path="/nutrition" 
+            element={
+              <ProtectedRoute>
+                <NutritionPage />
+              </ProtectedRoute>
+            } 
+          />
 
           {/* Redirect root to dashboard */}
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
