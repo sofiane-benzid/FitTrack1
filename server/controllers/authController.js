@@ -96,58 +96,69 @@ exports.login = async (req, res) => {
   }
 };
 
-// Profile Controller Functions
-exports.updateProfile = async (req, res) => {
+// Get current user's profile
+exports.getMe = async (req, res) => {
   try {
-    const {
-      fullName,
-      age,
-      weight,
-      height,
-      gender,
-      fitnessLevel,
-      fitnessGoals,
-      activityPreferences
-    } = req.body;
-
-    // Validate fitness goals if provided
-    if (fitnessGoals && !validateFitnessGoals(fitnessGoals)) {
-      return res.status(400).json({ message: 'Invalid fitness goals provided' });
-    }
-
-    // Validate activity preferences if provided
-    if (activityPreferences && !validateActivities(activityPreferences)) {
-      return res.status(400).json({ message: 'Invalid activity preferences provided' });
-    }
-
-    const user = await User.findById(req.userId);
+    const user = await User.findById(req.userId)
+      .select('-password');  // Exclude password from response
+    
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Update weight history if weight is changing
-    if (weight && user.profile.weight !== weight) {
-      await user.updateWeight(weight);
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ 
+      message: 'Failed to fetch profile', 
+      error: error.message 
+    });
+  }
+};
+
+// Update user profile
+exports.updateProfile = async (req, res) => {
+  try {
+    const { profile } = req.body;
+    const user = await User.findById(req.userId);
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
     }
 
-    // Update profile fields
+    // Validate profile data
+    if (profile.age) {
+      profile.age = Number(profile.age);
+      if (isNaN(profile.age) || profile.age < 0 || profile.age > 120) {
+        return res.status(400).json({ message: 'Invalid age value' });
+      }
+    }
+
+    if (profile.weight) {
+      profile.weight = Number(profile.weight);
+      if (isNaN(profile.weight) || profile.weight < 0 || profile.weight > 500) {
+        return res.status(400).json({ message: 'Invalid weight value' });
+      }
+    }
+
+    if (profile.height) {
+      profile.height = Number(profile.height);
+      if (isNaN(profile.height) || profile.height < 0 || profile.height > 300) {
+        return res.status(400).json({ message: 'Invalid height value' });
+      }
+    }
+
+    // Update user profile
     user.profile = {
       ...user.profile,
-      fullName: fullName || user.profile.fullName,
-      age: age || user.profile.age,
-      height: height || user.profile.height,
-      gender: gender || user.profile.gender,
-      fitnessLevel: fitnessLevel || user.profile.fitnessLevel,
-      fitnessGoals: fitnessGoals || user.profile.fitnessGoals,
-      activityPreferences: activityPreferences || user.profile.activityPreferences
+      ...profile,
+      updatedAt: new Date()
     };
 
     await user.save();
 
     res.json({
       message: 'Profile updated successfully',
-      profile: user.profile,
-      fitness: user.fitness
+      profile: user.profile
     });
   } catch (error) {
     res.status(500).json({ 

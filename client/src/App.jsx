@@ -1,11 +1,13 @@
-﻿import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+﻿import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { Login, ProfileSetup, ProtectedRoute, Register } from './components/auth';
 import { AuthProvider } from './context/AuthProvider';
-import { Login, Register, ProfileSetup, ProtectedRoute } from './components/auth';
+import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import Dashboard from './pages/Dashboard';
 import FitnessTrackerPage from './pages/FitnessTrackerPage';
-import NutritionPage from './pages/NutritionPage';
 import GamificationPage from './pages/GamificationPage';
+import NutritionPage from './pages/NutritionPage';
 import SocialPage from './pages/SocialPage';
+import ProfilePage from './pages/ProfilePage';
 
 function App() {
   return (
@@ -35,41 +37,59 @@ function App() {
             }
           />
 
-          <Route 
-            path="/fitness" 
+          <Route
+            path="/fitness"
             element={
               <ProtectedRoute>
                 <FitnessTrackerPage />
               </ProtectedRoute>
-            } 
+            }
           />
 
-          <Route 
-            path="/nutrition" 
+          <Route
+            path="/nutrition"
             element={
               <ProtectedRoute>
                 <NutritionPage />
               </ProtectedRoute>
-            } 
+            }
           />
 
-          <Route 
-            path="/social" 
+          <Route
+            path="/social"
             element={
               <ProtectedRoute>
                 <SocialPage />
               </ProtectedRoute>
-            } 
+            }
           />
 
-          <Route 
-            path="/gamification" 
+          <Route
+            path="/gamification"
             element={
               <ProtectedRoute>
                 <GamificationPage />
               </ProtectedRoute>
-            } 
+            }
           />
+
+          <Route
+            path="/analytics"
+            element={
+              <ProtectedRoute>
+                <AnalyticsDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+<Route 
+  path="/profile" 
+  element={
+    <ProtectedRoute>
+      <ProfilePage />
+    </ProtectedRoute>
+  } 
+/>
 
           {/* Redirect root to dashboard */}
           <Route path="/" element={<Navigate to="/dashboard" replace />} />

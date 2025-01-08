@@ -1,5 +1,6 @@
 ﻿const { Points, Badge } = require('../models/Gamification');
-const { User } = require('../models/User');
+const Activity = require('../models/Activity');
+const User = require('../models/User');
 
 exports.awardPoints = async (req, res) => {
   try {
@@ -100,23 +101,49 @@ exports.getBadges = async (req, res) => {
 
 exports.getLeaderboard = async (req, res) => {
   try {
-    const points = await Points.find()
-      .sort({ total: -1 })
-      .limit(10)
-      .populate('user', 'email profile.fullName');
+    // Get all users' points
+    const pointsData = await Points.find()
+      .populate('user', 'email profile.fullName')
+      .lean();
 
-    const leaderboard = points.map((entry, index) => ({
-      rank: index + 1,
-      user: {
-        id: entry.user._id,
-        email: entry.user.email,
-        name: entry.user.profile.fullName
-      },
-      points: entry.total
-    }));
+    // Get activity counts for each user
+    const activityCounts = await Activity.aggregate([
+      {
+        $group: {
+          _id: '$user',
+          totalActivities: { $sum: 1 }
+        }
+      }
+    ]);
+
+    // Create a map of user activity counts
+    const activityMap = activityCounts.reduce((map, item) => {
+      map[item._id.toString()] = item.totalActivities;
+      return map;
+    }, {});
+
+    // Process and sort leaderboard data
+    const leaderboard = pointsData
+      .map((entry, index) => ({
+        rank: index + 1,
+        user: {
+          id: entry.user._id,
+          name: entry.user.profile?.fullName || entry.user.email,
+          email: entry.user.email
+        },
+        points: entry.total || 0,
+        totalActivities: activityMap[entry.user._id.toString()] || 0
+      }))
+      .sort((a, b) => b.points - a.points)
+      // Add rank after sorting
+      .map((entry, index) => ({
+        ...entry,
+        rank: index + 1
+      }));
 
     res.json(leaderboard);
   } catch (error) {
+    console.error('Error in getLeaderboard:', error);
     res.status(500).json({
       message: 'Failed to get leaderboard',
       error: error.message

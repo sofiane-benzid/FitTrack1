@@ -60,6 +60,18 @@ const Dashboard = () => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
         </svg>
       )
+    },
+    {
+      name: 'Analytics',
+      description: 'View your progress and stats',
+      path: '/analytics',
+      bgColor: 'bg-green-500',
+      hoverColor: 'hover:bg-green-600',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 17a4 4 0 100-8 4 4 0 000 8zm0 0v5m0-5H6m5 0h5" />
+        </svg>
+      )
     }
   ];
 
@@ -70,8 +82,8 @@ const Dashboard = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <span 
-                onClick={() => navigate('/dashboard')} 
+              <span
+                onClick={() => navigate('/dashboard')}
                 className="text-xl font-bold text-gray-800 cursor-pointer hover:text-indigo-600 transition-colors"
               >
                 Fitness Tracker
@@ -82,6 +94,13 @@ const Dashboard = () => {
               <span className="text-gray-600">
                 Welcome, {user?.profile?.fullName || user?.email || 'User'}
               </span>
+
+              <button
+                onClick={() => navigate('/profile')}
+                className="text-gray-600 hover:text-indigo-600 px-4 py-2 rounded-md transition-colors"
+              >
+                Edit Profile
+              </button>
               <button
                 onClick={handleLogout}
                 className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors"
@@ -135,7 +154,7 @@ const Dashboard = () => {
           <div className="p-6">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-medium text-gray-900">Recent Activity</h3>
-              <button 
+              <button
                 onClick={() => navigate('/fitness')}
                 className="text-sm text-indigo-600 hover:text-indigo-800 transition-colors"
               >
