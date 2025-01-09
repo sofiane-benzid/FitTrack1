@@ -1,5 +1,8 @@
 ﻿const User = require('../models/User');
 const { generateToken } = require('../config/jwt');
+const { Badge } = require('../models/Gamification');
+const Activity = require('../models/Activity');
+
 
 // Helper function to validate fitness goals
 const validateFitnessGoals = (goals) => {
@@ -99,15 +102,47 @@ exports.login = async (req, res) => {
 // Get current user's profile
 exports.getMe = async (req, res) => {
   try {
+    // Get user with profile and fitness data
     const user = await User.findById(req.userId)
-      .select('-password');  // Exclude password from response
+      .select('-password')
+      .populate({
+        path: 'activities',
+        options: { 
+          sort: { date: -1 },
+          limit: 10
+        }
+      })
+      .lean();
     
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.json(user);
+    // Get user's achievements/badges
+    const badges = await Badge.find({ user: req.userId })
+      .sort({ earnedAt: -1 })
+      .lean();
+
+    // Add badges to user object
+    const userWithExtras = {
+      ...user,
+      achievements: badges,
+      // Make sure all required stats exist
+      fitness: {
+        ...user.fitness,
+        statistics: {
+          totalWorkouts: user.fitness?.statistics?.totalWorkouts || 0,
+          totalMinutes: user.fitness?.statistics?.totalMinutes || 0,
+          totalCalories: user.fitness?.statistics?.totalCalories || 0,
+          workoutStreak: user.fitness?.statistics?.workoutStreak || 0,
+          points: user.fitness?.statistics?.points || 0
+        }
+      }
+    };
+
+    res.json(userWithExtras);
   } catch (error) {
+    console.error('Error in getMe:', error);
     res.status(500).json({ 
       message: 'Failed to fetch profile', 
       error: error.message 
