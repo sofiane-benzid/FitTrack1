@@ -1,12 +1,16 @@
 ﻿import { useState, useEffect } from 'react';
 import { socialService } from '../../../services/socialService';
 import Feedback from '../../common/Feedback';
+import { UserProfileModal, MessageModal } from './UserModals';
 
 const FriendsList = () => {
   const [friends, setFriends] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [feedback, setFeedback] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showMessageModal, setShowMessageModal] = useState(false);
 
   const fetchFriends = async () => {
     try {
@@ -23,6 +27,16 @@ const FriendsList = () => {
   useEffect(() => {
     fetchFriends();
   }, []);
+
+  const handleViewProfile = (friend) => {
+    setSelectedUser(friend);
+    setShowProfileModal(true);
+  };
+
+  const handleMessage = (friend) => {
+    setSelectedUser(friend);
+    setShowMessageModal(true);
+  };
 
   if (loading) {
     return (
@@ -83,15 +97,15 @@ const FriendsList = () => {
                       <p className="text-sm text-gray-500">{friend.email}</p>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-3">
                     <button 
-                      onClick={() => {/* Add message functionality */}}
+                      onClick={() => handleMessage(friend)}
                       className="text-indigo-600 hover:text-indigo-900 text-sm font-medium"
                     >
                       Message
                     </button>
                     <button 
-                      onClick={() => {/* Add view profile functionality */}}
+                      onClick={() => handleViewProfile(friend)}
                       className="text-indigo-600 hover:text-indigo-900 text-sm font-medium"
                     >
                       View Profile
@@ -103,6 +117,28 @@ const FriendsList = () => {
           )}
         </ul>
       </div>
+
+      {/* Modals */}
+      {showProfileModal && selectedUser && (
+        <UserProfileModal
+          userId={selectedUser._id}
+          onClose={() => {
+            setShowProfileModal(false);
+            setSelectedUser(null);
+          }}
+        />
+      )}
+
+      {showMessageModal && selectedUser && (
+        <MessageModal
+          recipientId={selectedUser._id}
+          recipientName={selectedUser.fullName || selectedUser.email}
+          onClose={() => {
+            setShowMessageModal(false);
+            setSelectedUser(null);
+          }}
+        />
+      )}
     </div>
   );
 };

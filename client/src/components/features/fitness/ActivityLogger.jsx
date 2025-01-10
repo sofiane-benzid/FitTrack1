@@ -1,9 +1,8 @@
 ﻿import { useState } from 'react';
-import { useAuth } from '../../../hooks/useAuth';
-import Feedback from '../../common/Feedback';
+import { motion } from 'framer-motion';
+import PropTypes from 'prop-types';
 
-const ActivityLogger = () => {
-  useAuth();
+const ActivityLogger = ({ onSuccess, onError }) => {
   const [formData, setFormData] = useState({
     type: 'running',
     duration: '',
@@ -11,12 +10,14 @@ const ActivityLogger = () => {
     calories: '',
     notes: '',
     date: new Date().toISOString().split('T')[0],
-    // For weightlifting
     sets: []
   });
+  const [currentSet, setCurrentSet] = useState({
+    exercise: '',
+    weight: '',
+    reps: ''
+  });
   const [loading, setLoading] = useState(false);
-  const [feedback, setFeedback] = useState(null);
-  const [currentSet, setCurrentSet] = useState({ weight: '', reps: '', exercise: '' });
 
   const activityTypes = [
     { value: 'running', label: 'Running', needsDistance: true },
@@ -27,60 +28,6 @@ const ActivityLogger = () => {
     { value: 'yoga', label: 'Yoga', needsDistance: false },
     { value: 'other', label: 'Other', needsDistance: false }
   ];
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setFeedback(null);
-
-    try {
-      // Create submission data
-      const submissionData = {
-        ...formData,
-        // Remove distance if not needed for this activity type
-        ...(activityTypes.find(type => type.value === formData.type)?.needsDistance ? {} : { distance: undefined }),
-        // Only include sets for weightlifting
-        ...(formData.type === 'weightlifting' ? { sets: formData.sets } : { sets: undefined })
-      };
-
-      const response = await fetch('http://localhost:5000/activity/log', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify(submissionData),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to log activity');
-      }
-
-      setFeedback({
-        type: 'success',
-        message: 'Activity logged successfully!'
-      });
-
-      // Reset form
-      setFormData({
-        type: formData.type, // Keep the current activity type
-        duration: '',
-        distance: '',
-        calories: '',
-        notes: '',
-        date: new Date().toISOString().split('T')[0],
-        sets: []
-      });
-      setCurrentSet({ weight: '', reps: '', exercise: '' });
-    } catch (err) {
-      setFeedback({
-        type: 'error',
-        message: err.message || 'Failed to log activity'
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -99,12 +46,16 @@ const ActivityLogger = () => {
   };
 
   const addSet = () => {
-    if (currentSet.weight && currentSet.reps && currentSet.exercise) {
+    if (currentSet.exercise && currentSet.weight && currentSet.reps) {
       setFormData(prev => ({
         ...prev,
-        sets: [...prev.sets, currentSet]
+        sets: [...prev.sets, {
+          ...currentSet,
+          weight: Number(currentSet.weight),
+          reps: Number(currentSet.reps)
+        }]
       }));
-      setCurrentSet({ weight: '', reps: '', exercise: '' });
+      setCurrentSet({ exercise: '', weight: '', reps: '' });
     }
   };
 
@@ -115,170 +66,228 @@ const ActivityLogger = () => {
     }));
   };
 
-  const getCurrentActivityType = () => {
-    return activityTypes.find(type => type.value === formData.type);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await fetch('http://localhost:5000/activity/log', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({
+          ...formData,
+          duration: Number(formData.duration),
+          distance: formData.distance ? Number(formData.distance) : undefined,
+          calories: formData.calories ? Number(formData.calories) : undefined
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to log activity');
+      }
+
+      setFormData({
+        type: 'running',
+        duration: '',
+        distance: '',
+        calories: '',
+        notes: '',
+        date: new Date().toISOString().split('T')[0],
+        sets: []
+      });
+
+      onSuccess?.();
+    } catch (error) {
+      onError?.(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow">
-      {feedback && (
-        <Feedback
-          type={feedback.type}
-          message={feedback.message}
-          onClose={() => setFeedback(null)}
-        />
-      )}
-      
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700">Activity Type</label>
+          <label className="block text-sm font-medium text-orange-200 mb-1">Activity Type</label>
           <select
             name="type"
             value={formData.type}
             onChange={handleChange}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            className="w-full bg-black/20 border border-red-500/20 rounded-lg text-orange-200
+                     focus:border-red-500/50 focus:ring-0 transition-colors"
+            required
           >
             {activityTypes.map(type => (
-              <option key={type.value} value={type.value}>
-                {type.label}
-              </option>
+              <option key={type.value} value={type.value}>{type.label}</option>
             ))}
           </select>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Duration (minutes)</label>
+          <label className="block text-sm font-medium text-orange-200 mb-1">Duration (minutes)</label>
           <input
             type="number"
             name="duration"
             value={formData.duration}
             onChange={handleChange}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            className="w-full bg-black/20 border border-red-500/20 rounded-lg text-orange-200
+                     focus:border-red-500/50 focus:ring-0 transition-colors"
             required
           />
         </div>
 
-        {getCurrentActivityType()?.needsDistance && (
+        {activityTypes.find(t => t.value === formData.type)?.needsDistance && (
           <div>
-            <label className="block text-sm font-medium text-gray-700">Distance (km)</label>
+            <label className="block text-sm font-medium text-orange-200 mb-1">Distance (km)</label>
             <input
               type="number"
               step="0.01"
               name="distance"
               value={formData.distance}
               onChange={handleChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              className="w-full bg-black/20 border border-red-500/20 rounded-lg text-orange-200
+                       focus:border-red-500/50 focus:ring-0 transition-colors"
+              required
             />
           </div>
         )}
 
-        {formData.type === 'weightlifting' && (
-          <div className="space-y-4">
-            <div className="border p-4 rounded-md">
-              <h3 className="font-medium mb-2">Add Set</h3>
-              <div className="grid grid-cols-3 gap-2">
-                <input
-                  type="text"
-                  placeholder="Exercise"
-                  name="exercise"
-                  value={currentSet.exercise}
-                  onChange={handleSetChange}
-                  className="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                />
-                <input
-                  type="number"
-                  placeholder="Weight (kg)"
-                  name="weight"
-                  value={currentSet.weight}
-                  onChange={handleSetChange}
-                  className="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                />
-                <input
-                  type="number"
-                  placeholder="Reps"
-                  name="reps"
-                  value={currentSet.reps}
-                  onChange={handleSetChange}
-                  className="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                />
-              </div>
-              <button
-                type="button"
-                onClick={addSet}
-                className="mt-2 w-full bg-gray-100 text-gray-700 px-4 py-2 rounded hover:bg-gray-200"
-              >
-                Add Set
-              </button>
-            </div>
-
-            {formData.sets.length > 0 && (
-              <div>
-                <h3 className="font-medium mb-2">Sets</h3>
-                <div className="space-y-2">
-                  {formData.sets.map((set, index) => (
-                    <div key={index} className="flex justify-between items-center bg-gray-50 p-2 rounded">
-                      <span>{set.exercise}: {set.weight}kg × {set.reps} reps</span>
-                      <button
-                        type="button"
-                        onClick={() => removeSet(index)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
         <div>
-          <label className="block text-sm font-medium text-gray-700">Calories (optional)</label>
+          <label className="block text-sm font-medium text-orange-200 mb-1">Calories (optional)</label>
           <input
             type="number"
             name="calories"
             value={formData.calories}
             onChange={handleChange}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            className="w-full bg-black/20 border border-red-500/20 rounded-lg text-orange-200
+                     focus:border-red-500/50 focus:ring-0 transition-colors"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Date</label>
+          <label className="block text-sm font-medium text-orange-200 mb-1">Date</label>
           <input
             type="date"
             name="date"
             value={formData.date}
             onChange={handleChange}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            className="w-full bg-black/20 border border-red-500/20 rounded-lg text-orange-200
+                     focus:border-red-500/50 focus:ring-0 transition-colors"
             required
           />
         </div>
+      </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Notes (optional)</label>
-          <textarea
-            name="notes"
-            value={formData.notes}
-            onChange={handleChange}
-            rows="3"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          ></textarea>
+      {formData.type === 'weightlifting' && (
+        <div className="space-y-4">
+          <div className="bg-black/20 p-4 rounded-lg border border-red-500/10">
+            <h3 className="text-lg font-medium text-orange-200 mb-4">Add Set</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <input
+                type="text"
+                placeholder="Exercise"
+                name="exercise"
+                value={currentSet.exercise}
+                onChange={handleSetChange}
+                className="w-full bg-black/20 border border-red-500/20 rounded-lg text-orange-200
+                         focus:border-red-500/50 focus:ring-0 transition-colors"
+              />
+              <input
+                type="number"
+                placeholder="Weight (kg)"
+                name="weight"
+                value={currentSet.weight}
+                onChange={handleSetChange}
+                className="w-full bg-black/20 border border-red-500/20 rounded-lg text-orange-200
+                         focus:border-red-500/50 focus:ring-0 transition-colors"
+              />
+              <input
+                type="number"
+                placeholder="Reps"
+                name="reps"
+                value={currentSet.reps}
+                onChange={handleSetChange}
+                className="w-full bg-black/20 border border-red-500/20 rounded-lg text-orange-200
+                         focus:border-red-500/50 focus:ring-0 transition-colors"
+              />
+            </div>
+            <motion.button
+              type="button"
+              onClick={addSet}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              className="w-full mt-4 p-2 bg-gradient-to-r from-red-500/20 to-orange-500/20 
+                       text-orange-200 rounded-lg hover:from-red-500/30 hover:to-orange-500/30
+                       transition-colors"
+            >
+              Add Set
+            </motion.button>
+          </div>
+
+          {formData.sets.length > 0 && (
+            <div className="space-y-2">
+              {formData.sets.map((set, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="flex justify-between items-center bg-black/20 p-3 rounded-lg 
+                           border border-red-500/10"
+                >
+                  <div className="flex-1">
+                    <span className="text-orange-200">{set.exercise}: </span>
+                    <span className="text-orange-200/70">{set.weight}kg × {set.reps} reps</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => removeSet(index)}
+                    className="text-red-400 hover:text-red-300 transition-colors"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
+      )}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
-            loading ? 'bg-indigo-400' : 'bg-indigo-600 hover:bg-indigo-700'
-          } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
-        >
-          {loading ? 'Logging...' : 'Log Activity'}
-        </button>
-      </form>
-    </div>
+      <div>
+        <label className="block text-sm font-medium text-orange-200 mb-1">Notes (optional)</label>
+        <textarea
+          name="notes"
+          value={formData.notes}
+          onChange={handleChange}
+          rows="3"
+          className="w-full bg-black/20 border border-red-500/20 rounded-lg text-orange-200
+                   focus:border-red-500/50 focus:ring-0 transition-colors"
+        ></textarea>
+      </div>
+
+      <motion.button
+        type="submit"
+        disabled={loading}
+        whileHover={{ scale: 1.01 }}
+        whileTap={{ scale: 0.99 }}
+        className={`w-full py-3 rounded-lg text-white font-medium
+                   ${loading ? 'bg-red-500/50' : 'bg-gradient-to-r from-red-500 to-orange-500 hover:shadow-lg hover:shadow-red-500/20'}
+                   transition-all duration-300`}
+      >
+        {loading ? 'Logging Activity...' : 'Log Activity'}
+      </motion.button>
+    </form>
   );
+};
+
+ActivityLogger.propTypes = {
+  onSuccess: PropTypes.func,
+  onError: PropTypes.func
 };
 
 export default ActivityLogger;

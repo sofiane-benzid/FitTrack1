@@ -2,6 +2,7 @@
 const router = express.Router();
 const socialController = require('../controllers/socialController');
 const notificationController = require('../controllers/notificationController');
+const messageController = require('../controllers/messageController');
 const authMiddleware = require('../middleware/authMiddleware');
 
 // Apply auth middleware to all routes
@@ -27,5 +28,10 @@ router.get('/notifications', notificationController.getNotifications);
 router.put('/notifications/:notificationId/read', notificationController.markNotificationAsRead);
 router.put('/notifications/read-all', notificationController.markAllNotificationsAsRead);
 router.delete('/notifications/:notificationId', notificationController.deleteNotification);
+
+router.get('/users/:userId/profile', authMiddleware, socialController.getUserProfile);
+router.post('/messages', authMiddleware, messageController.sendMessage);
+router.get('/messages', authMiddleware, messageController.getMessages);
+router.put('/messages/:messageId/read', authMiddleware, messageController.markAsRead);
 
 module.exports = router;

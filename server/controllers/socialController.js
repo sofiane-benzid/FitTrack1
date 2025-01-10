@@ -1,5 +1,7 @@
 ﻿const { Friendship, Challenge } = require('../models/Social');
 const User = require('../models/User');
+const Badge = require('../models/Gamification').Badge;
+const Activity = require('../models/Activity');
 const { createNotification } = require('./notificationController');
 
 exports.searchUsers = async (req, res) => {
@@ -46,6 +48,65 @@ exports.searchUsers = async (req, res) => {
     res.status(500).json({ 
       message: 'Failed to search users',
       error: error.message 
+    });
+  }
+};
+
+exports.getUserProfile = async (req, res) => {
+  try {
+    // Get basic user info using existing model structure
+    const user = await User.findById(req.params.userId)
+      .select('email profile fitness')
+      .lean();
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Get user's badges
+    const badges = await Badge.find({ user: req.params.userId })
+      .sort({ earnedAt: -1 })
+      .lean();
+
+    // Get recent activities
+    const activities = await Activity.find({ 
+      user: req.params.userId 
+    })
+    .sort({ date: -1 })
+    .limit(10)
+    .lean();
+
+    // Format response using existing data structure
+    const response = {
+      email: user.email,
+      fullName: user.profile?.fullName || 'No name set',
+      profile: {
+        ...user.profile,
+        fitnessLevel: user.profile?.fitnessLevel || 'beginner',
+        fitnessGoals: user.profile?.fitnessGoals || []
+      },
+      stats: {
+        totalWorkouts: user.fitness?.statistics?.totalWorkouts || 0,
+        workoutStreak: user.fitness?.statistics?.workoutStreak || 0,
+        totalMinutes: user.fitness?.statistics?.totalMinutes || 0,
+        totalCalories: user.fitness?.statistics?.totalCalories || 0
+      },
+      badges,
+      recentActivities: activities.map(activity => ({
+        type: activity.type,
+        duration: activity.duration,
+        date: activity.date,
+        calories: activity.calories,
+        distance: activity.distance
+      }))
+    };
+
+    res.json(response);
+  } catch (error) {
+    console.error('Error in getUserProfile:', error);
+    res.status(500).json({
+      message: 'Failed to fetch user profile',
+      error: error.message
     });
   }
 };
