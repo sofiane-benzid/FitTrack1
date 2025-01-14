@@ -1,4 +1,5 @@
 ﻿import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { gamificationService } from '../../../services/gamificationService';
 import Feedback from '../../common/Feedback';
 
@@ -57,10 +58,10 @@ const Badges = () => {
     if (loading) {
         return (
             <div className="animate-pulse space-y-4">
-                <div className="h-12 bg-gray-200 rounded w-1/3"></div>
+                <div className="h-12 bg-zinc-800 rounded w-1/3"></div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {[...Array(6)].map((_, i) => (
-                        <div key={i} className="h-32 bg-gray-200 rounded"></div>
+                        <div key={i} className="h-32 bg-zinc-800 rounded"></div>
                     ))}
                 </div>
             </div>
@@ -72,48 +73,57 @@ const Badges = () => {
     }
 
     return (
-        <div className="space-y-6">
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-                <div className="p-4 sm:p-6 border-b border-gray-200">
-                    <h2 className="text-lg font-medium text-gray-900">Your Badges</h2>
-                    <p className="mt-1 text-sm text-gray-500">Achievements you&apos;ve earned through your fitness journey</p>
+        <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="space-y-6"
+        >
+            <div className="bg-zinc-800/50 rounded-lg border border-red-500/10 overflow-hidden">
+                <div className="p-4 sm:p-6 border-b border-red-500/10">
+                    <h2 className="text-lg font-medium text-orange-200">Your Badges</h2>
+                    <p className="mt-1 text-sm text-orange-200/70">
+                        Achievements you&apos;ve earned through your fitness journey
+                    </p>
                 </div>
 
                 {badges.length === 0 ? (
-                    <div className="p-4 text-center text-gray-500">
+                    <div className="p-4 text-center text-orange-200/50">
                         <p>No badges earned yet. Keep up the good work to earn some!</p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
-                        {badges.map((badge) => (
-                            <div
+                        {badges.map((badge, index) => (
+                            <motion.div
                                 key={badge._id}
-                                className="bg-white border rounded-lg p-4 hover:shadow-md transition-shadow"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.1 }}
+                                className="bg-black/20 border border-red-500/10 rounded-lg p-4 hover:border-red-500/30 transition-colors"
                             >
                                 <div className="flex items-center space-x-4">
                                     <div className={`
-                    p-3 rounded-full
-                    ${badge.type === 'workout' ? 'bg-indigo-100 text-indigo-600' :
-                                            badge.type === 'nutrition' ? 'bg-green-100 text-green-600' :
-                                                badge.type === 'social' ? 'bg-purple-100 text-purple-600' :
-                                                    'bg-blue-100 text-blue-600'}
-                  `}>
+                                        p-3 rounded-full
+                                        ${badge.type === 'workout' ? 'bg-red-500/20 text-red-400' :
+                                          badge.type === 'nutrition' ? 'bg-orange-500/20 text-orange-400' :
+                                          badge.type === 'social' ? 'bg-red-500/20 text-red-400' :
+                                          'bg-orange-500/20 text-orange-400'}
+                                    `}>
                                         {getBadgeIcon(badge.type)}
                                     </div>
                                     <div>
-                                        <h3 className="text-sm font-medium text-gray-900">{badge.name}</h3>
-                                        <p className="text-sm text-gray-500">{badge.description}</p>
-                                        <p className="text-xs text-gray-400 mt-1">
+                                        <h3 className="text-sm font-medium text-orange-200">{badge.name}</h3>
+                                        <p className="text-sm text-orange-200/70">{badge.description}</p>
+                                        <p className="text-xs text-orange-200/50 mt-1">
                                             Earned on {new Date(badge.earnedAt).toLocaleDateString()}
                                         </p>
                                     </div>
                                 </div>
-                            </div>
+                            </motion.div>
                         ))}
                     </div>
                 )}
             </div>
-        </div>
+        </motion.div>
     );
 };
 

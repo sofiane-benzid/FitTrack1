@@ -189,11 +189,30 @@ const ActivityList = ({ onError }) => {
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                                                             d="M13 10V3L4 14h7v7l9-11h-7z" />
                                                     )}
+                                                    {activity.type === 'walking' && (
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                                            d="M13 4v16M7 12h14m-7 4l4-4-4-4" />
+                                                    )}
+                                                    {activity.type === 'cycling' && (
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                                            d="M12 8a4 4 0 100 8 4 4 0 000-8zm0 0v1m0 3v1m3-3h1m-7 0H7m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    )}
+                                                    {activity.type === 'swimming' && (
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                                            d="M4 10c2.667-4 8-4 10.667 0 2.667 4 8 4 10.667 0M4 18c2.667-4 8-4 10.667 0 2.667 4 8 4 10.667 0" />
+                                                    )}
                                                     {activity.type === 'weightlifting' && (
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                                                            d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2z" />
+                                                            d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2zm4-2v16m10-16v16" />
                                                     )}
-                                                    {/* Add more icons for other activity types */}
+                                                    {activity.type === 'yoga' && (
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                                            d="M12 4a4 4 0 100 8 4 4 0 000-8zm-8 8h16m-8-4v12m-4 0l4-4 4 4" />
+                                                    )}
+                                                    {activity.type === 'other' && (
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                                                    )}
                                                 </svg>
                                             </div>
                                             <div>

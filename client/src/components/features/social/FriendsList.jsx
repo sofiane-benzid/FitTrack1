@@ -1,4 +1,5 @@
 ﻿import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { socialService } from '../../../services/socialService';
 import Feedback from '../../common/Feedback';
 import { UserProfileModal, MessageModal } from './UserModals';
@@ -40,13 +41,8 @@ const FriendsList = () => {
 
   if (loading) {
     return (
-      <div className="animate-pulse space-y-4">
-        <div className="h-12 bg-gray-200 rounded w-1/3"></div>
-        <div className="space-y-3">
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="h-20 bg-gray-200 rounded"></div>
-          ))}
-        </div>
+      <div className="min-h-[200px] flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -65,60 +61,67 @@ const FriendsList = () => {
         />
       )}
 
-      {/* Friends List */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="p-4 border-b border-gray-200">
-          <h2 className="text-lg font-medium text-gray-900">Your Friends</h2>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-black/40 rounded-xl shadow-lg overflow-hidden border border-orange-500/20"
+      >
+        <div className="p-6 border-b border-orange-500/20">
+          <h2 className="text-xl font-bold text-white">Your Friends</h2>
         </div>
-        <ul className="divide-y divide-gray-200">
+
+        <ul className="divide-y divide-orange-500/10">
           {friends.length === 0 ? (
-            <li className="p-4 text-center text-gray-500">
+            <li className="p-6 text-center text-gray-400">
               No friends added yet
             </li>
           ) : (
             friends.map((friend) => (
-              <li 
-                key={friend._id} 
-                className="p-4 hover:bg-gray-50"
+              <motion.li
+                key={friend._id}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="p-6 hover:bg-white/5 transition-all"
               >
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0">
-                      <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                        <span className="text-indigo-600 font-medium">
-                          {friend.fullName?.charAt(0) || friend.email.charAt(0)}
-                        </span>
-                      </div>
+                  <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-full bg-gradient-to-r from-red-500 to-orange-500 flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">
+                        {friend.fullName?.charAt(0) || friend.email.charAt(0)}
+                      </span>
                     </div>
-                    <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-900">
+                    <div>
+                      <h3 className="text-white font-medium">
                         {friend.fullName || 'No name set'}
-                      </p>
-                      <p className="text-sm text-gray-500">{friend.email}</p>
+                      </h3>
+                      <p className="text-sm text-gray-400">{friend.email}</p>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-3">
-                    <button 
+                  <div className="flex items-center gap-2">
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                       onClick={() => handleMessage(friend)}
-                      className="text-indigo-600 hover:text-indigo-900 text-sm font-medium"
+                      className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg hover:from-red-600 hover:to-orange-600 transition-colors"
                     >
                       Message
-                    </button>
-                    <button 
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                       onClick={() => handleViewProfile(friend)}
-                      className="text-indigo-600 hover:text-indigo-900 text-sm font-medium"
+                      className="px-4 py-2 bg-black/40 text-white rounded-lg hover:bg-black/60 transition-colors"
                     >
                       View Profile
-                    </button>
+                    </motion.button>
                   </div>
                 </div>
-              </li>
+              </motion.li>
             ))
           )}
         </ul>
-      </div>
+      </motion.div>
 
-      {/* Modals */}
       {showProfileModal && selectedUser && (
         <UserProfileModal
           userId={selectedUser._id}

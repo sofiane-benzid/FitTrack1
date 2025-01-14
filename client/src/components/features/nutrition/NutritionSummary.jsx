@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { motion} from 'framer-motion';
 import PropTypes from 'prop-types';
 
 const NutritionSummary = ({ refresh }) => {
@@ -13,7 +14,6 @@ const NutritionSummary = ({ refresh }) => {
                 const today = new Date();
                 today.setHours(0, 0, 0, 0);
 
-                // Fetch summary and goals in parallel
                 const [summaryResponse, goalsResponse] = await Promise.all([
                     fetch(`http://localhost:5000/nutrition/summary?startDate=${today.toISOString()}`, {
                         headers: {
@@ -51,9 +51,9 @@ const NutritionSummary = ({ refresh }) => {
     const getProgressColor = (current, target) => {
         if (!target) return 'bg-gray-500';
         const percentage = (current / target) * 100;
-        if (percentage < 70) return 'bg-green-500';
-        if (percentage < 90) return 'bg-yellow-500';
-        return 'bg-red-500';
+        if (percentage < 70) return 'bg-gradient-to-r from-green-500 to-green-600';
+        if (percentage < 90) return 'bg-gradient-to-r from-yellow-500 to-yellow-600';
+        return 'bg-gradient-to-r from-red-500 to-red-600';
     };
 
     const getProgressPercentage = (current, target) => {
@@ -63,125 +63,164 @@ const NutritionSummary = ({ refresh }) => {
 
     if (loading) {
         return (
-            <div className="bg-white p-4 rounded-lg shadow-sm">
-                <div className="animate-pulse">
-                    <div className="h-4 bg-gray-200 rounded w-1/4 mb-4"></div>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        {[...Array(4)].map((_, i) => (
-                            <div key={i} className="h-12 bg-gray-200 rounded"></div>
-                        ))}
-                    </div>
-                </div>
-            </div>
+            <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="min-h-screen bg-black/90 flex justify-center items-center"
+            >
+                <motion.div 
+                    animate={{ 
+                        rotate: 360,
+                        transition: { 
+                            repeat: Infinity, 
+                            duration: 1, 
+                            ease: "linear" 
+                        }
+                    }}
+                    className="h-8 w-8 border-4 border-transparent border-b-red-500 rounded-full"
+                />
+            </motion.div>
         );
     }
 
     if (error) {
         return (
-            <div className="bg-red-50 p-4 rounded-lg">
-                <p className="text-red-600">Error loading nutrition summary: {error}</p>
-            </div>
+            <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="bg-black/90 flex justify-center items-center"
+            >
+                <div className="bg-black/60 p-6 rounded-lg border border-red-500/20">
+                    <p className="text-red-400">Error loading nutrition summary: {error}</p>
+                </div>
+            </motion.div>
         );
     }
 
     if (!summary) {
         return (
-            <div className="bg-white p-4 rounded-lg shadow-sm">
-                <p className="text-gray-500">No nutrition data available for today</p>
-            </div>
+            <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="min-h-screen bg-black/90 flex justify-center items-center"
+            >
+                <div className="bg-black/60 p-6 rounded-lg border border-orange-500/20">
+                    <p className="text-gray-400">No nutrition data available for today</p>
+                </div>
+            </motion.div>
         );
     }
 
     return (
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">Today&apos;s Nutrition Summary</h2>
+        <div className="bg-black/90 py-12 px-4 sm:px-6 lg:px-8">
+            <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="max-w-4xl mx-auto bg-black/60 p-8 rounded-2xl border border-orange-500/20 shadow-2xl"
+            >
+                <h2 className="text-2xl font-bold text-white mb-6">Today&apos;s Nutrition Summary</h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                {/* Calories */}
-                <div className="bg-gray-50 p-4 rounded-lg">
-                    <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm font-medium text-gray-500">Calories</span>
-                        <span className="text-sm text-gray-900">
-                            {summary.totalCalories} / {goals?.calories || '2000'}
-                        </span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div
-                            className={`${getProgressColor(summary.totalCalories, goals?.calories)} h-2 rounded-full transition-all`}
-                            style={{ width: `${getProgressPercentage(summary.totalCalories, goals?.calories)}%` }}
-                        ></div>
-                    </div>
-                </div>
-
-                {/* Protein */}
-                <div className="bg-gray-50 p-4 rounded-lg">
-                    <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm font-medium text-gray-500">Protein</span>
-                        <span className="text-sm text-gray-900">
-                            {summary.totalProtein}g / {goals?.protein || '150'}g
-                        </span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div
-                            className={`${getProgressColor(summary.totalProtein, goals?.protein)} h-2 rounded-full transition-all`}
-                            style={{ width: `${getProgressPercentage(summary.totalProtein, goals?.protein)}%` }}
-                        ></div>
-                    </div>
-                </div>
-
-                {/* Carbs */}
-                <div className="bg-gray-50 p-4 rounded-lg">
-                    <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm font-medium text-gray-500">Carbs</span>
-                        <span className="text-sm text-gray-900">
-                            {summary.totalCarbs}g / {goals?.carbs || '250'}g
-                        </span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div
-                            className={`${getProgressColor(summary.totalCarbs, goals?.carbs)} h-2 rounded-full transition-all`}
-                            style={{ width: `${getProgressPercentage(summary.totalCarbs, goals?.carbs)}%` }}
-                        ></div>
-                    </div>
-                </div>
-
-                {/* Fat */}
-                <div className="bg-gray-50 p-4 rounded-lg">
-                    <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm font-medium text-gray-500">Fat</span>
-                        <span className="text-sm text-gray-900">
-                            {summary.totalFat}g / {goals?.fat || '70'}g
-                        </span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div
-                            className={`${getProgressColor(summary.totalFat, goals?.fat)} h-2 rounded-full transition-all`}
-                            style={{ width: `${getProgressPercentage(summary.totalFat, goals?.fat)}%` }}
-                        ></div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Meal Type Breakdown */}
-            <div className="mt-6">
-                <h3 className="text-sm font-medium text-gray-700 mb-3">Meals Breakdown</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {Object.entries(summary.byMealType).map(([type, data]) => (
-                        <div key={type} className="bg-gray-50 p-3 rounded">
-                            <div className="text-sm font-medium capitalize">{type}</div>
-                            <div className="text-gray-500 text-sm">{data.count} meals</div>
-                            <div className="text-gray-500 text-sm">{data.calories} cal</div>
-                        </div>
+                <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                    className="grid grid-cols-1 md:grid-cols-4 gap-6"
+                >
+                    {[
+                        { 
+                            name: 'Calories', 
+                            current: summary.totalCalories, 
+                            goal: goals?.calories || 2000 
+                        },
+                        { 
+                            name: 'Protein', 
+                            current: summary.totalProtein, 
+                            goal: goals?.protein || 150, 
+                            unit: 'g' 
+                        },
+                        { 
+                            name: 'Carbs', 
+                            current: summary.totalCarbs, 
+                            goal: goals?.carbs || 250, 
+                            unit: 'g' 
+                        },
+                        { 
+                            name: 'Fat', 
+                            current: summary.totalFat, 
+                            goal: goals?.fat || 70, 
+                            unit: 'g' 
+                        }
+                    ].map((nutrient, index) => (
+                        <motion.div 
+                            key={nutrient.name}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ 
+                                opacity: 1, 
+                                x: 0,
+                                transition: { delay: index * 0.1 }
+                            }}
+                            whileHover={{ scale: 1.05 }}
+                            className="bg-black/30 p-4 rounded-lg border border-orange-500/20"
+                        >
+                            <div className="flex justify-between items-center mb-2">
+                                <span className="text-sm font-medium text-gray-400">{nutrient.name}</span>
+                                <span className="text-sm text-white">
+                                    {nutrient.current}{nutrient.unit || ''} / {nutrient.goal}{nutrient.unit || ''}
+                                </span>
+                            </div>
+                            <div className="w-full bg-black/20 rounded-full h-2">
+                                <motion.div
+                                    initial={{ width: 0 }}
+                                    animate={{ 
+                                        width: `${getProgressPercentage(nutrient.current, nutrient.goal)}%`,
+                                        transition: { duration: 0.5 }
+                                    }}
+                                    className={`${getProgressColor(nutrient.current, nutrient.goal)} h-2 rounded-full`}
+                                />
+                            </div>
+                        </motion.div>
                     ))}
-                </div>
-            </div>
+                </motion.div>
+
+                {/* Meal Type Breakdown */}
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ 
+                        opacity: 1, 
+                        y: 0,
+                        transition: { delay: 0.4 }
+                    }}
+                    className="mt-6"
+                >
+                    <h3 className="text-sm font-medium text-gray-400 mb-3">Meals Breakdown</h3>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {Object.entries(summary.byMealType).map(([type, data], index) => (
+                            <motion.div 
+                                key={type}
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ 
+                                    opacity: 1, 
+                                    x: 0,
+                                    transition: { delay: index * 0.1 }
+                                }}
+                                whileHover={{ scale: 1.05 }}
+                                className="bg-black/30 p-3 rounded border border-orange-500/20"
+                            >
+                                <div className="text-sm font-medium text-white capitalize">{type}</div>
+                                <div className="text-gray-400 text-sm">{data.count} meals</div>
+                                <div className="text-gray-400 text-sm">{data.calories} cal</div>
+                            </motion.div>
+                        ))}
+                    </div>
+                </motion.div>
+            </motion.div>
         </div>
-    
-);
+    );
 };
+
 NutritionSummary.propTypes = {
     refresh: PropTypes.bool.isRequired,
 };
-
 
 export default NutritionSummary;

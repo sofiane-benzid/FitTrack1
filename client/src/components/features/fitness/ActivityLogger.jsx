@@ -121,7 +121,7 @@ const ActivityLogger = ({ onSuccess, onError }) => {
             required
           >
             {activityTypes.map(type => (
-              <option key={type.value} value={type.value}>{type.label}</option>
+              <option key={type.value} className="bg-black text-white" value={type.value}>{type.label}</option>
             ))}
           </select>
         </div>

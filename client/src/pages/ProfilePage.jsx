@@ -1,13 +1,19 @@
 ﻿import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../hooks/useAuth';
 import Feedback from '../components/common/Feedback';
 import PageHeader from '../components/common/PageHeader';
 import ProfileEditForm from '../components/auth/ProfileEditForm';
+import { 
+  AnimatedAchievementCard, 
+  InteractiveProgressBar, 
+  ParticleBackground 
+} from '../components/features/profile/EnhancedProfileComponents';
 
 const ProfilePage = () => {
   useAuth();
   const [loading, setLoading] = useState(true);
-  const [ setError] = useState(null);
+  const [setError] = useState(null);
   const [feedback, setFeedback] = useState(null);
   const [showEditForm, setShowEditForm] = useState(false);
   const [profileData, setProfileData] = useState({
@@ -48,7 +54,6 @@ const ProfilePage = () => {
 
       const data = await response.json();
       
-      // Format profile data from /me endpoint structure
       setProfileData({
         basic: {
           fullName: data.profile?.fullName || '',
@@ -66,7 +71,7 @@ const ProfilePage = () => {
           points: data.fitness?.statistics?.points || 0
         },
         achievements: data.achievements || [],
-        recentActivities: data.activities?.slice(-10) || [] // Get last 10 activities
+        recentActivities: data.activities?.slice(-10) || []
       });
     } catch (error) {
       setError('Failed to load profile data');
@@ -97,7 +102,7 @@ const ProfilePage = () => {
         type: 'success',
         message: 'Profile updated successfully!'
       });
-      fetchProfileData(); // Refresh all profile data
+      fetchProfileData();
     } catch (error) {
       setFeedback({
         type: 'error',
@@ -108,202 +113,215 @@ const ProfilePage = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
-      </div>
+      <motion.div 
+        className="min-h-screen bg-black/90 flex justify-center items-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
+        <motion.div 
+          className="w-16 h-16 border-4 border-transparent border-b-red-500 rounded-full animate-spin"
+          animate={{ 
+            rotate: 360,
+            transition: { 
+              repeat: Infinity, 
+              duration: 1, 
+              ease: "linear" 
+            }
+          }}
+        />
+      </motion.div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-6">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <PageHeader title="Profile" />
+    <div className="relative min-h-screen bg-black py-6 overflow-hidden">
+      <ParticleBackground />
+      
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-orange-500 z-10"></div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <PageHeader title="Profile" className="text-white" />
+        </motion.div>
         
-        {feedback && (
-          <div className="mb-6">
-            <Feedback
-              type={feedback.type}
-              message={feedback.message}
-              onClose={() => setFeedback(null)}
-            />
-          </div>
-        )}
+        <AnimatePresence>
+          {feedback && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="mb-6"
+            >
+              <Feedback
+                type={feedback.type}
+                message={feedback.message}
+                onClose={() => setFeedback(null)}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="bg-black/60 rounded-2xl overflow-hidden border border-orange-500/20 shadow-2xl"
+        >
           {/* Profile Header */}
-          <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
+          <div className="px-4 py-5 sm:px-6 flex justify-between items-center border-b border-orange-500/20">
             <div>
-              <h3 className="text-2xl font-bold text-gray-900">
+              <h3 className="text-2xl font-bold text-white">
                 {profileData.basic.fullName || 'No name set'}
               </h3>
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-sm text-gray-400">
                 Level {Math.floor(profileData.stats.totalWorkouts / 10) + 1} Fitness Enthusiast
               </p>
             </div>
-            <button
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => setShowEditForm(!showEditForm)}
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+              className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg hover:from-red-600 hover:to-orange-600 transition-colors"
             >
               {showEditForm ? 'View Profile' : 'Edit Profile'}
-            </button>
+            </motion.button>
           </div>
 
-          {/* Main Content */}
-          {!showEditForm ? (
-            <>
-              {/* Stats Grid */}
-              <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
-                <dl className="sm:divide-y sm:divide-gray-200">
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-4 p-4">
-                    {/* Workout Stats */}
-                    <div className="bg-gray-50 overflow-hidden shadow rounded-lg">
-                      <div className="px-4 py-5 sm:p-6">
-                        <dt className="text-sm font-medium text-gray-500 truncate">Total Workouts</dt>
-                        <dd className="mt-1 text-3xl font-semibold text-gray-900">
-                          {profileData.stats.totalWorkouts}
-                        </dd>
-                      </div>
-                    </div>
-                    <div className="bg-gray-50 overflow-hidden shadow rounded-lg">
-                      <div className="px-4 py-5 sm:p-6">
-                        <dt className="text-sm font-medium text-gray-500 truncate">Workout Streak</dt>
-                        <dd className="mt-1 text-3xl font-semibold text-gray-900">
-                          {profileData.stats.workoutStreak} days
-                        </dd>
-                      </div>
-                    </div>
-                    <div className="bg-gray-50 overflow-hidden shadow rounded-lg">
-                      <div className="px-4 py-5 sm:p-6">
-                        <dt className="text-sm font-medium text-gray-500 truncate">Active Minutes</dt>
-                        <dd className="mt-1 text-3xl font-semibold text-gray-900">
-                          {profileData.stats.totalMinutes}
-                        </dd>
-                      </div>
-                    </div>
-                    <div className="bg-gray-50 overflow-hidden shadow rounded-lg">
-                      <div className="px-4 py-5 sm:p-6">
-                        <dt className="text-sm font-medium text-gray-500 truncate">Total Points</dt>
-                        <dd className="mt-1 text-3xl font-semibold text-gray-900">
-                          {profileData.stats.points}
-                        </dd>
-                      </div>
-                    </div>
+          <AnimatePresence mode="wait">
+            {!showEditForm ? (
+              <motion.div
+                key="profile-view"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                {/* Fitness Progression */}
+                <div className="border-b border-orange-500/20 py-6 px-4">
+                  <h3 className="text-xl font-bold text-white text-center mb-6">
+                    Fitness Progression
+                  </h3>
+                  <div className="max-w-2xl mx-auto">
+                    <InteractiveProgressBar 
+                      label="Workouts" 
+                      value={profileData.stats.totalWorkouts} 
+                      maxValue={100} 
+                    />
+                    <InteractiveProgressBar 
+                      label="Minutes" 
+                      value={profileData.stats.totalMinutes} 
+                      maxValue={500} 
+                    />
+                    <InteractiveProgressBar 
+                      label="Streak" 
+                      value={profileData.stats.workoutStreak} 
+                      maxValue={30} 
+                    />
+                    <InteractiveProgressBar 
+                      label="Points" 
+                      value={profileData.stats.points} 
+                      maxValue={1000} 
+                    />
                   </div>
-
-                  {/* Personal Info */}
-                  <div className="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                    <dt className="text-sm font-medium text-gray-500">Age</dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                      {profileData.basic.age || 'Not set'}
-                    </dd>
-                  </div>
-                  <div className="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                    <dt className="text-sm font-medium text-gray-500">Height</dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                      {profileData.basic.height ? `${profileData.basic.height} cm` : 'Not set'}
-                    </dd>
-                  </div>
-                  <div className="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                    <dt className="text-sm font-medium text-gray-500">Weight</dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                      {profileData.basic.weight ? `${profileData.basic.weight} kg` : 'Not set'}
-                    </dd>
-                  </div>
-                  <div className="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                    <dt className="text-sm font-medium text-gray-500">Fitness Level</dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 capitalize">
-                      {profileData.basic.fitnessLevel || 'Not set'}
-                    </dd>
-                  </div>
-                </dl>
-              </div>
-
-              {/* Achievements Section */}
-              <div className="border-t border-gray-200">
-                <div className="bg-gray-50 px-4 py-5 sm:px-6">
-                  <h3 className="text-lg font-medium text-gray-900">Achievements</h3>
                 </div>
-                <div className="px-4 py-5 sm:p-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  {profileData.achievements.length > 0 ? (
-                    profileData.achievements.map((achievement, index) => (
-                      <div key={index} className="bg-gray-50 overflow-hidden shadow rounded-lg">
-                        <div className="px-4 py-5 sm:p-6">
-                          <h4 className="text-lg font-medium text-gray-900">{achievement.name}</h4>
-                          <p className="mt-1 text-sm text-gray-500">{achievement.description}</p>
-                          <p className="mt-2 text-xs text-gray-400">
-                            Earned on {new Date(achievement.earnedAt).toLocaleDateString()}
-                          </p>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-gray-500 col-span-full text-center py-4">
-                      No achievements yet. Keep working out to earn some!
-                    </p>
-                  )}
-                </div>
-              </div>
 
-              {/* Recent Activities Section */}
-              <div className="border-t border-gray-200">
-                <div className="bg-gray-50 px-4 py-5 sm:px-6">
-                  <h3 className="text-lg font-medium text-gray-900">Recent Activities</h3>
+                {/* Achievements Section */}
+                <div className="border-b border-orange-500/20">
+                  <div className="bg-black/40 px-4 py-5 sm:px-6">
+                    <h3 className="text-lg font-medium text-white">Achievements</h3>
+                  </div>
+                  <div className="px-4 py-5 sm:p-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {profileData.achievements.length > 0 ? (
+                      profileData.achievements.map((achievement, index) => (
+                        <AnimatedAchievementCard 
+                          key={index} 
+                          achievement={achievement} 
+                          index={index} 
+                        />
+                      ))
+                    ) : (
+                      <p className="text-gray-400 col-span-full text-center py-4">
+                        No achievements yet. Keep working out to earn some!
+                      </p>
+                    )}
+                  </div>
                 </div>
-                <div className="px-4 py-5 sm:p-6">
-                  {profileData.recentActivities.length > 0 ? (
-                    <div className="flow-root">
-                      <ul className="-mb-8">
+
+                {/* Recent Activities Section */}
+                <div>
+                  <div className="bg-black/40 px-4 py-5 sm:px-6">
+                    <h3 className="text-lg font-medium text-white">Recent Activities</h3>
+                  </div>
+                  <div className="px-4 py-5 sm:p-6">
+                    {profileData.recentActivities.length > 0 ? (
+                      <motion.ul 
+                        initial="hidden" 
+                        animate="visible" 
+                        className="-mb-8"
+                      >
                         {profileData.recentActivities.map((activity, activityIdx) => (
-                          <li key={activity._id}>
-                            <div className="relative pb-8">
-                              {activityIdx !== profileData.recentActivities.length - 1 ? (
-                                <span
-                                  className="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200"
-                                  aria-hidden="true"
-                                />
-                              ) : null}
-                              <div className="relative flex space-x-3">
-                                <div>
-                                  <span className="h-8 w-8 rounded-full bg-indigo-500 flex items-center justify-center">
-                                    <span className="text-white text-sm capitalize">
-                                      {activity.type?.charAt(0)}
-                                    </span>
+                          <motion.li 
+                            key={activity._id}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ 
+                              opacity: 1, 
+                              x: 0,
+                              transition: { 
+                                delay: activityIdx * 0.1,
+                                type: "spring",
+                                stiffness: 300
+                              }
+                            }}
+                            whileHover={{ 
+                              scale: 1.02,
+                              transition: { duration: 0.2 }
+                            }}
+                            className="relative pb-8 cursor-pointer"
+                          >
+                            <div className="relative flex space-x-3">
+                              <div>
+                                <span className="h-8 w-8 rounded-full bg-gradient-to-r from-red-500 to-orange-500 flex items-center justify-center">
+                                  <span className="text-white text-sm capitalize">
+                                    {activity.type?.charAt(0)}
                                   </span>
+                                </span>
+                              </div>
+                              <div className="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                                <div>
+                                  <p className="text-sm text-gray-300">
+                                    {activity.type} • {activity.duration} minutes
+                                    {activity.distance && ` • ${activity.distance}km`}
+                                    {activity.calories && ` • ${activity.calories} calories`}
+                                  </p>
                                 </div>
-                                <div className="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
-                                  <div>
-                                    <p className="text-sm text-gray-500">
-                                      {activity.type} • {activity.duration} minutes
-                                      {activity.distance && ` • ${activity.distance}km`}
-                                      {activity.calories && ` • ${activity.calories} calories`}
-                                    </p>
-                                  </div>
-                                  <div className="text-right text-sm whitespace-nowrap text-gray-500">
-                                    {new Date(activity.date).toLocaleDateString()}
-                                  </div>
+                                <div className="text-right text-sm whitespace-nowrap text-gray-400">
+                                  {new Date(activity.date).toLocaleDateString()}
                                 </div>
                               </div>
                             </div>
-                          </li>
+                          </motion.li>
                         ))}
-                      </ul>
-                    </div>
-                  ) : (
-                    <p className="text-gray-500 text-center py-4">
-                      No recent activities. Start working out to see your activity history!
-                    </p>
-                  )}
+                      </motion.ul>
+                    ) : (
+                      <p className="text-gray-400 text-center py-4">
+                        No recent activities. Start working out to see your activity history!
+                      </p>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </>
-          ) : (
-            <ProfileEditForm
-              initialData={profileData.basic}
-              onSubmit={handleProfileUpdate}
-              onCancel={() => setShowEditForm(false)}
-            />
-          )}
-        </div>
+              </motion.div>
+            ) : (
+              <ProfileEditForm
+                initialData={profileData.basic}
+                onSubmit={handleProfileUpdate}
+                onCancel={() => setShowEditForm(false)}
+              />
+            )}
+          </AnimatePresence>
+        </motion.div>
       </div>
     </div>
   );

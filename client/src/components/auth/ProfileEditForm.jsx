@@ -1,7 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import PropTypes from 'prop-types';
 import { useAuth } from '../../hooks/useAuth';
 import Feedback from '../common/Feedback';
+
+// Fitness Transformation Insights
+const transformationInsights = [
+  "Your body is a work in progress, not a finished product.",
+  "Small changes lead to massive transformations.",
+  "Progress is not linear, but it is inevitable.",
+  "Every challenge is an opportunity to grow stronger.",
+  "Consistency beats perfection every time."
+];
 
 const ProfileEditForm = ({ initialData, onSubmit, onCancel }) => {
     const [formData, setFormData] = useState({
@@ -16,23 +26,36 @@ const ProfileEditForm = ({ initialData, onSubmit, onCancel }) => {
     });
     const [loading, setLoading] = useState(false);
     const [feedback, setFeedback] = useState(null);
+    const [currentInsight, setCurrentInsight] = useState('');
     const { updateProfile } = useAuth();
 
+    // Rotate transformation insights
+    useEffect(() => {
+        const randomInsight = transformationInsights[Math.floor(Math.random() * transformationInsights.length)];
+        setCurrentInsight(randomInsight);
+        const intervalId = setInterval(() => {
+            const newInsight = transformationInsights[Math.floor(Math.random() * transformationInsights.length)];
+            setCurrentInsight(newInsight);
+        }, 5000);
+
+        return () => clearInterval(intervalId);
+    }, []);
+
     const fitnessGoalsOptions = [
-        { label: 'Weight Loss', value: 'weight_loss' },
-        { label: 'Muscle Gain', value: 'muscle_gain' },
-        { label: 'Endurance', value: 'endurance' },
-        { label: 'Flexibility', value: 'flexibility' },
-        { label: 'General Fitness', value: 'general_fitness' }
+        { label: 'Weight Loss', value: 'weight_loss', icon: '🔥' },
+        { label: 'Muscle Gain', value: 'muscle_gain', icon: '💪' },
+        { label: 'Endurance', value: 'endurance', icon: '🏁' },
+        { label: 'Flexibility', value: 'flexibility', icon: '🤸' },
+        { label: 'General Fitness', value: 'general_fitness', icon: '❤️' }
     ];
 
     const activityOptions = [
-        { label: 'Running', value: 'running' },
-        { label: 'Weight Training', value: 'weightlifting' },
-        { label: 'Yoga', value: 'yoga' },
-        { label: 'Swimming', value: 'swimming' },
-        { label: 'Cycling', value: 'cycling' },
-        { label: 'Walking', value: 'walking' }
+        { label: 'Running', value: 'running', icon: '🏃' },
+        { label: 'Weight Training', value: 'weightlifting', icon: '🏋️' },
+        { label: 'Yoga', value: 'yoga', icon: '🧘' },
+        { label: 'Swimming', value: 'swimming', icon: '🏊' },
+        { label: 'Cycling', value: 'cycling', icon: '🚴' },
+        { label: 'Walking', value: 'walking', icon: '🚶' }
     ];
 
     const handleChange = (e) => {
@@ -111,161 +134,225 @@ const ProfileEditForm = ({ initialData, onSubmit, onCancel }) => {
     };
 
     return (
-        <div className="p-6">
-            {feedback && (
-                <div className="mb-6">
-                    <Feedback
-                        type={feedback.type}
-                        message={feedback.message}
-                        onClose={() => setFeedback(null)}
-                    />
-                </div>
-            )}
+        <div className="min-h-screen bg-black/90 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+            
+            <div className="flex w-full max-w-6xl bg-black/60 rounded-2xl overflow-hidden shadow-2xl border border-orange-500/20">
+                {/* Form Section */}
+                <div className="w-full md:w-2/3 p-8 space-y-6">
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                    >
+                        <h2 className="text-3xl font-bold text-white text-center mb-4">
+                            Edit Your Profile
+                        </h2>
+                        <p className="text-center text-gray-400 mb-6">
+                            Update your fitness journey details
+                        </p>
+                    </motion.div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Basic Information */}
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Full Name</label>
-                        <input
-                            type="text"
-                            name="fullName"
-                            value={formData.fullName}
-                            onChange={handleChange}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Age</label>
-                        <input
-                            type="number"
-                            name="age"
-                            value={formData.age}
-                            onChange={handleChange}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Weight (kg)</label>
-                        <input
-                            type="number"
-                            name="weight"
-                            value={formData.weight}
-                            onChange={handleChange}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Height (cm)</label>
-                        <input
-                            type="number"
-                            name="height"
-                            value={formData.height}
-                            onChange={handleChange}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Gender</label>
-                        <select
-                            name="gender"
-                            value={formData.gender}
-                            onChange={handleChange}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    {feedback && (
+                        <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="mb-6"
                         >
-                            <option value="">Select gender</option>
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
+                            <Feedback
+                                type={feedback.type}
+                                message={feedback.message}
+                                onClose={() => setFeedback(null)}
+                            />
+                        </motion.div>
+                    )}
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Fitness Level</label>
-                        <select
-                            name="fitnessLevel"
-                            value={formData.fitnessLevel}
-                            onChange={handleChange}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        {/* Basic Information Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {[
+                                { name: 'fullName', label: 'Full Name', type: 'text' },
+                                { name: 'age', label: 'Age', type: 'number' },
+                                { name: 'weight', label: 'Weight (kg)', type: 'number' },
+                                { name: 'height', label: 'Height (cm)', type: 'number' }
+                            ].map((field, index) => (
+                                <motion.div
+                                    key={field.name}
+                                    initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: index * 0.1 }}
+                                >
+                                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                                        {field.label}
+                                    </label>
+                                    <input
+                                        type={field.type}
+                                        name={field.name}
+                                        value={formData[field.name]}
+                                        onChange={handleChange}
+                                        className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                    />
+                                </motion.div>
+                            ))}
+
+                            {/* Gender and Fitness Level Dropdowns */}
+                            <motion.div
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.4 }}
+                            >
+                                <label className="block text-sm font-medium text-gray-300 mb-2">Gender</label>
+                                <select
+                                    name="gender"
+                                    value={formData.gender}
+                                    onChange={handleChange}
+                                    className="w-full px-3 py-2 bg-black border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                >
+                                    <option value="" className="bg-black text-white">Select gender</option>
+                                    <option value="male" className="bg-black text-white">Male</option>
+                                    <option value="female" className="bg-black text-white">Female</option>
+                                    <option value="other" className="bg-black text-white">Other</option>
+                                </select>
+                            </motion.div>
+
+                            <motion.div
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.5 }}
+                            >
+                                <label className="block text-sm font-medium text-gray-300 mb-2">Fitness Level</label>
+                                <select
+                                    name="fitnessLevel"
+                                    value={formData.fitnessLevel}
+                                    onChange={handleChange}
+                                    className="w-full px-3 py-2 bg-black border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                >
+                                    <option value="beginner" className="bg-black text-white">Beginner</option>
+                                    <option value="intermediate" className="bg-black text-white">Intermediate</option>
+                                    <option value="advanced" className="bg-black text-white">Advanced</option>
+                                </select>
+                            </motion.div>
+                        </div>
+
+                        {/* Fitness Goals */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.6 }}
                         >
-                            <option value="beginner">Beginner</option>
-                            <option value="intermediate">Intermediate</option>
-                            <option value="advanced">Advanced</option>
-                        </select>
-                    </div>
-                </div>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                                Fitness Goals
+                            </label>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                {fitnessGoalsOptions.map(goal => (
+                                    <motion.button
+                                        key={goal.value}
+                                        type="button"
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        onClick={() => handleMultiSelect('fitnessGoals', goal.value)}
+                                        className={`flex items-center justify-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                                            formData.fitnessGoals.includes(goal.value)
+                                                ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white'
+                                                : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                                        }`}
+                                    >
+                                        <span>{goal.icon}</span>
+                                        <span>{goal.label}</span>
+                                    </motion.button>
+                                ))}
+                            </div>
+                        </motion.div>
 
-                {/* Fitness Goals */}
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Fitness Goals
-                    </label>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                        {fitnessGoalsOptions.map(goal => (
+                        {/* Activity Preferences */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.7 }}
+                        >
+                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                                Preferred Activities
+                            </label>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                {activityOptions.map(activity => (
+                                    <motion.button
+                                        key={activity.value}
+                                        type="button"
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        onClick={() => handleMultiSelect('activityPreferences', activity.value)}
+                                        className={`flex items-center justify-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                                            formData.activityPreferences.includes(activity.value)
+                                                ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white'
+                                                : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                                        }`}
+                                    >
+                                        <span>{activity.icon}</span>
+                                        <span>{activity.label}</span>
+                                    </motion.button>
+                                ))}
+                            </div>
+                        </motion.div>
+
+                        {/* Form Actions */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.8 }}
+                            className="flex justify-end space-x-3"
+                        >
                             <button
-                                key={goal.value}
                                 type="button"
-                                onClick={() => handleMultiSelect('fitnessGoals', goal.value)}
-                                className={`p-2 rounded-md text-sm font-medium transition-colors ${formData.fitnessGoals.includes(goal.value)
-                                        ? 'bg-indigo-600 text-white'
-                                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                                onClick={onCancel}
+                                disabled={loading}
+                                className="px-4 py-2 bg-white/10 text-gray-300 rounded-lg hover:bg-white/20 transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className={`px-4 py-2 rounded-lg text-white transition-all duration-300 
+                                    ${loading 
+                                        ? 'bg-gray-700 cursor-not-allowed' 
+                                        : 'bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600'
                                     }`}
                             >
-                                {goal.label}
+                                {loading ? 'Saving...' : 'Save Changes'}
                             </button>
-                        ))}
-                    </div>
+                        </motion.div>
+                    </form>
                 </div>
 
-                {/* Activity Preferences */}
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Preferred Activities
-                    </label>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                        {activityOptions.map(activity => (
-                            <button
-                                key={activity.value}
-                                type="button"
-                                onClick={() => handleMultiSelect('activityPreferences', activity.value)}
-                                className={`p-2 rounded-md text-sm font-medium transition-colors ${formData.activityPreferences.includes(activity.value)
-                                        ? 'bg-indigo-600 text-white'
-                                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                                    }`}
+                {/* Transformation Insight Panel */}
+                <motion.div 
+                    className="hidden md:flex w-1/3 bg-gradient-to-br from-red-500 to-orange-500 p-8 items-center justify-center"
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5 }}
+                >
+                    <div className="text-center text-white">
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={currentInsight}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                transition={{ duration: 0.3 }}
+                                className="text-xl font-bold"
                             >
-                                {activity.label}
-                            </button>
-                        ))}
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto mb-4" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z" clipRule="evenodd" />
+                                </svg>
+                                &quot;{currentInsight}&quot;
+                            </motion.div>
+                        </AnimatePresence>
                     </div>
-                </div>
-
-                {/* Form Actions */}
-                <div className="flex justify-end space-x-3">
-                    <button
-                        type="button"
-                        onClick={onCancel}
-                        disabled={loading}
-                        className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className={`px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${loading ? 'bg-indigo-400' : 'bg-indigo-600 hover:bg-indigo-700'
-                            } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
-                    >
-                        {loading ? 'Saving...' : 'Save Changes'}
-                    </button>
-                </div>
-            </form>
+                </motion.div>
+            </div>
         </div>
     );
 };
+
 ProfileEditForm.propTypes = {
     initialData: PropTypes.shape({
         fullName: PropTypes.string,

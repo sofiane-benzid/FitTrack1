@@ -1,4 +1,5 @@
 ﻿import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../../hooks/useAuth';
 import Feedback from '../../common/Feedback';
 
@@ -16,7 +17,6 @@ const NutritionGoals = () => {
   });
 
   useEffect(() => {
-    // Fetch user's nutrition goals if they exist
     const fetchGoals = async () => {
       try {
         const response = await fetch('http://localhost:5000/nutrition/goals', {
@@ -78,145 +78,112 @@ const NutritionGoals = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow">
-      <h2 className="text-xl font-semibold text-gray-900 mb-6">Nutrition Goals</h2>
+    <div className="min-h-screen bg-black/90 py-12 px-4 sm:px-6 lg:px-8">
+      <motion.div 
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-4xl mx-auto bg-black/60 p-8 rounded-2xl border border-orange-500/20 shadow-2xl"
+      >
+        <h2 className="text-2xl font-bold text-white mb-6">Nutrition Goals</h2>
 
-      {feedback && (
-        <Feedback
-          type={feedback.type}
-          message={feedback.message}
-          onClose={() => setFeedback(null)}
-        />
-      )}
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Daily Calorie Target
-            </label>
-            <div className="mt-1 relative rounded-md shadow-sm">
-              <input
-                type="number"
-                name="calories"
-                value={goals.calories}
-                onChange={handleChange}
-                className="focus:ring-indigo-500 focus:border-indigo-500 block w-full rounded-md sm:text-sm border-gray-300"
-                placeholder="2000"
-              />
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <span className="text-gray-500 sm:text-sm">kcal</span>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Daily Protein Target
-            </label>
-            <div className="mt-1 relative rounded-md shadow-sm">
-              <input
-                type="number"
-                name="protein"
-                value={goals.protein}
-                onChange={handleChange}
-                className="focus:ring-indigo-500 focus:border-indigo-500 block w-full rounded-md sm:text-sm border-gray-300"
-                placeholder="150"
-              />
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <span className="text-gray-500 sm:text-sm">g</span>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Daily Carbs Target
-            </label>
-            <div className="mt-1 relative rounded-md shadow-sm">
-              <input
-                type="number"
-                name="carbs"
-                value={goals.carbs}
-                onChange={handleChange}
-                className="focus:ring-indigo-500 focus:border-indigo-500 block w-full rounded-md sm:text-sm border-gray-300"
-                placeholder="250"
-              />
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <span className="text-gray-500 sm:text-sm">g</span>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Daily Fat Target
-            </label>
-            <div className="mt-1 relative rounded-md shadow-sm">
-              <input
-                type="number"
-                name="fat"
-                value={goals.fat}
-                onChange={handleChange}
-                className="focus:ring-indigo-500 focus:border-indigo-500 block w-full rounded-md sm:text-sm border-gray-300"
-                placeholder="70"
-              />
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <span className="text-gray-500 sm:text-sm">g</span>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Daily Water Intake Target
-            </label>
-            <div className="mt-1 relative rounded-md shadow-sm">
-              <input
-                type="number"
-                name="waterIntake"
-                value={goals.waterIntake}
-                onChange={handleChange}
-                className="focus:ring-indigo-500 focus:border-indigo-500 block w-full rounded-md sm:text-sm border-gray-300"
-                placeholder="2000"
-              />
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <span className="text-gray-500 sm:text-sm">ml</span>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Target Meals per Day
-            </label>
-            <select
-              name="mealsPerDay"
-              value={goals.mealsPerDay}
-              onChange={handleChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+        <AnimatePresence>
+          {feedback && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
             >
-              <option value={2}>2 meals</option>
-              <option value={3}>3 meals</option>
-              <option value={4}>4 meals</option>
-              <option value={5}>5 meals</option>
-              <option value={6}>6 meals</option>
-            </select>
-          </div>
-        </div>
+              <Feedback
+                type={feedback.type}
+                message={feedback.message}
+                onClose={() => setFeedback(null)}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        <div className="flex justify-end">
-          <button
-            type="submit"
-            disabled={loading}
-            className={`${
-              loading ? 'bg-indigo-400' : 'bg-indigo-600 hover:bg-indigo-700'
-            } inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
           >
-            {loading ? 'Saving...' : 'Save Goals'}
-          </button>
-        </div>
-      </form>
+            {[
+              { name: 'calories', label: 'Daily Calorie Target', unit: 'kcal' },
+              { name: 'protein', label: 'Daily Protein Target', unit: 'g' },
+              { name: 'carbs', label: 'Daily Carbs Target', unit: 'g' },
+              { name: 'fat', label: 'Daily Fat Target', unit: 'g' },
+              { name: 'waterIntake', label: 'Daily Water Intake Target', unit: 'ml' }
+            ].map((field) => (
+              <div key={field.name}>
+                <label className="block text-sm font-medium text-gray-400">
+                  {field.label}
+                </label>
+                <motion.div 
+                  whileHover={{ scale: 1.02 }}
+                  className="mt-1 relative rounded-md"
+                >
+                  <input
+                    type="number"
+                    name={field.name}
+                    value={goals[field.name]}
+                    onChange={handleChange}
+                    className="block w-full rounded-md bg-black/30 border-orange-500/20 text-white focus:border-orange-500 focus:ring-orange-500 sm:text-sm"
+                    placeholder={goals[field.name].toString()}
+                  />
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <span className="text-gray-500 sm:text-sm">{field.unit}</span>
+                  </div>
+                </motion.div>
+              </div>
+            ))}
+
+            <div>
+              <label className="block text-sm font-medium text-gray-400">
+                Target Meals per Day
+              </label>
+              <motion.select
+                whileHover={{ scale: 1.02 }}
+                name="mealsPerDay"
+                value={goals.mealsPerDay}
+                onChange={handleChange}
+                className="mt-1 block w-full rounded-md bg-black/30 border-orange-500/20 text-white focus:border-orange-500 focus:ring-orange-500 sm:text-sm"
+              >
+                {[2, 3, 4, 5, 6].map(mealCount => (
+                  <option 
+                    key={mealCount} 
+                    value={mealCount} 
+                    className="bg-black text-white"
+                  >
+                    {mealCount} meals
+                  </option>
+                ))}
+              </motion.select>
+            </div>
+          </motion.div>
+
+          <div className="flex justify-end">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              type="submit"
+              disabled={loading}
+              className={`
+                inline-flex justify-center py-2 px-4 rounded-md text-sm font-medium text-white 
+                ${loading 
+                  ? 'bg-gray-700 cursor-not-allowed' 
+                  : 'bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600'
+                } 
+                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500
+              `}
+            >
+              {loading ? 'Saving...' : 'Save Goals'}
+            </motion.button>
+          </div>
+        </form>
+      </motion.div>
     </div>
   );
 };

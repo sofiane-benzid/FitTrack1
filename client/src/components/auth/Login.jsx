@@ -1,6 +1,16 @@
-import  { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+
+// Fitness facts for side panel
+const fitnessFacts = [
+    "Regular exercise can increase life expectancy by up to 4.5 years.",
+    "Your body has over 600 muscles, each waiting to be strengthened.",
+    "Exercising can improve your mood and reduce stress hormones.",
+    "Just 30 minutes of daily activity can significantly improve your health.",
+    "Physical activity can boost brain function and reduce cognitive decline."
+];
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -9,8 +19,21 @@ const Login = () => {
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [currentFact, setCurrentFact] = useState('');
     const navigate = useNavigate();
     const { login } = useAuth();
+
+    // Rotate fitness facts
+    useEffect(() => {
+        const randomFact = fitnessFacts[Math.floor(Math.random() * fitnessFacts.length)];
+        setCurrentFact(randomFact);
+        const intervalId = setInterval(() => {
+            const newFact = fitnessFacts[Math.floor(Math.random() * fitnessFacts.length)];
+            setCurrentFact(newFact);
+        }, 5000);
+
+        return () => clearInterval(intervalId);
+    }, []);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -32,14 +55,11 @@ const Login = () => {
 
             if (!response.ok) throw new Error(data.message);
 
-            // Create user object from response
             const userData = {
                 id: data.userId,
                 email: formData.email,
-                // Add any other user data from the response
             };
 
-            // Pass both user data and token to login
             login(userData, data.token);
             navigate('/dashboard');
         } catch (err) {
@@ -49,63 +69,126 @@ const Login = () => {
         }
     };
 
-    // Rest of the component remains the same...
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-md w-full space-y-8">
-                <div>
-                    <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                        Sign in to your account
-                    </h2>
-                </div>
-                {error && (
-                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                        <span className="block sm:inline">{error}</span>
+        <div className="min-h-screen flex items-center justify-center bg-black/90 py-12 px-4 sm:px-6 lg:px-8">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-orange-500"></div>
+            <div className="flex w-full max-w-4xl bg-black/60 rounded-2xl overflow-hidden shadow-2xl border border-orange-500/20">
+                {/* Fitness Fact Panel */}
+                <motion.div
+                    className="hidden md:flex w-1/2 bg-gradient-to-br from-red-500 to-orange-500 p-8 items-center justify-center"
+                    initial={{ opacity: 0, x: -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5 }}
+                >
+                    <div className="text-center text-white">
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={currentFact}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                transition={{ duration: 0.3 }}
+                                className="text-xl font-bold"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto mb-4" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
+                                </svg>
+                                {currentFact}
+                            </motion.div>
+                        </AnimatePresence>
                     </div>
-                )}
-                <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-                    <div className="rounded-md shadow-sm -space-y-px">
-                        <div>
+                </motion.div>
+
+                {/* Login Form */}
+                <div className="w-full md:w-1/2 p-8 space-y-8">
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                    >
+                        <h2 className="text-center text-3xl font-extrabold text-white">
+                            Welcome Back
+                        </h2>
+                        <p className="mt-2 text-center text-sm text-gray-400">
+                            Continue your fitness journey
+                        </p>
+                    </motion.div>
+
+                    {error && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="bg-red-900/50 border border-red-500 text-red-300 px-4 py-3 rounded-lg"
+                        >
+                            {error}
+                        </motion.div>
+                    )}
+
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2 }}
+                        >
                             <input
                                 name="email"
                                 type="email"
                                 required
-                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                                className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
                                 placeholder="Email address"
                                 value={formData.email}
                                 onChange={handleChange}
                             />
-                        </div>
-                        <div>
+                        </motion.div>
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3 }}
+                        >
                             <input
                                 name="password"
                                 type="password"
                                 required
-                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                                className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
                                 placeholder="Password"
                                 value={formData.password}
                                 onChange={handleChange}
                             />
-                        </div>
-                    </div>
+                        </motion.div>
 
-                    <div>
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${loading ? 'bg-indigo-400' : 'bg-indigo-600 hover:bg-indigo-700'
-                                } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.4 }}
                         >
-                            {loading ? 'Signing in...' : 'Sign in'}
-                        </button>
-                    </div>
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className={`w-full py-2 rounded-lg text-white transition-all duration-300 
+                                    ${loading
+                                        ? 'bg-gray-700 cursor-not-allowed'
+                                        : 'bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600'
+                                    }`}
+                            >
+                                {loading ? 'Signing in...' : 'Sign In'}
+                            </button>
+                        </motion.div>
+                    </form>
 
-                    <div className="text-sm text-center">
-                        <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5 }}
+                        className="text-center"
+                    >
+                        <Link
+                            to="/register"
+                            className="text-sm text-orange-400 hover:text-orange-300 transition-colors"
+                        >
                             Don&apos;t have an account? Register here
                         </Link>
-                    </div>
-                </form>
+                    </motion.div>
+                </div>
             </div>
         </div>
     );

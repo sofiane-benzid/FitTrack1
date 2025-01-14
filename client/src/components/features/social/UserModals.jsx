@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import PropTypes from 'prop-types';
 import Feedback from '../../common/Feedback';
 
-const UserProfileModal = ({ userId, onClose }) => {
+export const UserProfileModal = ({ userId, onClose }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [profile, setProfile] = useState(null);
@@ -32,112 +33,109 @@ const UserProfileModal = ({ userId, onClose }) => {
         fetchProfile();
     }, [userId]);
 
-    if (loading) {
-        return (
-            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center">
-                <div className="bg-white rounded-lg p-6 max-w-md w-full">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto"></div>
-                </div>
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center">
-                <div className="bg-white rounded-lg p-6 max-w-md w-full">
-                    <Feedback type="error" message={error} />
-                    <button
-                        onClick={onClose}
-                        className="mt-4 w-full bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300"
-                    >
-                        Close
-                    </button>
-                </div>
-            </div>
-        );
-    }
-
     return (
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center">
-            <div className="bg-white rounded-lg p-6 max-w-md w-full">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-bold">User Profile</h2>
-                    <button
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+        >
+            <motion.div
+                initial={{ scale: 0.95, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.95, y: 20 }}
+                className="bg-black/40 rounded-xl p-6 max-w-md w-full border border-orange-500/20 shadow-lg"
+            >
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-2xl font-bold text-white">User Profile</h2>
+                    <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
                         onClick={onClose}
-                        className="text-gray-500 hover:text-gray-700"
+                        className="text-gray-400 hover:text-white"
                     >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
-                    </button>
+                    </motion.button>
                 </div>
 
-                <div className="space-y-4">
-                    <div>
-                        <h3 className="text-lg font-medium">{profile.fullName}</h3>
-                        <p className="text-gray-500">{profile.email}</p>
+                {loading ? (
+                    <div className="flex justify-center py-8">
+                        <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
                     </div>
-
-                    <div className="border-t pt-4">
-                        <h4 className="font-medium mb-2">Stats</h4>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <p className="text-sm text-gray-500">Total Workouts</p>
-                                <p className="text-lg font-medium">{profile.stats?.totalWorkouts || 0}</p>
-                            </div>
-                            <div>
-                                <p className="text-sm text-gray-500">Workout Streak</p>
-                                <p className="text-lg font-medium">{profile.stats?.workoutStreak || 0} days</p>
-                            </div>
-                        </div>
+                ) : error ? (
+                    <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400">
+                        {error}
                     </div>
-
-                    <div className="border-t pt-4">
-                        <h4 className="font-medium mb-2">Fitness Goals</h4>
-                        <div className="flex flex-wrap gap-2">
-                            {profile.fitnessGoals?.map((goal, index) => (
-                                <span
-                                    key={index}
-                                    className="px-2 py-1 bg-indigo-100 text-indigo-800 rounded-full text-sm"
-                                >
-                                    {goal.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                ) : profile && (
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-4">
+                            <div className="h-16 w-16 rounded-full bg-gradient-to-r from-red-500 to-orange-500 flex items-center justify-center">
+                                <span className="text-white font-bold text-2xl">
+                                    {profile.fullName?.charAt(0) || profile.email.charAt(0)}
                                 </span>
-                            ))}
+                            </div>
+                            <div>
+                                <h3 className="text-xl font-medium text-white">{profile.fullName}</h3>
+                                <p className="text-gray-400">{profile.email}</p>
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="border-t pt-4">
-                        <h4 className="font-medium mb-2">Recent Achievements</h4>
-                        {profile.achievements?.length > 0 ? (
-                            <div className="space-y-2">
-                                {profile.achievements.map((achievement, index) => (
-                                    <div
+                        <div className="border-t border-orange-500/20 pt-4">
+                            <h4 className="text-lg font-medium text-white mb-3">Stats</h4>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="bg-black/40 p-4 rounded-lg border border-orange-500/10">
+                                    <p className="text-gray-400 text-sm">Total Workouts</p>
+                                    <p className="text-xl font-medium text-white">{profile.stats?.totalWorkouts || 0}</p>
+                                </div>
+                                <div className="bg-black/40 p-4 rounded-lg border border-orange-500/10">
+                                    <p className="text-gray-400 text-sm">Workout Streak</p>
+                                    <p className="text-xl font-medium text-white">{profile.stats?.workoutStreak || 0} days</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="border-t border-orange-500/20 pt-4">
+                            <h4 className="text-lg font-medium text-white mb-3">Fitness Goals</h4>
+                            <div className="flex flex-wrap gap-2">
+                                {profile.fitnessGoals?.map((goal, index) => (
+                                    <span
                                         key={index}
-                                        className="flex items-center space-x-2 text-sm"
+                                        className="px-3 py-1 bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-orange-500/20 rounded-full text-sm text-orange-400"
                                     >
-                                        <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                                        <span>{achievement.name}</span>
-                                    </div>
+                                        {goal.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                    </span>
                                 ))}
                             </div>
-                        ) : (
-                            <p className="text-gray-500 text-sm">No achievements yet</p>
-                        )}
+                        </div>
+
+                        <div className="border-t border-orange-500/20 pt-4">
+                            <h4 className="text-lg font-medium text-white mb-3">Recent Achievements</h4>
+                            {profile.achievements?.length > 0 ? (
+                                <div className="space-y-2">
+                                    {profile.achievements.map((achievement, index) => (
+                                        <div
+                                            key={index}
+                                            className="flex items-center gap-2 text-sm"
+                                        >
+                                            <div className="w-2 h-2 bg-gradient-to-r from-red-500 to-orange-500 rounded-full"></div>
+                                            <span className="text-gray-300">{achievement.name}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p className="text-gray-400 text-sm">No achievements yet</p>
+                            )}
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
+                )}
+            </motion.div>
+        </motion.div>
     );
 };
 
-UserProfileModal.propTypes = {
-    userId: PropTypes.string.isRequired,
-    onClose: PropTypes.func.isRequired
-};
-
-// MessageModal.jsx
-const MessageModal = ({ recipientId, recipientName, onClose }) => {
+export const MessageModal = ({ recipientId, recipientName, onClose }) => {
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
     const [feedback, setFeedback] = useState(null);
@@ -168,11 +166,7 @@ const MessageModal = ({ recipientId, recipientName, onClose }) => {
                 type: 'success',
                 message: 'Message sent successfully!'
             });
-
-            // Clear message input
             setMessage('');
-
-            // Close modal after short delay
             setTimeout(onClose, 1500);
         } catch (err) {
             setFeedback({
@@ -185,28 +179,38 @@ const MessageModal = ({ recipientId, recipientName, onClose }) => {
     };
 
     return (
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center">
-            <div className="bg-white rounded-lg p-6 max-w-md w-full">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-bold">Message {recipientName}</h2>
-                    <button
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+        >
+            <motion.div
+                initial={{ scale: 0.95, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.95, y: 20 }}
+                className="bg-black/40 rounded-xl p-6 max-w-md w-full border border-orange-500/20 shadow-lg"
+            >
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-bold text-white">Message {recipientName}</h2>
+                    <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
                         onClick={onClose}
-                        className="text-gray-500 hover:text-gray-700"
+                        className="text-gray-400 hover:text-white"
                     >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
-                    </button>
+                    </motion.button>
                 </div>
 
                 {feedback && (
-                    <div className="mb-4">
-                        <Feedback
-                            type={feedback.type}
-                            message={feedback.message}
-                            onClose={() => setFeedback(null)}
-                        />
-                    </div>
+                    <Feedback
+                        type={feedback.type}
+                        message={feedback.message}
+                        onClose={() => setFeedback(null)}
+                    />
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -215,33 +219,41 @@ const MessageModal = ({ recipientId, recipientName, onClose }) => {
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
                             rows="4"
-                            className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                            className="w-full bg-black/40 border border-orange-500/20 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-orange-500/50"
                             placeholder="Type your message here..."
                             required
                         />
                     </div>
 
-                    <div className="flex justify-end space-x-3">
-                        <button
+                    <div className="flex justify-end gap-3">
+                        <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
                             type="button"
                             onClick={onClose}
-                            className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                            className="px-4 py-2 bg-black/40 text-white rounded-lg hover:bg-black/60"
                         >
                             Cancel
-                        </button>
-                        <button
+                        </motion.button>
+                        <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
                             type="submit"
                             disabled={loading}
-                            className={`px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${loading ? 'bg-indigo-400' : 'bg-indigo-600 hover:bg-indigo-700'
-                                }`}
+                            className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg hover:from-red-600 hover:to-orange-600 disabled:opacity-50"
                         >
                             {loading ? 'Sending...' : 'Send Message'}
-                        </button>
+                        </motion.button>
                     </div>
                 </form>
-            </div>
-        </div>
+            </motion.div>
+        </motion.div>
     );
+};
+
+UserProfileModal.propTypes = {
+    userId: PropTypes.string.isRequired,
+    onClose: PropTypes.func.isRequired
 };
 
 MessageModal.propTypes = {
@@ -250,4 +262,7 @@ MessageModal.propTypes = {
     onClose: PropTypes.func.isRequired
 };
 
-export { UserProfileModal, MessageModal };
+export default {
+    UserProfileModal,
+    MessageModal
+};
