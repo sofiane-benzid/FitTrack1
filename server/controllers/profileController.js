@@ -3,6 +3,8 @@ const User = require('../models/User');
 const Activity = require('../models/Activity');
 const { Badge, Points } = require('../models/Gamification');
 
+
+
 exports.getFullProfile = async (req, res) => {
   try {
     // Get user with profile and fitness data

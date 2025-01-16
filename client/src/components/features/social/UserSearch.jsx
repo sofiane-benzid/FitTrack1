@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, forwardRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { socialService } from '../../../services/socialService';
 import Feedback from '../../common/Feedback';
-
 import PropTypes from 'prop-types';
 
-const SearchResult = ({ user, onSendRequest }) => (
+const SearchResult = forwardRef(({ user, onSendRequest }, ref) => (
     <motion.div
+        ref={ref}
         layout
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -46,17 +46,27 @@ const SearchResult = ({ user, onSendRequest }) => (
             </div>
         </div>
     </motion.div>
-);
+));
+
+SearchResult.propTypes = {
+    user: PropTypes.shape({
+        _id: PropTypes.string.isRequired,
+        fullName: PropTypes.string,
+        email: PropTypes.string.isRequired,
+    }).isRequired,
+    onSendRequest: PropTypes.func.isRequired,
+};
+
+SearchResult.displayName = 'SearchResult';
 
 const UserSearch = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
-    const  setError = useState(null);
+    const [ setError] = useState(null);
     const [feedback, setFeedback] = useState(null);
     const [isSearching, setIsSearching] = useState(false);
 
-    // Keep existing fetch logic
     useEffect(() => {
         fetchAllUsers();
     }, []);
@@ -66,7 +76,7 @@ const UserSearch = () => {
             const allUsers = await socialService.searchUsers('');
             setUsers(allUsers);
         } catch (err) {
-            setError('Failed to load users' + err);
+            setError('Failed to load users: ' + err.message);
         } finally {
             setLoading(false);
         }
@@ -76,7 +86,6 @@ const UserSearch = () => {
         e.preventDefault();
         setIsSearching(true);
 
-        // Filter users locally based on search term
         if (searchTerm.trim()) {
             const filteredUsers = users.filter(user =>
                 user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -84,7 +93,6 @@ const UserSearch = () => {
             );
             setUsers(filteredUsers);
         } else {
-            // If search is empty, fetch all users again
             fetchAllUsers();
         }
 
@@ -98,7 +106,6 @@ const UserSearch = () => {
                 type: 'success',
                 message: 'Friend request sent successfully!'
             });
-            // Remove user from the list
             setUsers(users.filter(user => user._id !== userId));
         } catch (err) {
             setFeedback({
@@ -197,15 +204,7 @@ const UserSearch = () => {
                 </div>
             </motion.div>
         </motion.div>
-    );}
-SearchResult.propTypes = {
-    user: PropTypes.shape({
-        _id: PropTypes.string.isRequired,
-        fullName: PropTypes.string,
-        email: PropTypes.string.isRequired,
-    }).isRequired,
-    onSendRequest: PropTypes.func.isRequired,
+    );
 };
 
 export default UserSearch;
-

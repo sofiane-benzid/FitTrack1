@@ -14,7 +14,9 @@ const NotificationSchema = new mongoose.Schema({
             'friend_declined',
             'friend_removed',
             'challenge_invite',
-            'challenge_completed'
+            'challenge_completed',
+            'achievement_unlocked',
+            'level_up'
         ],
         required: true
     },

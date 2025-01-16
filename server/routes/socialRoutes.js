@@ -20,8 +20,10 @@ router.delete('/friends/:friendId', socialController.removeFriend);
 router.get('/users/search', socialController.searchUsers);
 
 // Challenge routes
-router.post('/challenges', socialController.createChallenge);
-router.get('/challenges', socialController.getChallenges);
+router.get('/challenges', authMiddleware, socialController.getChallenges);
+router.post('/challenges', authMiddleware, socialController.createChallenge);
+router.post('/challenges/:challengeId/join', authMiddleware, socialController.joinChallenge);
+router.put('/challenges/:challengeId/progress', authMiddleware, socialController.updateChallengeProgress);
 
 // Notification routes
 router.get('/notifications', notificationController.getNotifications);

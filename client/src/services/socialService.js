@@ -142,5 +142,24 @@ export const socialService = {
     });
     if (!response.ok) throw new Error('Failed to delete notification');
     return response.json();
+  },
+
+  // Challenges
+  async getChallenges() {
+    const response = await fetch(`${BASE_URL}/challenges`, {
+      headers: getAuthHeaders()
+    });
+    if (!response.ok) throw new Error('Failed to fetch challenges');
+    return response.json();
+  },
+
+  async createChallenge(challengeData) {
+    const response = await fetch(`${BASE_URL}/challenges`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(challengeData)
+    });
+    if (!response.ok) throw new Error('Failed to create challenge');
+    return response.json();
   }
 };

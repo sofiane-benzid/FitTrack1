@@ -11,9 +11,8 @@ import {
 } from '../components/features/profile/EnhancedProfileComponents';
 
 const ProfilePage = () => {
-  useAuth();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
-  const [setError] = useState(null);
   const [feedback, setFeedback] = useState(null);
   const [showEditForm, setShowEditForm] = useState(false);
   const [profileData, setProfileData] = useState({
@@ -23,7 +22,9 @@ const ProfilePage = () => {
       weight: '',
       height: '',
       gender: '',
-      fitnessLevel: ''
+      fitnessLevel: '',
+      fitnessGoals: [],
+      activityPreferences: []
     },
     stats: {
       totalWorkouts: 0,
@@ -53,15 +54,19 @@ const ProfilePage = () => {
       }
 
       const data = await response.json();
-      
+
+
+      // Map the received data to our state structure
       setProfileData({
         basic: {
-          fullName: data.profile?.fullName || '',
+          fullName: data.profile?.fullName || user?.email || 'User',
           age: data.profile?.age || '',
           weight: data.profile?.weight || '',
           height: data.profile?.height || '',
           gender: data.profile?.gender || '',
-          fitnessLevel: data.profile?.fitnessLevel || ''
+          fitnessLevel: data.profile?.fitnessLevel || 'beginner',
+          fitnessGoals: data.profile?.fitnessGoals || [],  // Add these two lines
+          activityPreferences: data.profile?.activityPreferences || []
         },
         stats: {
           totalWorkouts: data.fitness?.statistics?.totalWorkouts || 0,
@@ -73,9 +78,17 @@ const ProfilePage = () => {
         achievements: data.achievements || [],
         recentActivities: data.activities?.slice(-10) || []
       });
+
+      setFeedback({
+        type: 'success',
+        message: 'Profile loaded successfully'
+      });
     } catch (error) {
-      setError('Failed to load profile data');
-      console.error('Profile data error:', error);
+      console.error('Error fetching profile:', error);
+      setFeedback({
+        type: 'error',
+        message: `Failed to load profile: ${error.message}`
+      });
     } finally {
       setLoading(false);
     }
@@ -102,6 +115,8 @@ const ProfilePage = () => {
         type: 'success',
         message: 'Profile updated successfully!'
       });
+      
+      // Refresh profile data
       fetchProfileData();
     } catch (error) {
       setFeedback({
@@ -175,7 +190,7 @@ const ProfilePage = () => {
           <div className="px-4 py-5 sm:px-6 flex justify-between items-center border-b border-orange-500/20">
             <div>
               <h3 className="text-2xl font-bold text-white">
-                {profileData.basic.fullName || 'No name set'}
+                {profileData.basic.fullName}
               </h3>
               <p className="mt-1 text-sm text-gray-400">
                 Level {Math.floor(profileData.stats.totalWorkouts / 10) + 1} Fitness Enthusiast
@@ -206,22 +221,22 @@ const ProfilePage = () => {
                   </h3>
                   <div className="max-w-2xl mx-auto">
                     <InteractiveProgressBar 
-                      label="Workouts" 
+                      label="Total Workouts" 
                       value={profileData.stats.totalWorkouts} 
                       maxValue={100} 
                     />
                     <InteractiveProgressBar 
-                      label="Minutes" 
+                      label="Total Minutes" 
                       value={profileData.stats.totalMinutes} 
                       maxValue={500} 
                     />
                     <InteractiveProgressBar 
-                      label="Streak" 
+                      label="Workout Streak" 
                       value={profileData.stats.workoutStreak} 
                       maxValue={30} 
                     />
                     <InteractiveProgressBar 
-                      label="Points" 
+                      label="Points Earned" 
                       value={profileData.stats.points} 
                       maxValue={1000} 
                     />
@@ -264,7 +279,7 @@ const ProfilePage = () => {
                       >
                         {profileData.recentActivities.map((activity, activityIdx) => (
                           <motion.li 
-                            key={activity._id}
+                            key={activity._id || activityIdx}
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ 
                               opacity: 1, 

@@ -6,15 +6,10 @@ const authMiddleware = require('../middleware/authMiddleware');
 // Apply auth middleware to all routes
 router.use(authMiddleware);
 
-// Points routes
-router.post('/points', gamificationController.awardPoints);
 router.get('/points', gamificationController.getPoints);
-
-// Badge routes
-router.post('/badges', gamificationController.awardBadge);
-router.get('/badges', gamificationController.getBadges);
-
-// Leaderboard route
+router.get('/streak', gamificationController.getStreak);
+router.get('/achievements', gamificationController.getAchievements);
 router.get('/leaderboard', gamificationController.getLeaderboard);
+router.get('/badges', authMiddleware, gamificationController.getBadges);
 
 module.exports = router;

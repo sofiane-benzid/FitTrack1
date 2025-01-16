@@ -2,6 +2,9 @@
 const { generateToken } = require('../config/jwt');
 const { Badge } = require('../models/Gamification');
 const Activity = require('../models/Activity');
+const { isProfileComplete } = require('../utils/helpers');
+const gamificationController = require('./gamificationController');
+
 
 
 // Helper function to validate fitness goals
@@ -57,9 +60,9 @@ exports.register = async (req, res) => {
       userId: user._id
     });
   } catch (error) {
-    res.status(500).json({ 
-      message: 'Registration failed', 
-      error: error.message 
+    res.status(500).json({
+      message: 'Registration failed',
+      error: error.message
     });
   }
 };
@@ -92,9 +95,9 @@ exports.login = async (req, res) => {
       fitness: user.fitness
     });
   } catch (error) {
-    res.status(500).json({ 
-      message: 'Login failed', 
-      error: error.message 
+    res.status(500).json({
+      message: 'Login failed',
+      error: error.message
     });
   }
 };
@@ -107,13 +110,13 @@ exports.getMe = async (req, res) => {
       .select('-password')
       .populate({
         path: 'activities',
-        options: { 
+        options: {
           sort: { date: -1 },
           limit: 10
         }
       })
       .lean();
-    
+
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -143,9 +146,9 @@ exports.getMe = async (req, res) => {
     res.json(userWithExtras);
   } catch (error) {
     console.error('Error in getMe:', error);
-    res.status(500).json({ 
-      message: 'Failed to fetch profile', 
-      error: error.message 
+    res.status(500).json({
+      message: 'Failed to fetch profile',
+      error: error.message
     });
   }
 };
@@ -155,7 +158,7 @@ exports.updateProfile = async (req, res) => {
   try {
     const { profile } = req.body;
     const user = await User.findById(req.userId);
-    
+
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -182,6 +185,7 @@ exports.updateProfile = async (req, res) => {
       }
     }
 
+
     // Update user profile
     user.profile = {
       ...user.profile,
@@ -189,16 +193,26 @@ exports.updateProfile = async (req, res) => {
       updatedAt: new Date()
     };
 
+    // Check if profile was incomplete before and complete after update
+    const wasIncomplete = !isProfileComplete(user.profile);
+    user.profile = { ...user.profile, ...profile };
+
+    if (wasIncomplete && isProfileComplete(user.profile)) {
+      await gamificationController.handleActivity(req.userId, 'profile_complete');
+    }
+
     await user.save();
+
+
 
     res.json({
       message: 'Profile updated successfully',
       profile: user.profile
     });
   } catch (error) {
-    res.status(500).json({ 
-      message: 'Profile update failed', 
-      error: error.message 
+    res.status(500).json({
+      message: 'Profile update failed',
+      error: error.message
     });
   }
 };
@@ -227,9 +241,9 @@ exports.updateFitnessGoals = async (req, res) => {
       fitness: user.fitness
     });
   } catch (error) {
-    res.status(500).json({ 
-      message: 'Failed to update fitness goals', 
-      error: error.message 
+    res.status(500).json({
+      message: 'Failed to update fitness goals',
+      error: error.message
     });
   }
 };
@@ -251,9 +265,9 @@ exports.getFitnessProfile = async (req, res) => {
       recentActivities: user.activities.slice(-5) // Get last 5 activities
     });
   } catch (error) {
-    res.status(500).json({ 
-      message: 'Failed to fetch fitness profile', 
-      error: error.message 
+    res.status(500).json({
+      message: 'Failed to fetch fitness profile',
+      error: error.message
     });
   }
 };
@@ -269,9 +283,9 @@ exports.getWeightHistory = async (req, res) => {
       weightHistory: user.fitness.weightHistory
     });
   } catch (error) {
-    res.status(500).json({ 
-      message: 'Failed to fetch weight history', 
-      error: error.message 
+    res.status(500).json({
+      message: 'Failed to fetch weight history',
+      error: error.message
     });
   }
 };

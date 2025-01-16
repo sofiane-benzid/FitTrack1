@@ -10,6 +10,7 @@ const socialRoutes = require('./routes/socialRoutes');
 const gamificationRoutes = require('./routes/gamificationRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
 
+
 const app = express();
 
 // Middleware
@@ -23,6 +24,7 @@ app.use('/nutrition', nutritionRoutes);
 app.use('/social', socialRoutes);
 app.use('/gamification', gamificationRoutes);
 app.use('/analytics', analyticsRoutes);
+
 
 // Connect to database
 connectDatabase();

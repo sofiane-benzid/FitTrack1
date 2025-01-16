@@ -1,12 +1,13 @@
 ﻿import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { gamificationService } from '../../../services/gamificationService';
 import Feedback from '../../common/Feedback';
+import { useAuth } from '../../../hooks/useAuth';
 
 const Leaderboard = () => {
     const [leaderboard, setLeaderboard] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { user } = useAuth();
 
     useEffect(() => {
         fetchLeaderboard();
@@ -14,11 +15,17 @@ const Leaderboard = () => {
 
     const fetchLeaderboard = async () => {
         try {
-            const data = await gamificationService.getLeaderboard();
+            const response = await fetch('http://localhost:5000/gamification/leaderboard', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+
+            if (!response.ok) throw new Error('Failed to fetch leaderboard');
+            const data = await response.json();
             setLeaderboard(data);
         } catch (err) {
-            setError('Failed to load leaderboard');
-            console.error('Error fetching leaderboard:', err);
+            setError(err.message);
         } finally {
             setLoading(false);
         }
@@ -26,13 +33,8 @@ const Leaderboard = () => {
 
     if (loading) {
         return (
-            <div className="animate-pulse space-y-4">
-                <div className="h-12 bg-zinc-800 rounded w-1/3"></div>
-                <div className="space-y-3">
-                    {[...Array(5)].map((_, i) => (
-                        <div key={i} className="h-16 bg-zinc-800 rounded"></div>
-                    ))}
-                </div>
+            <div className="flex justify-center items-center py-8">
+                <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
             </div>
         );
     }
@@ -41,65 +43,63 @@ const Leaderboard = () => {
         return <Feedback type="error" message={error} />;
     }
 
+    const getRankColor = (rank) => {
+        switch (rank) {
+            case 1: return 'from-yellow-500 to-yellow-600';
+            case 2: return 'from-slate-400 to-slate-500';
+            case 3: return 'from-orange-500 to-orange-600';
+            default: return 'from-red-500/20 to-orange-500/20';
+        }
+    };
+
     return (
-        <motion.div 
+        <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="bg-zinc-800/50 rounded-lg border border-red-500/10 overflow-hidden"
+            className="bg-black/40 rounded-xl border border-orange-500/20"
         >
-            <div className="p-4 sm:p-6 border-b border-red-500/10">
-                <h2 className="text-lg font-medium text-orange-200">Fitness Leaderboard</h2>
+            <div className="p-6 border-b border-orange-500/20">
+                <h2 className="text-lg font-medium text-white">Fitness Leaderboard</h2>
                 <p className="mt-1 text-sm text-orange-200/70">Top performers this month</p>
             </div>
 
-            <ul className="divide-y divide-red-500/10">
-                {leaderboard.map((entry, index) => (
-                    <motion.li
-                        key={entry.user?.id || entry._id}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        className={`p-4 flex items-center space-x-4 ${
-                            entry.rank <= 3 ? 'bg-black/20' : ''
-                        }`}
-                    >
-                        {/* Rank */}
-                        <div className="flex-shrink-0 w-8 text-center">
-                            <span className={`
-                                inline-flex items-center justify-center w-6 h-6 rounded-full 
-                                ${entry.rank === 1 ? 'bg-yellow-500/20 text-yellow-400' :
-                                  entry.rank === 2 ? 'bg-zinc-500/20 text-zinc-400' :
-                                  entry.rank === 3 ? 'bg-orange-500/20 text-orange-400' :
-                                  'text-orange-200/50'}
-                                font-semibold text-sm
-                            `}>
-                                {entry.rank}
-                            </span>
-                        </div>
+            <ul className="divide-y divide-orange-500/10">
+                {leaderboard.length === 0 ? (
+                    <li className="p-6 text-center text-gray-400">No data available</li>
+                ) : (
+                    leaderboard.map((entry, index) => (
+                        <motion.li
+                            key={entry.userId}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: index * 0.1 }}
+                            className={`p-4 flex items-center space-x-4 ${entry.userId === user?.id ? 'bg-red-500/10' : ''
+                                }`}
+                        >
+                            {/* Rank Badge */}
+                            <div className={`flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br ${getRankColor(index + 1)}
+                            flex items-center justify-center font-bold text-white`}>
+                                {index + 1}
+                            </div>
 
-                        {/* User Info */}
-                        <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-orange-200 truncate">
-                                {entry.user?.name || entry.user?.email || 'Anonymous User'}
-                            </p>
-                            <p className="text-sm text-orange-200/70">
-                                {entry.points} points
-                            </p>
-                        </div>
+                            {/* User Info */}
+                            <div className="flex-1 min-w-0">
+                                <p className="text-white font-medium truncate">
+                                    {entry.fullName || entry.email}
+                                </p>
+                                <p className="text-orange-200/70 text-sm">
+                                    Level {Math.floor(entry.totalPoints / 100) + 1}
+                                </p>
+                            </div>
 
-                        {/* Points Badge */}
-                        <div className="flex-shrink-0">
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/20 text-red-400">
-                                Level {Math.floor(entry.points / 100) + 1}
-                            </span>
-                        </div>
-
-                        {/* Activity Stats */}
-                        <div className="flex-shrink-0 text-sm text-orange-200/70">
-                            {entry.totalActivities || 0} activities
-                        </div>
-                    </motion.li>
-                ))}
+                            {/* Points */}
+                            <div className="text-right">
+                                <p className="text-white font-medium">{entry.totalPoints} points</p>
+                                <p className="text-orange-200/70 text-sm">{entry.totalActivities} activities</p>
+                            </div>
+                        </motion.li>
+                    ))
+                )}
             </ul>
         </motion.div>
     );

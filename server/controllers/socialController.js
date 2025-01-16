@@ -3,6 +3,7 @@ const User = require('../models/User');
 const Badge = require('../models/Gamification').Badge;
 const Activity = require('../models/Activity');
 const { createNotification } = require('./notificationController');
+const gamificationController = require('./gamificationController');
 
 exports.searchUsers = async (req, res) => {
   try {
@@ -215,6 +216,11 @@ exports.respondToFriendRequest = async (req, res) => {
       return res.status(404).json({ message: 'Friend request not found' });
     }
 
+    if (accept) {
+      // Check for new achievements after accepting friend
+      await gamificationController.checkAchievements(req.userId, 'friend');
+    }
+
     // Create notification for the requester
     const message = accept ? 'accepted your friend request' : 'declined your friend request';
     await createNotification({
@@ -323,66 +329,185 @@ exports.removeFriend = async (req, res) => {
 
 
 
-exports.createChallenge = async (req, res) => {
-  try {
-    const { title, description, target, endDate, participantIds } = req.body;
-
-    // Verify all participants exist and are friends
-    const friendships = await Friendship.find({
-      $or: [
-        { requester: req.userId },
-        { recipient: req.userId }
-      ],
-      status: 'accepted'
-    });
-
-    const friendIds = friendships.map(f => 
-      f.requester.toString() === req.userId ? f.recipient.toString() : f.requester.toString()
-    );
-
-    const invalidParticipants = participantIds.filter(id => !friendIds.includes(id));
-    if (invalidParticipants.length > 0) {
-      return res.status(400).json({ message: 'Some participants are not in your friends list' });
-    }
-
-    const challenge = new Challenge({
-      creator: req.userId,
-      title,
-      description,
-      target,
-      endDate,
-      participants: [
-        { user: req.userId },
-        ...participantIds.map(id => ({ user: id }))
-      ]
-    });
-
-    await challenge.save();
-
-    res.status(201).json({
-      message: 'Challenge created successfully',
-      challenge
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: 'Failed to create challenge',
-      error: error.message
-    });
-  }
-};
 
 exports.getChallenges = async (req, res) => {
   try {
     const challenges = await Challenge.find({
-      'participants.user': req.userId,
-      status: 'active'
-    }).populate('creator participants.user', 'email profile.fullName');
+      $or: [
+        { creator: req.userId },
+        { 'participants.user': req.userId },
+        { endDate: { $gte: new Date() } }
+      ]
+    }).populate('creator', 'profile.fullName email')
+      .populate('participants.user', 'profile.fullName email')
+      .sort({ createdAt: -1 });
 
     res.json(challenges);
   } catch (error) {
-    res.status(500).json({
-      message: 'Failed to get challenges',
-      error: error.message
+    console.error('Error fetching challenges:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.createChallenge = async (req, res) => {
+  try {
+    const { title, description, type, target, endDate } = req.body;
+    
+    const challenge = new Challenge({
+      title,
+      description,
+      type,
+      target: Number(target),
+      creator: req.userId,
+      endDate: new Date(endDate),
+      participants: [{ 
+        user: req.userId,
+        progress: 0,
+        completed: false
+      }]
     });
+
+    await challenge.save();
+    res.status(201).json(challenge);
+  } catch (error) {
+    console.error('Error creating challenge:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.joinChallenge = async (req, res) => {
+  try {
+    const { challengeId } = req.params;
+
+    // Validate challengeId
+    if (!challengeId) {
+      return res.status(400).json({ message: 'Challenge ID is required' });
+    }
+
+    const challenge = await Challenge.findById(challengeId);
+    
+    if (!challenge) {
+      return res.status(404).json({ message: 'Challenge not found' });
+    }
+
+    // Check if challenge is still active
+    if (challenge.status !== 'active') {
+      return res.status(400).json({ message: 'This challenge is no longer active' });
+    }
+
+    // Check if user is already a participant
+    const isAlreadyParticipant = challenge.participants.some(
+      p => p.user.toString() === req.userId
+    );
+
+    if (isAlreadyParticipant) {
+      return res.status(400).json({ message: 'Already participating in this challenge' });
+    }
+
+    // Add user to participants
+    challenge.participants.push({
+      user: req.userId,
+      progress: 0,
+      completed: false,
+      joinedAt: new Date()
+    });
+
+    await challenge.save();
+
+    // Award points for joining a challenge
+    try {
+      await gamificationController.awardPoints(req.userId, 'join_challenge');
+    } catch (pointsError) {
+      console.error('Error awarding points for joining challenge:', pointsError);
+      // Continue even if points award fails
+    }
+
+    // Return populated challenge data
+    const updatedChallenge = await Challenge.findById(challengeId)
+      .populate('creator', 'profile.fullName email')
+      .populate('participants.user', 'profile.fullName email');
+
+    res.json(updatedChallenge);
+  } catch (error) {
+    console.error('Error joining challenge:', error);
+    res.status(500).json({ message: 'Failed to join challenge' });
+  }
+};
+
+exports.updateChallengeProgress = async (req, res) => {
+  try {
+    const { progress } = req.body;
+    
+    // Ensure progress is a valid number
+    const newProgress = parseInt(progress);
+    if (isNaN(newProgress)) {
+      return res.status(400).json({ message: 'Invalid progress value' });
+    }
+
+    const challenge = await Challenge.findOne({
+      _id: req.params.challengeId,
+      'participants.user': req.userId
+    });
+
+    if (!challenge) {
+      return res.status(404).json({ message: 'Challenge not found or not participating' });
+    }
+
+    const participant = challenge.participants.find(p => 
+      p.user.toString() === req.userId
+    );
+
+    const oldProgress = participant.progress || 0;
+    const wasCompleted = participant.completed;
+    const isNowCompleted = newProgress >= challenge.target;
+
+    // Update progress
+    const updatedChallenge = await Challenge.findOneAndUpdate(
+      {
+        _id: req.params.challengeId,
+        'participants.user': req.userId
+      },
+      {
+        $set: {
+          'participants.$.progress': newProgress,
+          'participants.$.completed': isNowCompleted
+        }
+      },
+      { new: true }
+    );
+
+    // Award points for progress
+    if (newProgress > oldProgress) {
+      try {
+        // Base points for progress
+        await gamificationController.awardPoints(
+          req.userId, 
+          'challenge_progress'
+        );
+
+        // If challenge completed, award bonus points
+        if (!wasCompleted && isNowCompleted) {
+          await gamificationController.awardPoints(
+            req.userId,
+            'challenge_complete'
+          );
+
+          // Create notification for challenge completion
+          await createNotification({
+            recipient: req.userId,
+            type: 'challenge_completed',
+            message: `Congratulations! You've completed the "${challenge.title}" challenge!`
+          });
+        }
+      } catch (pointsError) {
+        console.error('Error awarding points:', pointsError);
+        // Continue execution even if points award fails
+      }
+    }
+
+    res.json(updatedChallenge);
+  } catch (error) {
+    console.error('Error updating challenge progress:', error);
+    res.status(500).json({ message: error.message });
   }
 };

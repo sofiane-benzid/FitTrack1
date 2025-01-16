@@ -19,30 +19,21 @@ const FriendshipSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 const ChallengeSchema = new mongoose.Schema({
-  creator: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  participants: [{
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    },
-    progress: {
-      type: Number,
-      default: 0
-    },
-    completed: {
-      type: Boolean,
-      default: false
-    }
-  }],
   title: {
     type: String,
     required: true
   },
   description: String,
+  type: {
+    type: String,
+    enum: ['workout', 'nutrition', 'social'],
+    required: true
+  },
+  creator: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
   target: {
     type: Number,
     required: true
@@ -51,6 +42,25 @@ const ChallengeSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
+  participants: [{
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    },
+    progress: {
+      type: Number,
+      default: 0
+    },
+    completed: {
+      type: Boolean,
+      default: false
+    },
+    joinedAt: {
+      type: Date,
+      default: Date.now
+    }
+  }],
   status: {
     type: String,
     enum: ['active', 'completed'],

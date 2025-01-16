@@ -1,5 +1,7 @@
 ﻿const Meal = require('../models/Meal');
 const User = require('../models/User');
+const gamificationController = require('./gamificationController');
+
 
 // Log a meal
 exports.logMeal = async (req, res) => {
@@ -57,10 +59,14 @@ exports.logMeal = async (req, res) => {
     };
 
     const meal = new Meal(mealData);
-    console.log('Processed meal data:', mealData);
+    ;
 
     await meal.save();
-    console.log('Meal saved successfully');
+
+    await gamificationController.checkAchievements(req.userId);
+    await gamificationController.handleActivity(req.userId, 'meal_logged');
+
+
 
     res.status(201).json({
       message: 'Meal logged successfully',
@@ -216,7 +222,7 @@ exports.getNutritionGoals = async (req, res) => {
 exports.updateNutritionGoals = async (req, res) => {
   try {
     const { goals } = req.body;
-    
+
     const user = await User.findById(req.userId);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });

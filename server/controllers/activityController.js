@@ -1,4 +1,5 @@
 const Activity = require('../models/Activity');
+const gamificationController = require('./gamificationController');
 
 exports.logActivity = async (req, res) => {
     try {
@@ -8,6 +9,10 @@ exports.logActivity = async (req, res) => {
         });
 
         await activity.save();
+
+        await gamificationController.checkAchievements(req.userId);
+        await gamificationController.handleActivity(req.userId, 'workout_complete');
+        
         res.status(201).json({
             message: 'Activity logged successfully',
             activity
