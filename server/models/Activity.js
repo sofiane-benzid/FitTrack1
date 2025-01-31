@@ -39,6 +39,43 @@ const ActivitySchema = new mongoose.Schema({
   heartRate: {
     average: Number,
     max: Number
+  },
+  comments: [{
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    },
+    content: {
+      type: String,
+      required: true
+    },
+    type: {
+      type: String,
+      enum: ['comment', 'encouragement', 'advice'],
+      default: 'comment'
+    }
+  }],
+  reactions: [{
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    },
+    type: {
+      type: String,
+      enum: ['like', 'celebrate', 'support'],
+      required: true
+    }
+  }],
+  isShared: {
+    type: Boolean,
+    default: false
+  },
+  visibility: {
+    type: String,
+    enum: ['public', 'friends', 'partners', 'private'],
+    default: 'friends'
   }
 }, { timestamps: true });
 

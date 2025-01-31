@@ -68,7 +68,123 @@ const ChallengeSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
+
+// Message Schema for Chat
+const MessageSchema = new mongoose.Schema({
+  sender: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  content: {
+    type: String,
+    required: true
+  },
+  messageType: {
+    type: String,
+    enum: ['text', 'activity_share', 'workout_reminder'],
+    default: 'text'
+  },
+  relatedActivity: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Activity'
+  },
+  read: {
+    type: Boolean,
+    default: false
+  },
+  readBy: [{
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    readAt: Date
+  }]
+}, { timestamps: true });
+
+// Chat Room Schema
+const ChatRoomSchema = new mongoose.Schema({
+  type: {
+    type: String,
+    enum: ['direct', 'workout_partners', 'group'],
+    required: true
+  },
+  participants: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  }],
+  name: String, // For group chats
+  messages: [MessageSchema],
+  lastMessage: {
+    type: Date,
+    default: Date.now
+  }
+}, { timestamps: true });
+
+// Workout Partnership Schema
+const WorkoutPartnershipSchema = new mongoose.Schema({
+  partners: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  }],
+  status: {
+    type: String,
+    enum: ['active', 'paused', 'ended'],
+    default: 'active'
+  },
+  sharedGoals: [{
+    title: String,
+    description: String,
+    targetDate: Date,
+    completed: {
+      type: Boolean,
+      default: false
+    }
+  }],
+  reminderPreferences: {
+    enabled: {
+      type: Boolean,
+      default: true
+    },
+    frequency: {
+      type: String,
+      enum: ['daily', 'weekly', 'custom'],
+      default: 'daily'
+    },
+    customDays: [String], // e.g., ['monday', 'wednesday', 'friday']
+    time: String // e.g., "08:00"
+  },
+  chatRoom: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ChatRoom'
+  }
+}, { timestamps: true });
+
+// Activity Comment Schema (Extension to existing Activity model)
+const ActivityCommentSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  content: {
+    type: String,
+    required: true
+  },
+  type: {
+    type: String,
+    enum: ['comment', 'encouragement', 'advice'],
+    default: 'comment'
+  }
+}, { timestamps: true });
+
+
 module.exports = {
   Friendship: mongoose.model('Friendship', FriendshipSchema),
-  Challenge: mongoose.model('Challenge', ChallengeSchema)
+  Challenge: mongoose.model('Challenge', ChallengeSchema),
+  hatRoom: mongoose.model('ChatRoom', ChatRoomSchema),
+  WorkoutPartnership: mongoose.model('WorkoutPartnership', WorkoutPartnershipSchema),
+  ActivityComment: mongoose.model('ActivityComment', ActivityCommentSchema)
 };

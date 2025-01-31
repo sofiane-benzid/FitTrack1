@@ -8,6 +8,8 @@ const activityRoutes = require('./routes/activityRoutes');
 const nutritionRoutes = require('./routes/nutritionRoutes');
 const socialRoutes = require('./routes/socialRoutes');
 const gamificationRoutes = require('./routes/gamificationRoutes');
+const chatRoutes = require('./routes/chatRoutes');
+const partnershipRoutes = require('./routes/partnershipRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
 
 
@@ -22,6 +24,8 @@ app.use('/auth', authRoutes);
 app.use('/activity', activityRoutes);
 app.use('/nutrition', nutritionRoutes);
 app.use('/social', socialRoutes);
+app.use('/chat', chatRoutes);
+app.use('/partnerships', partnershipRoutes);
 app.use('/gamification', gamificationRoutes);
 app.use('/analytics', analyticsRoutes);
 
