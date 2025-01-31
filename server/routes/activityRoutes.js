@@ -8,5 +8,7 @@ router.use(authMiddleware);
 router.post('/log', activityController.logActivity);
 router.get('/list', activityController.getActivities);
 router.get('/summary', activityController.getActivitySummary);
+router.post('/activity/:activityId/comment', activityController.addComment);
+router.post('/activity/:activityId/react', activityController.reactToActivity);
 
 module.exports = router;

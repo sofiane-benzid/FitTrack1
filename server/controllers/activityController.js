@@ -109,6 +109,10 @@ exports.addComment = async (req, res) => {
 
         await activity.save();
 
+        res.status(201).json({
+            message: 'Comment sent successfully'
+        });
+
         // Notify activity owner if it's not their own comment
         if (activity.user.toString() !== req.userId) {
             await createNotification({
@@ -120,6 +124,7 @@ exports.addComment = async (req, res) => {
         }
 
         res.json(activity);
+        
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -159,6 +164,10 @@ exports.addReaction = async (req, res) => {
         }
 
         res.json(activity);
+
+        res.status(201).json({
+            message: 'Reacted successfully'
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

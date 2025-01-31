@@ -10,6 +10,7 @@ import ChatWindow from '../components/features/social/ChatWindow';
 import ActivityFeed from '../components/features/social/ActivityFeed';
 import NotificationsDropdown from '../components/features/notifications/NotificationsDropdown';
 import Feedback from '../components/common/Feedback';
+import PartnerSelection from '../components/features/social/PartnerSelection';
 
 const SocialPage = () => {
   const [activeTab, setActiveTab] = useState('feed');
@@ -136,27 +137,32 @@ const SocialPage = () => {
             {activeTab === 'feed' && <ActivityFeed />}
             {activeTab === 'partners' && (
               <div className="space-y-8">
-                {/* Partner Selection Section */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-black/60 p-6 rounded-xl border border-orange-500/20"
-                >
-                  <h3 className="text-lg font-medium text-white mb-4">Your Friends</h3>
-                  <FriendsList
-                    onPartnerSelect={setSelectedPartner}
-                    onChatOpen={setSelectedChat}
-                    compact
+                {selectedPartner ? (
+                  <div className="flex justify-between items-center">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setSelectedPartner(null)}
+                      className="px-4 py-2 bg-black/40 text-white rounded-lg border border-orange-500/20"
+                    >
+                      ← Back to Partners
+                    </motion.button>
+                  </div>
+                ) : (
+                  <PartnerSelection
+                    onPartnerSelect={(partnerId) => setSelectedPartner(partnerId)}
                   />
-                </motion.div>
+                )}
 
-                {/* Partner Details Section */}
-                <WorkoutPartner
-                  partnerId={selectedPartner}
-                  onChatOpen={setSelectedChat}
-                />
+                {selectedPartner && (
+                  <WorkoutPartner
+                    partnerId={selectedPartner}
+                    onChatOpen={setSelectedChat}
+                  />
+                )}
               </div>
             )}
+
             {activeTab === 'challenges' && <Challenges />}
             {activeTab === 'friends' && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

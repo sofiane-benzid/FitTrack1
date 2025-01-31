@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { motion, AnimatePresence } from 'framer-motion';
 import Feedback from '../../common/Feedback';
 import WorkoutReminder from './WorkoutReminder';
+import SharedActivities from './SharedActivities';
 
 const WorkoutPartner = ({ partnerId, onChatOpen }) => {
     const [partnership, setPartnership] = useState(null);
@@ -17,6 +18,7 @@ const WorkoutPartner = ({ partnerId, onChatOpen }) => {
         streakDays: 0,
         achievedGoals: 0
     });
+    const [activeSection, setActiveSection] = useState('overview');
 
     useEffect(() => {
 
@@ -158,9 +160,8 @@ const WorkoutPartner = ({ partnerId, onChatOpen }) => {
             </div>
         );
     }
-
     return (
-        <div className="space-y-6">
+     <div className="space-y-6">
             <AnimatePresence>
                 {feedback && (
                     <Feedback
@@ -186,18 +187,45 @@ const WorkoutPartner = ({ partnerId, onChatOpen }) => {
                             Started on {new Date(partnership?.createdAt).toLocaleDateString()}
                         </p>
                     </div>
-                    <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => onChatOpen(partnership.chatRoom)}
-                        className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg"
-                    >
-                        Open Chat
-                    </motion.button>
+                    <div className="flex items-center space-x-4">
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => onChatOpen(partnership.chatRoom)}
+                            className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg"
+                        >
+                            Open Chat
+                        </motion.button>
+                    </div>
                 </div>
 
-                {/* Partnership Stats */}
-                <div className="grid grid-cols-3 gap-4 mt-6">
+                {/* Section Navigation */}
+                <div className="flex space-x-4 mt-6 border-b border-orange-500/20">
+                    {['overview', 'goals', 'activities', 'reminders'].map((section) => (
+                        <motion.button
+                            key={section}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => setActiveSection(section)}
+                            className={`px-4 py-2 text-sm font-medium rounded-t-lg ${
+                                activeSection === section
+                                    ? 'bg-orange-500/20 text-white'
+                                    : 'text-orange-200/70 hover:text-white'
+                            }`}
+                        >
+                            {section.charAt(0).toUpperCase() + section.slice(1)}
+                        </motion.button>
+                    ))}
+                </div>
+            </motion.div>
+
+            {/* Partnership Stats */}
+            {activeSection === 'overview' && (
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="grid grid-cols-3 gap-4"
+                >
                     {Object.entries(stats).map(([key, value]) => (
                         <div key={key} className="bg-black/40 p-4 rounded-lg text-center">
                             <p className="text-2xl font-bold text-orange-400">{value}</p>
@@ -206,97 +234,106 @@ const WorkoutPartner = ({ partnerId, onChatOpen }) => {
                             </p>
                         </div>
                     ))}
-                </div>
-            </motion.div>
+                </motion.div>
+            )}
 
-            {/* Shared Goals */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-black/60 p-6 rounded-xl border border-orange-500/20"
-            >
-                <h3 className="text-lg font-medium text-white mb-4">Shared Goals</h3>
-
-                {/* Add New Goal */}
-                <div className="flex gap-4 mb-6">
-                    <input
-                        type="text"
-                        value={newGoal.title}
-                        onChange={(e) => setNewGoal({ ...newGoal, title: e.target.value })}
-                        placeholder="New goal title..."
-                        className="flex-1 bg-black/40 border border-orange-500/20 rounded-lg px-4 py-2 
-                     text-white focus:outline-none focus:border-orange-500"
-                    />
-                    <input
-                        type="date"
-                        value={newGoal.targetDate}
-                        onChange={(e) => setNewGoal({ ...newGoal, targetDate: e.target.value })}
-                        className="bg-black/40 border border-orange-500/20 rounded-lg px-4 py-2 
-                     text-white focus:outline-none focus:border-orange-500"
-                    />
-                    <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={handleAddGoal}
-                        className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg"
-                    >
-                        Add Goal
-                    </motion.button>
-                </div>
-
-                {/* Goals List */}
-                <div className="space-y-3">
-                    {goals.map((goal, index) => (
-                        <motion.div
-                            key={index}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            className="flex items-center justify-between bg-black/40 p-4 rounded-lg
-                       border border-orange-500/10"
+            {/* Shared Goals Section */}
+            {activeSection === 'goals' && (
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-black/60 p-6 rounded-xl border border-orange-500/20"
+                >
+                    <h3 className="text-lg font-medium text-white mb-4">Shared Goals</h3>
+                    
+                    {/* Add New Goal */}
+                    <div className="flex gap-4 mb-6">
+                        <input
+                            type="text"
+                            value={newGoal.title}
+                            onChange={(e) => setNewGoal({ ...newGoal, title: e.target.value })}
+                            placeholder="New goal title..."
+                            className="flex-1 bg-black/40 border border-orange-500/20 rounded-lg px-4 py-2 
+                         text-white focus:outline-none focus:border-orange-500"
+                        />
+                        <input
+                            type="date"
+                            value={newGoal.targetDate}
+                            onChange={(e) => setNewGoal({ ...newGoal, targetDate: e.target.value })}
+                            className="bg-black/40 border border-orange-500/20 rounded-lg px-4 py-2 
+                         text-white focus:outline-none focus:border-orange-500"
+                        />
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={handleAddGoal}
+                            className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg"
                         >
-                            <div className="flex items-center gap-3">
-                                <motion.button
-                                    whileHover={{ scale: 1.1 }}
-                                    whileTap={{ scale: 0.9 }}
-                                    onClick={() => toggleGoalComplete(goal._id)}
-                                    className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
-                            ${goal.completed
-                                            ? 'bg-gradient-to-r from-red-500 to-orange-500 border-transparent'
-                                            : 'border-orange-500/50'
-                                        }`}
-                                >
-                                    {goal.completed && (
-                                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                        </svg>
-                                    )}
-                                </motion.button>
-                                <div>
-                                    <p className={`text-white ${goal.completed ? 'line-through opacity-50' : ''}`}>
-                                        {goal.title}
-                                    </p>
-                                    <p className="text-sm text-orange-200/70">
-                                        Target: {new Date(goal.targetDate).toLocaleDateString()}
-                                    </p>
-                                </div>
-                            </div>
-                        </motion.div>
-                    ))}
-                    {goals.length === 0 && (
-                        <p className="text-center text-orange-200/70 py-4">No goals set yet</p>
-                    )}
-                </div>
-            </motion.div>
+                            Add Goal
+                        </motion.button>
+                    </div>
 
-            {/* Workout Reminders */}
-            <WorkoutReminder partnership={partnership} />
+                    {/* Goals List */}
+                    <div className="space-y-3">
+                        {goals.map((goal, index) => (
+                            <motion.div
+                                key={index}
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                className="flex items-center justify-between bg-black/40 p-4 rounded-lg
+                                border border-orange-500/10"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <motion.button
+                                        whileHover={{ scale: 1.1 }}
+                                        whileTap={{ scale: 0.9 }}
+                                        onClick={() => toggleGoalComplete(goal._id)}
+                                        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
+                                    ${goal.completed
+                                        ? 'bg-gradient-to-r from-red-500 to-orange-500 border-transparent'
+                                        : 'border-orange-500/50'
+                                    }`}
+                                    >
+                                        {goal.completed && (
+                                            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                            </svg>
+                                        )}
+                                    </motion.button>
+                                    <div>
+                                        <p className={`text-white ${goal.completed ? 'line-through opacity-50' : ''}`}>
+                                            {goal.title}
+                                        </p>
+                                        <p className="text-sm text-orange-200/70">
+                                            Target: {new Date(goal.targetDate).toLocaleDateString()}
+                                        </p>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        ))}
+                        {goals.length === 0 && (
+                            <p className="text-center text-orange-200/70 py-4">No goals set yet</p>
+                        )}
+                    </div>
+                </motion.div>
+            )}
+
+            {/* Shared Activities Section */}
+            {activeSection === 'activities' && (
+                <SharedActivities partnerId={partnerId} />
+            )}
+
+            {/* Workout Reminders Section */}
+            {activeSection === 'reminders' && (
+                <WorkoutReminder partnership={partnership} />
+            )}
         </div>
     );
 };
+
 WorkoutPartner.propTypes = {
     partnerId: PropTypes.string,
     onChatOpen: PropTypes.func.isRequired
 };
-
 
 export default WorkoutPartner;
