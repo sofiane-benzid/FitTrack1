@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
 
 const ActivityList = ({ onError }) => {
     const [activities, setActivities] = useState([]);
