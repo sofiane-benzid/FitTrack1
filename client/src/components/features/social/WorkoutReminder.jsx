@@ -13,6 +13,14 @@ const WorkoutReminder = ({ partnership }) => {
     const [feedback, setFeedback] = useState(null);
 
     const handleSaveReminders = async () => {
+        if (!partnership?._id) {
+            setFeedback({
+                type: 'error',
+                message: 'No active partnership found'
+            });
+            return;
+        }
+
         try {
             const response = await fetch(`http://localhost:5000/partnerships/${partnership._id}/reminders`, {
                 method: 'PUT',
@@ -33,7 +41,7 @@ const WorkoutReminder = ({ partnership }) => {
             console.error(err);
             setFeedback({
                 type: 'error',
-                message: 'Failed to update reminders'
+                message: err.message
             });
         }
     };

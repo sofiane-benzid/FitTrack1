@@ -16,7 +16,16 @@ const NotificationSchema = new mongoose.Schema({
             'challenge_invite',
             'challenge_completed',
             'achievement_unlocked',
-            'level_up'
+            'level_up',
+            'partnership_request',
+            'partnership_accepted',
+            'chat_message',
+            'partnership_goal_added',
+            'partnership_declined',
+            'activity_shared',
+            'activity_comment',
+            'activity_reaction',
+            'workout_reminder'
         ],
         required: true
     },
@@ -35,6 +44,10 @@ const NotificationSchema = new mongoose.Schema({
     relatedChallenge: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Challenge'
+    },
+    relatedPartnership: {  // Add this
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'WorkoutPartnership'
     }
 }, { timestamps: true });
 

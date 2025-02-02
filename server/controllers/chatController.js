@@ -1,5 +1,6 @@
 const { ChatRoom } = require('../models/Social');
 const { createNotification } = require('./notificationController');
+const mongoose = require('mongoose');
 
 exports.createChat = async (req, res) => {
     try {
@@ -53,78 +54,114 @@ exports.getChats = async (req, res) => {
 exports.getChatMessages = async (req, res) => {
     try {
         const { chatId } = req.params;
-        const { page = 1, limit = 50 } = req.query;
 
         const chat = await ChatRoom.findOne({
             _id: chatId,
-            participants: req.userId
+            participants: new mongoose.Types.ObjectId(req.userId)
         })
-            .populate({
-                path: 'messages',
-                populate: {
-                    path: 'sender',
-                    select: 'email profile.fullName'
-                },
-                options: {
-                    sort: { createdAt: -1 },
-                    skip: (page - 1) * limit,
-                    limit: parseInt(limit)
-                }
-            });
+        .populate('messages.sender', 'email profile.fullName')
+        .select('messages')
+        .sort({ 'messages.createdAt': -1 });
 
         if (!chat) {
-            return res.status(404).json({ message: 'Chat not found' });
+            return res.status(404).json({
+                message: 'Chat room not found'
+            });
         }
 
-        res.json(chat.messages);
+        // Format messages for frontend
+        const messages = chat.messages.map(msg => ({
+            _id: msg._id,
+            content: msg.content,
+            sender: msg.sender._id,
+            senderName: msg.sender.profile?.fullName || msg.sender.email,
+            createdAt: msg.createdAt,
+            readBy: msg.readBy
+        }));
+
+        res.json(messages);
+
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Error in getChatMessages:', error);
+        res.status(500).json({
+            message: 'Failed to fetch messages',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
     }
 };
 
 exports.sendMessage = async (req, res) => {
     try {
         const { chatId } = req.params;
-        const { content, messageType = 'text', relatedActivity } = req.body;
+        const { content, recipientId } = req.body;
 
+        // Validate content
+        if (!content || content.trim().length === 0) {
+            return res.status(400).json({
+                message: 'Message content cannot be empty'
+            });
+        }
+
+        // Find chat with both users - using new keyword for ObjectId
         const chat = await ChatRoom.findOne({
             _id: chatId,
-            participants: req.userId
+            participants: { 
+                $all: [
+                    new mongoose.Types.ObjectId(req.userId),
+                    new mongoose.Types.ObjectId(recipientId)
+                ] 
+            }
         });
 
         if (!chat) {
-            return res.status(404).json({ message: 'Chat not found' });
+            return res.status(404).json({
+                message: 'Chat room not found'
+            });
         }
 
-        const message = {
-            sender: req.userId,
+        // Add new message
+        const newMessage = {
+            sender: new mongoose.Types.ObjectId(req.userId),
             content,
-            messageType,
-            relatedActivity,
-            readBy: [{ user: req.userId, readAt: new Date() }]
+            readBy: [{
+                user: new mongoose.Types.ObjectId(req.userId),
+                readAt: new Date()
+            }]
         };
 
-        chat.messages.push(message);
+        chat.messages.push(newMessage);
         chat.lastMessage = new Date();
         await chat.save();
 
-        // Notify other participants
-        const otherParticipants = chat.participants.filter(
-            p => p.toString() !== req.userId.toString()
-        );
+        try {
+            // Send notification
+            await createNotification({
+                recipient: recipientId,
+                type: 'chat_message',
+                message: 'You have a new message',
+                relatedChat: chatId,
+                relatedUser: req.userId
+            });
+        } catch (notifError) {
+            console.error('Failed to send notification:', notifError);
+            // Continue execution even if notification fails
+        }
 
-        await Promise.all(otherParticipants.map(participantId =>
-            createNotification({
-                recipient: participantId,
-                type: 'new_message',
-                message: `New message in ${chat.name || 'chat'}`,
-                relatedChat: chat._id
-            })
-        ));
+        // Return the new message
+        res.status(201).json({
+            _id: chat.messages[chat.messages.length - 1]._id,
+            content: newMessage.content,
+            sender: newMessage.sender,
+            createdAt: new Date(),
+            readBy: newMessage.readBy
+        });
 
-        res.json(message);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Error in sendMessage:', error);
+        res.status(500).json({
+            message: 'Failed to send message',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
     }
 };
 

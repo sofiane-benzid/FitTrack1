@@ -2,7 +2,7 @@
 import { motion } from 'framer-motion';
 import { socialService } from '../../../services/socialService';
 import Feedback from '../../common/Feedback';
-import { UserProfileModal, MessageModal } from './UserModals';
+import { UserProfileModal } from './UserModals';
 
 const FriendsList = () => {
   const [friends, setFriends] = useState([]);
@@ -11,7 +11,7 @@ const FriendsList = () => {
   const [feedback, setFeedback] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
-  const [showMessageModal, setShowMessageModal] = useState(false);
+
 
   const fetchFriends = async () => {
     try {
@@ -32,11 +32,6 @@ const FriendsList = () => {
   const handleViewProfile = (friend) => {
     setSelectedUser(friend);
     setShowProfileModal(true);
-  };
-
-  const handleMessage = (friend) => {
-    setSelectedUser(friend);
-    setShowMessageModal(true);
   };
 
   if (loading) {
@@ -98,14 +93,7 @@ const FriendsList = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => handleMessage(friend)}
-                      className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg hover:from-red-600 hover:to-orange-600 transition-colors"
-                    >
-                      Message
-                    </motion.button>
+                
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
@@ -132,16 +120,7 @@ const FriendsList = () => {
         />
       )}
 
-      {showMessageModal && selectedUser && (
-        <MessageModal
-          recipientId={selectedUser._id}
-          recipientName={selectedUser.fullName || selectedUser.email}
-          onClose={() => {
-            setShowMessageModal(false);
-            setSelectedUser(null);
-          }}
-        />
-      )}
+    
     </div>
   );
 };

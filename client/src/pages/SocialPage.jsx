@@ -157,7 +157,6 @@ const SocialPage = () => {
                 {selectedPartner && (
                   <WorkoutPartner
                     partnerId={selectedPartner}
-                    onChatOpen={setSelectedChat}
                   />
                 )}
               </div>

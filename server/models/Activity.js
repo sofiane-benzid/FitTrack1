@@ -54,6 +54,10 @@ const ActivitySchema = new mongoose.Schema({
       type: String,
       enum: ['comment', 'encouragement', 'advice'],
       default: 'comment'
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now  // Add this
     }
   }],
   reactions: [{
@@ -78,5 +82,9 @@ const ActivitySchema = new mongoose.Schema({
     default: 'friends'
   }
 }, { timestamps: true });
+
+// Add index for better query performance
+ActivitySchema.index({ user: 1, date: -1 });
+ActivitySchema.index({ user: 1, isShared: 1, date: -1 });
 
 module.exports = mongoose.model('Activity', ActivitySchema);

@@ -4,12 +4,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Feedback from '../../common/Feedback';
 import { useAuth } from '../../../hooks/useAuth';
 
-const ChatWindow = ({ chatId, onClose }) => {
+const ChatWindow = ({ chatId, onClose, partnerId }) => {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const { user } = useAuth();
     const messagesEndRef = useRef(null);
+    const { user } = useAuth();
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -36,12 +37,14 @@ const ChatWindow = ({ chatId, onClose }) => {
             if (!response.ok) throw new Error('Failed to fetch messages');
             const data = await response.json();
             setMessages(data);
+            setLoading(false);
         } catch (err) {
             setError('Error loading messages');
-            console.error('Error:', err);
-        }}
+            console.error(err);
+        }
+    };
 
-    const sendMessage = async (e) => {
+    const handleSendMessage = async (e) => {
         e.preventDefault();
         if (!newMessage.trim()) return;
 
@@ -52,25 +55,24 @@ const ChatWindow = ({ chatId, onClose }) => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 },
-                body: JSON.stringify({ content: newMessage })
+                body: JSON.stringify({ 
+                    content: newMessage,
+                    recipientId: partnerId
+                })
             });
 
             if (!response.ok) throw new Error('Failed to send message');
 
             setNewMessage('');
-            fetchMessages();
+            fetchMessages(); // Refresh messages
         } catch (err) {
+            console.error(err);
             setError('Failed to send message');
-            console.error('Error:', err);
         }
     };
 
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col h-[500px] bg-black/60 rounded-xl border border-orange-500/20"
-        >
+        <div className="flex flex-col h-full">
             {/* Chat Header */}
             <div className="p-4 border-b border-orange-500/20 flex justify-between items-center">
                 <h3 className="text-lg font-medium text-white">Chat</h3>
@@ -88,33 +90,41 @@ const ChatWindow = ({ chatId, onClose }) => {
 
             {/* Messages Area */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                <AnimatePresence>
-                    {messages.map((message, index) => (
-                        <motion.div
-                            key={message._id || index}
-                            initial={{ opacity: 0, x: message.sender === user.id ? 20 : -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            className={`flex ${message.sender === user.id ? 'justify-end' : 'justify-start'}`}
-                        >
-                            <div
-                                className={`max-w-[70%] p-3 rounded-lg ${message.sender === user.id
-                                    ? 'bg-gradient-to-r from-red-500/20 to-orange-500/20 text-orange-200'
-                                    : 'bg-black/40 text-white'
-                                    }`}
+                {loading ? (
+                    <div className="flex justify-center">
+                        <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"/>
+                    </div>
+                ) : (
+                    <AnimatePresence>
+                        {messages.map((message, index) => (
+                            <motion.div
+                                key={message._id || index}
+                                initial={{ opacity: 0, x: message.sender === user.id ? 20 : -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                className={`flex ${message.sender === user.id ? 'justify-end' : 'justify-start'}`}
                             >
-                                <p>{message.content}</p>
-                                <p className="text-xs mt-1 opacity-50">
-                                    {new Date(message.createdAt).toLocaleTimeString()}
-                                </p>
-                            </div>
-                        </motion.div>
-                    ))}
-                </AnimatePresence>
+                                <div
+                                    className={`max-w-[70%] p-3 rounded-lg ${
+                                        message.sender === user.id
+                                            ? 'bg-gradient-to-r from-red-500/20 to-orange-500/20 text-orange-200'
+                                            : 'bg-black/40 text-white'
+                                    }`}
+                                >
+                                    <p>{message.content}</p>
+                                    <p className="text-xs mt-1 opacity-50">
+                                        {new Date(message.createdAt).toLocaleTimeString()}
+                                    </p>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </AnimatePresence>
+                )}
                 <div ref={messagesEndRef} />
             </div>
 
             {/* Message Input */}
-            <form onSubmit={sendMessage} className="p-4 border-t border-orange-500/20">
+            <form onSubmit={handleSendMessage} className="p-4 border-t border-orange-500/20">
+                {error && <Feedback type="error" message={error} onClose={() => setError(null)} />}
                 <div className="flex gap-2">
                     <input
                         type="text"
@@ -122,7 +132,7 @@ const ChatWindow = ({ chatId, onClose }) => {
                         onChange={(e) => setNewMessage(e.target.value)}
                         placeholder="Type a message..."
                         className="flex-1 bg-black/40 border border-orange-500/20 rounded-lg px-4 py-2 
-                     text-white focus:outline-none focus:border-orange-500"
+                                 text-white focus:outline-none focus:border-orange-500"
                     />
                     <motion.button
                         whileHover={{ scale: 1.05 }}
@@ -134,25 +144,14 @@ const ChatWindow = ({ chatId, onClose }) => {
                     </motion.button>
                 </div>
             </form>
-
-            {/* Error Feedback */}
-            <AnimatePresence>
-                {error && (
-                    <Feedback
-                        type="error"
-                        message={error}
-                        onClose={() => setError(null)}
-                    />
-                )}
-            </AnimatePresence>
-        </motion.div>
+        </div>
     );
 };
 
 ChatWindow.propTypes = {
     chatId: PropTypes.string.isRequired,
     onClose: PropTypes.func.isRequired,
+    partnerId: PropTypes.string.isRequired
 };
-
 
 export default ChatWindow;

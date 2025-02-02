@@ -104,3 +104,14 @@ exports.deleteNotification = async (req, res) => {
         });
     }
 };
+
+exports.sendWorkoutReminder = async (partnership) => {
+    const { partners } = partnership;
+    for (const partnerId of partners) {
+        await createNotification({
+            recipient: partnerId,
+            type: 'workout_reminder',
+            message: 'Time for your workout with your partner!'
+        });
+    }
+};

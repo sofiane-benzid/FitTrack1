@@ -4,12 +4,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Feedback from '../../common/Feedback';
 import WorkoutReminder from './WorkoutReminder';
 import SharedActivities from './SharedActivities';
+import ChatWindow from './ChatWindow';
+import ThemedDatePicker from '../../common/ThemedDatePicker';
 
-const WorkoutPartner = ({ partnerId, onChatOpen }) => {
+const WorkoutPartner = ({ partnerId }) => {
     const [partnership, setPartnership] = useState(null);
-    const [partnerDetails, setPartnerDetails] = useState(null);
+    const [, setPartnerDetails] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [setError] = useState(null);
+    const [ setError] = useState(null);
     const [feedback, setFeedback] = useState(null);
     const [goals, setGoals] = useState([]);
     const [newGoal, setNewGoal] = useState({ title: '', targetDate: '' });
@@ -19,13 +21,14 @@ const WorkoutPartner = ({ partnerId, onChatOpen }) => {
         achievedGoals: 0
     });
     const [activeSection, setActiveSection] = useState('overview');
+    const [showChat, setShowChat] = useState(false);
 
     useEffect(() => {
 
         const fetchPartnershipData = async () => {
             try {
                 const [partnershipRes, partnerRes] = await Promise.all([
-                    fetch(`http://localhost:5000/partnerships?partnerId=${partnerId}`, {
+                    fetch(`http://localhost:5000/partnerships/${partnerId}`, { // Fixed URL
                         headers: {
                             'Authorization': `Bearer ${localStorage.getItem('token')}`
                         }
@@ -36,22 +39,26 @@ const WorkoutPartner = ({ partnerId, onChatOpen }) => {
                         }
                     })
                 ]);
-    
+
                 if (!partnershipRes.ok || !partnerRes.ok) {
                     throw new Error('Failed to fetch partnership data');
                 }
-    
+
                 const [partnershipData, partnerData] = await Promise.all([
                     partnershipRes.json(),
                     partnerRes.json()
                 ]);
-    
+
                 setPartnership(partnershipData);
                 setPartnerDetails(partnerData);
                 setGoals(partnershipData.sharedGoals || []);
                 calculateStats(partnershipData);
             } catch (err) {
-                setError('Error loading partnership data');
+                setError('Error loading partnership data'); // Now this will work
+                setFeedback({
+                    type: 'error',
+                    message: 'Failed to load partnership data'
+                });
                 console.error('Error:', err);
             } finally {
                 setLoading(false);
@@ -63,9 +70,9 @@ const WorkoutPartner = ({ partnerId, onChatOpen }) => {
             // Reset loading if no partner selected
             setLoading(false);
         }
-    }, [partnerId, setError]);
+    }, [partnerId, setError, setPartnerDetails]);
 
-   
+
 
     const calculateStats = (partnershipData) => {
         // Calculate stats based on partnership data
@@ -85,7 +92,7 @@ const WorkoutPartner = ({ partnerId, onChatOpen }) => {
             });
             return;
         }
-
+    
         try {
             const response = await fetch(`http://localhost:5000/partnerships/${partnership._id}/goals`, {
                 method: 'POST',
@@ -95,12 +102,30 @@ const WorkoutPartner = ({ partnerId, onChatOpen }) => {
                 },
                 body: JSON.stringify(newGoal)
             });
-
+    
             if (!response.ok) throw new Error('Failed to add goal');
-
-            const updatedPartnership = await response.json();
-            setGoals(updatedPartnership.sharedGoals);
+    
+            // Refetch partnership data to get updated goals
+            const partnershipRes = await fetch(`http://localhost:5000/partnerships/${partnerId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+    
+            if (!partnershipRes.ok) {
+                throw new Error('Failed to fetch updated partnership data');
+            }
+    
+            const partnershipData = await partnershipRes.json();
+    
+            // Update goals and stats
+            setGoals(partnershipData.sharedGoals || []);
+            calculateStats(partnershipData);
+    
+            // Reset new goal form
             setNewGoal({ title: '', targetDate: '' });
+            
+            // Set success feedback
             setFeedback({
                 type: 'success',
                 message: 'Goal added successfully!'
@@ -138,9 +163,21 @@ const WorkoutPartner = ({ partnerId, onChatOpen }) => {
         }
     };
 
+    const handleChatOpen = () => {
+        if (!partnership?.chatRoom?._id) {
+            setFeedback({
+                type: 'error',
+                message: 'Chat room not found'
+            });
+            return;
+        }
+        setShowChat(true);
+    };
+
+
     if (!partnerId) {
         return (
-            <motion.div 
+            <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="text-center py-12 bg-black/60 rounded-xl border border-orange-500/20"
@@ -161,7 +198,7 @@ const WorkoutPartner = ({ partnerId, onChatOpen }) => {
         );
     }
     return (
-     <div className="space-y-6">
+        <div className="space-y-6">
             <AnimatePresence>
                 {feedback && (
                     <Feedback
@@ -181,7 +218,7 @@ const WorkoutPartner = ({ partnerId, onChatOpen }) => {
                 <div className="flex justify-between items-start">
                     <div>
                         <h2 className="text-xl font-bold text-white">
-                            Workout Partnership with {partnerDetails?.fullName}
+                            Workout Partnership with {partnership?.partners?.find(p => p._id !== partnerId)?.fullName || 'Partner'}
                         </h2>
                         <p className="text-orange-200/70 mt-1">
                             Started on {new Date(partnership?.createdAt).toLocaleDateString()}
@@ -191,7 +228,7 @@ const WorkoutPartner = ({ partnerId, onChatOpen }) => {
                         <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            onClick={() => onChatOpen(partnership.chatRoom)}
+                            onClick={handleChatOpen}
                             className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg"
                         >
                             Open Chat
@@ -207,11 +244,10 @@ const WorkoutPartner = ({ partnerId, onChatOpen }) => {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => setActiveSection(section)}
-                            className={`px-4 py-2 text-sm font-medium rounded-t-lg ${
-                                activeSection === section
-                                    ? 'bg-orange-500/20 text-white'
-                                    : 'text-orange-200/70 hover:text-white'
-                            }`}
+                            className={`px-4 py-2 text-sm font-medium rounded-t-lg ${activeSection === section
+                                ? 'bg-orange-500/20 text-white'
+                                : 'text-orange-200/70 hover:text-white'
+                                }`}
                         >
                             {section.charAt(0).toUpperCase() + section.slice(1)}
                         </motion.button>
@@ -219,6 +255,31 @@ const WorkoutPartner = ({ partnerId, onChatOpen }) => {
                 </div>
             </motion.div>
 
+            <AnimatePresence>
+                {showChat && partnership?.chatRoom && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
+                        onClick={() => setShowChat(false)}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.95, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.95, opacity: 0 }}
+                            onClick={e => e.stopPropagation()}
+                            className="bg-black/90 rounded-xl border border-orange-500/20 w-full max-w-2xl h-[600px] m-4"
+                        >
+                            <ChatWindow
+                                chatId={partnership.chatRoom._id}
+                                onClose={() => setShowChat(false)}
+                                partnerId={partnerId}
+                            />
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
             {/* Partnership Stats */}
             {activeSection === 'overview' && (
                 <motion.div
@@ -245,32 +306,38 @@ const WorkoutPartner = ({ partnerId, onChatOpen }) => {
                     className="bg-black/60 p-6 rounded-xl border border-orange-500/20"
                 >
                     <h3 className="text-lg font-medium text-white mb-4">Shared Goals</h3>
-                    
+
                     {/* Add New Goal */}
-                    <div className="flex gap-4 mb-6">
-                        <input
-                            type="text"
-                            value={newGoal.title}
-                            onChange={(e) => setNewGoal({ ...newGoal, title: e.target.value })}
-                            placeholder="New goal title..."
-                            className="flex-1 bg-black/40 border border-orange-500/20 rounded-lg px-4 py-2 
-                         text-white focus:outline-none focus:border-orange-500"
-                        />
-                        <input
-                            type="date"
-                            value={newGoal.targetDate}
-                            onChange={(e) => setNewGoal({ ...newGoal, targetDate: e.target.value })}
-                            className="bg-black/40 border border-orange-500/20 rounded-lg px-4 py-2 
-                         text-white focus:outline-none focus:border-orange-500"
-                        />
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={handleAddGoal}
-                            className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg"
-                        >
-                            Add Goal
-                        </motion.button>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div className="space-y-2">
+                            <label className="block text-sm text-orange-200/70">Goal Title</label>
+                            <input
+                                type="text"
+                                value={newGoal.title}
+                                onChange={(e) => setNewGoal({ ...newGoal, title: e.target.value })}
+                                placeholder="Enter your goal..."
+                                className="w-full bg-black/40 border border-orange-500/20 rounded-lg px-4 py-2 
+                             text-white focus:outline-none focus:border-orange-500"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="block text-sm text-orange-200/70">Target Date</label>
+                            <ThemedDatePicker
+                                selectedDate={newGoal.targetDate}
+                                onDateChange={(date) => setNewGoal(prev => ({ ...prev, targetDate: date }))}
+                                minDate={new Date().toISOString().split('T')[0]}
+                            />
+                        </div>
+                        <div className="md:col-span-2">
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={handleAddGoal}
+                                className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg"
+                            >
+                                Add Goal
+                            </motion.button>
+                        </div>
                     </div>
 
                     {/* Goals List */}
@@ -290,9 +357,9 @@ const WorkoutPartner = ({ partnerId, onChatOpen }) => {
                                         onClick={() => toggleGoalComplete(goal._id)}
                                         className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
                                     ${goal.completed
-                                        ? 'bg-gradient-to-r from-red-500 to-orange-500 border-transparent'
-                                        : 'border-orange-500/50'
-                                    }`}
+                                                ? 'bg-gradient-to-r from-red-500 to-orange-500 border-transparent'
+                                                : 'border-orange-500/50'
+                                            }`}
                                     >
                                         {goal.completed && (
                                             <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -333,7 +400,6 @@ const WorkoutPartner = ({ partnerId, onChatOpen }) => {
 
 WorkoutPartner.propTypes = {
     partnerId: PropTypes.string,
-    onChatOpen: PropTypes.func.isRequired
 };
 
 export default WorkoutPartner;

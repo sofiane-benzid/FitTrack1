@@ -5,10 +5,15 @@ const authMiddleware = require('../middleware/authMiddleware');
 
 router.use(authMiddleware);
 
+// Basic activity tracking
 router.post('/log', activityController.logActivity);
 router.get('/list', activityController.getActivities);
 router.get('/summary', activityController.getActivitySummary);
-router.post('/activity/:activityId/comment', activityController.addComment);
-router.post('/activity/:activityId/react', activityController.reactToActivity);
+
+// Social/Accountability features
+router.get('/shared/:partnerId', activityController.getSharedActivities);
+router.get('/feed', activityController.getActivityFeed);
+router.post('/:activityId/comment', activityController.addComment);
+router.post('/:activityId/react', activityController.addReaction);
 
 module.exports = router;

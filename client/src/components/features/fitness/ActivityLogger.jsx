@@ -1,6 +1,7 @@
 ﻿import { useState } from 'react';
 import { motion } from 'framer-motion';
 import PropTypes from 'prop-types';
+import ThemedDatePicker from '../../common/ThemedDatePicker';
 
 const ActivityLogger = ({ onSuccess, onError }) => {
   const [formData, setFormData] = useState({
@@ -9,7 +10,9 @@ const ActivityLogger = ({ onSuccess, onError }) => {
     distance: '',
     calories: '',
     notes: '',
-    date: new Date().toISOString().split('T')[0],
+    date: new Date().toISOString().split('T')[0] || '', // Ensure it's always a string
+    isShared: true, // Default to true for better partner engagement
+    visibility: 'partners', // Default to partners
     sets: []
   });
   const [currentSet, setCurrentSet] = useState({
@@ -169,14 +172,13 @@ const ActivityLogger = ({ onSuccess, onError }) => {
 
         <div>
           <label className="block text-sm font-medium text-orange-200 mb-1">Date</label>
-          <input
-            type="date"
-            name="date"
-            value={formData.date}
-            onChange={handleChange}
-            className="w-full bg-black/20 border border-red-500/20 rounded-lg text-orange-200
-                     focus:border-red-500/50 focus:ring-0 transition-colors"
-            required
+          <ThemedDatePicker
+            selectedDate={formData.date}
+            onDateChange={(date) => setFormData(prev => ({
+              ...prev,
+              date: date
+            }))}
+            minDate={new Date().toISOString().split('T')[0]}
           />
         </div>
       </div>
@@ -268,6 +270,53 @@ const ActivityLogger = ({ onSuccess, onError }) => {
           className="w-full bg-black/20 border border-red-500/20 rounded-lg text-orange-200
                    focus:border-red-500/50 focus:ring-0 transition-colors"
         ></textarea>
+      </div>
+
+      {/* Sharing Options */}
+      <div className="space-y-4 border-t border-orange-500/20 pt-4 mt-4">
+        <h3 className="text-sm font-medium text-orange-200">Sharing Options</h3>
+        <div className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            id="isShared"
+            name="isShared"
+            checked={formData.isShared}
+            onChange={(e) => setFormData(prev => ({
+              ...prev,
+              isShared: e.target.checked
+            }))}
+            className="rounded border-orange-500/20 bg-black/40 text-orange-500 
+                 focus:ring-orange-500 focus:ring-offset-0"
+          />
+          <label htmlFor="isShared" className="text-orange-200">
+            Share with workout partner
+          </label>
+        </div>
+
+        {formData.isShared && (
+          <div>
+            <label className="block text-sm font-medium text-orange-200 mb-1">
+              Visibility
+            </label>
+            <select
+              name="visibility"
+              value={formData.visibility}
+              onChange={(e) => setFormData(prev => ({
+                ...prev,
+                visibility: e.target.value
+              }))}
+              className="w-full bg-black/40 border border-orange-500/20 rounded-lg px-4 py-2 
+                   text-orange-200 focus:border-orange-500 focus:ring-0"
+            >
+              <option value="partners" className="bg-black">Workout Partners Only</option>
+              <option value="friends" className="bg-black">All Friends</option>
+              <option value="public" className="bg-black">Public</option>
+            </select>
+            <p className="mt-1 text-sm text-orange-200/70">
+              Choose who can see this activity
+            </p>
+          </div>
+        )}
       </div>
 
       <motion.button

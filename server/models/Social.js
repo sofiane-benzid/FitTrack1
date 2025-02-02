@@ -114,8 +114,34 @@ const ChatRoomSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   }],
-  name: String, // For group chats
-  messages: [MessageSchema],
+  name: String,
+  messages: [{
+    sender: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    },
+    content: {
+      type: String,
+      required: true
+    },
+    messageType: {
+      type: String,
+      enum: ['text', 'activity_share', 'workout_reminder'],
+      default: 'text'
+    },
+    readBy: [{
+      user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+      },
+      readAt: Date
+    }],
+    createdAt: {
+      type: Date,
+      default: Date.now
+    }
+  }],
   lastMessage: {
     type: Date,
     default: Date.now
@@ -133,6 +159,16 @@ const WorkoutPartnershipSchema = new mongoose.Schema({
     type: String,
     enum: ['active', 'paused', 'ended'],
     default: 'active'
+  },
+  achievements: [{
+    type: String,
+    date: Date,
+    description: String
+  }],
+  stats: {
+    workoutsTogether: Number,
+    totalMinutes: Number,
+    streakDays: Number
   },
   sharedGoals: [{
     title: String,
@@ -153,15 +189,14 @@ const WorkoutPartnershipSchema = new mongoose.Schema({
       enum: ['daily', 'weekly', 'custom'],
       default: 'daily'
     },
-    customDays: [String], // e.g., ['monday', 'wednesday', 'friday']
-    time: String // e.g., "08:00"
+    customDays: [String],
+    time: String
   },
   chatRoom: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'ChatRoom'
   }
 }, { timestamps: true });
-
 // Activity Comment Schema (Extension to existing Activity model)
 const ActivityCommentSchema = new mongoose.Schema({
   user: {
@@ -184,7 +219,7 @@ const ActivityCommentSchema = new mongoose.Schema({
 module.exports = {
   Friendship: mongoose.model('Friendship', FriendshipSchema),
   Challenge: mongoose.model('Challenge', ChallengeSchema),
-  hatRoom: mongoose.model('ChatRoom', ChatRoomSchema),
+  ChatRoom: mongoose.model('ChatRoom', ChatRoomSchema),
   WorkoutPartnership: mongoose.model('WorkoutPartnership', WorkoutPartnershipSchema),
   ActivityComment: mongoose.model('ActivityComment', ActivityCommentSchema)
 };
