@@ -70,8 +70,6 @@ const ActivityList = ({ onError }) => {
         { value: 'other', label: 'Other' }
     ];
 
-   
-
     useEffect(() => {
         const fetchActivities = async () => {
             try {
@@ -166,7 +164,7 @@ const ActivityList = ({ onError }) => {
                      focus:border-red-500/50 focus:ring-0 transition-colors"
                         >
                             {activityTypes.map(type => (
-                                <option key={type.value} value={type.value}>{type.label}</option>
+                                <option className="bg-black text-white" key={type.value} value={type.value}>{type.label}</option>
                             ))}
                         </select>
                     </div>
@@ -178,7 +176,7 @@ const ActivityList = ({ onError }) => {
                             value={filter.startDate}
                             onChange={(e) => setFilter(prev => ({ ...prev, startDate: e.target.value }))}
                             className="w-full bg-black/20 border border-red-500/20 rounded-lg text-orange-200
-                     focus:border-red-500/50 focus:ring-0 transition-colors"
+                            focus:border-red-500/50 focus:ring-0 transition-colors"
                         />
                     </div>
 

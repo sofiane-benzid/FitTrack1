@@ -120,7 +120,7 @@ const ActivityLogger = ({ onSuccess, onError }) => {
             value={formData.type}
             onChange={handleChange}
             className="w-full bg-black/20 border border-red-500/20 rounded-lg text-orange-200
-                     focus:border-red-500/50 focus:ring-0 transition-colors"
+                      focus:border-red-500/50 focus:ring-0 transition-colors"
             required
           >
             {activityTypes.map(type => (

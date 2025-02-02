@@ -1,4 +1,3 @@
-// runSeed.js
 require('dotenv').config();
 const mongoose = require('mongoose');
 const { seedDatabase } = require('./seed');
