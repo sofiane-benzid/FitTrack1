@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../../hooks/useAuth';
 import Feedback from '../../common/Feedback';
+import { API_BASE_URL } from '../../../../../server/config/env';
 
 const ActivityFeed = () => {
     const [activities, setActivities] = useState([]);
@@ -15,7 +16,7 @@ const ActivityFeed = () => {
 
     const fetchActivities = async () => {
         try {
-            const response = await fetch('http://localhost:5000/activity/feed', {
+            const response = await fetch(`${API_BASE_URL}/activity/feed`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
@@ -36,7 +37,7 @@ const ActivityFeed = () => {
 
     const handleComment = async (activityId, comment) => {
         try {
-            const response = await fetch(`http://localhost:5000/activity/${activityId}/comment`, {
+            const response = await fetch(`${API_BASE_URL}/activity/${activityId}/comment`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -85,7 +86,7 @@ const ActivityFeed = () => {
     
     const handleReaction = async (activityId, type) => {
         try {
-            const response = await fetch(`http://localhost:5000/activity/${activityId}/react`, {
+            const response = await fetch(`${API_BASE_URL}/activity/${activityId}/react`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion} from 'framer-motion';
 import PropTypes from 'prop-types';
+import { API_BASE_URL } from '../../../../../server/config/env';
 
 const NutritionSummary = ({ refresh }) => {
     const [summary, setSummary] = useState(null);
@@ -15,12 +16,12 @@ const NutritionSummary = ({ refresh }) => {
                 today.setHours(0, 0, 0, 0);
 
                 const [summaryResponse, goalsResponse] = await Promise.all([
-                    fetch(`http://localhost:5000/nutrition/summary?startDate=${today.toISOString()}`, {
+                    fetch(`${API_BASE_URL}/nutrition/summary?startDate=${today.toISOString()}`, {
                         headers: {
                             'Authorization': `Bearer ${localStorage.getItem('token')}`
                         }
                     }),
-                    fetch('http://localhost:5000/nutrition/goals', {
+                    fetch(`${API_BASE_URL}/nutrition/goals`, {
                         headers: {
                             'Authorization': `Bearer ${localStorage.getItem('token')}`
                         }

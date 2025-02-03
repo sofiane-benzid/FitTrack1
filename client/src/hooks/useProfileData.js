@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../../../server/config/env';
 
 export const useProfileData = () => {
     const [profileData, setProfileData] = useState(null);
@@ -8,7 +9,7 @@ export const useProfileData = () => {
     const fetchProfileData = async () => {
         try {
             setLoading(true);
-            const response = await fetch('http://localhost:5000/profile/full', {
+            const response = await fetch(`${API_BASE_URL}/profile/full`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }

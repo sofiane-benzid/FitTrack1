@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { motion, AnimatePresence } from 'framer-motion';
 import Feedback from '../../common/Feedback';
+import { API_BASE_URL } from '../../../../../server/config/env';
 
 const SharedActivities = ({ partnerId }) => {
     const [activities, setActivities] = useState([]);
@@ -11,7 +12,7 @@ const SharedActivities = ({ partnerId }) => {
     useEffect(() => {
         const fetchSharedActivities = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/activity/shared/${partnerId}`, {
+                const response = await fetch(`${API_BASE_URL}/activity/shared/${partnerId}`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }

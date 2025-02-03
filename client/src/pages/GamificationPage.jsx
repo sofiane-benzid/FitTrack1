@@ -8,6 +8,7 @@ import AchievementPopup from '../components/features/gamification/AchievementPop
 import Badges from '../components/features/gamification/Badges';
 import Leaderboard from '../components/features/gamification/Leaderboard';
 import Feedback from '../components/common/Feedback';
+import { API_BASE_URL } from '../../../server/config/env';
 
 const GamificationPage = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -37,17 +38,17 @@ const GamificationPage = () => {
   const fetchGameData = async () => {
     try {
       const [pointsRes, streakRes, achievementsRes] = await Promise.all([
-        fetch('http://localhost:5000/gamification/points', {
+        fetch(`${API_BASE_URL}/gamification/points`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
         }),
-        fetch('http://localhost:5000/gamification/streak', {
+        fetch(`${API_BASE_URL}/gamification/streak`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
         }),
-        fetch('http://localhost:5000/gamification/achievements', {
+        fetch(`${API_BASE_URL}/gamification/achievements`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }

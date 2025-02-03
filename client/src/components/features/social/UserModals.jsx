@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import PropTypes from 'prop-types';
 import Feedback from '../../common/Feedback';
+import { API_BASE_URL } from '../../../../../server/config/env';
 
 export const UserProfileModal = ({ userId, onClose }) => {
     const [loading, setLoading] = useState(true);
@@ -11,7 +12,7 @@ export const UserProfileModal = ({ userId, onClose }) => {
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/social/users/${userId}/profile`, {
+                const response = await fetch(`${API_BASE_URL}/social/users/${userId}/profile`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }
@@ -146,7 +147,7 @@ export const MessageModal = ({ recipientId, recipientName, onClose }) => {
         setFeedback(null);
 
         try {
-            const response = await fetch('http://localhost:5000/social/messages', {
+            const response = await fetch(`${API_BASE_URL}/social/messages`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

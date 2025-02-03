@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { motion, AnimatePresence } from 'framer-motion';
 import Feedback from '../../common/Feedback';
 import { useAuth } from '../../../hooks/useAuth';
+import { API_BASE_URL } from '../../../../../server/config/env';
 
 const ChatWindow = ({ chatId, onClose, partnerId }) => {
     const [messages, setMessages] = useState([]);
@@ -28,7 +29,7 @@ const ChatWindow = ({ chatId, onClose, partnerId }) => {
 
     const fetchMessages = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/chat/${chatId}/messages`, {
+            const response = await fetch(`${API_BASE_URL}/chat/${chatId}/messages`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
@@ -49,7 +50,7 @@ const ChatWindow = ({ chatId, onClose, partnerId }) => {
         if (!newMessage.trim()) return;
 
         try {
-            const response = await fetch(`http://localhost:5000/chat/${chatId}/messages`, {
+            const response = await fetch(`${API_BASE_URL}/chat/${chatId}/messages`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

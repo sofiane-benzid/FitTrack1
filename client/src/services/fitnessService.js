@@ -1,4 +1,6 @@
-﻿const API_URL = 'http://localhost:5000/activity';
+﻿import { API_BASE_URL } from "../../../server/config/env";
+
+const API_URL = `${API_BASE_URL}/activity`;
 
 export const fitnessService = {
   async logActivity(activityData) {

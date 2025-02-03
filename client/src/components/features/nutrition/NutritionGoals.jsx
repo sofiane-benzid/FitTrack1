@@ -2,6 +2,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../../hooks/useAuth';
 import Feedback from '../../common/Feedback';
+import { API_BASE_URL } from '../../../../../server/config/env';
 
 const NutritionGoals = () => {
   useAuth();
@@ -19,7 +20,7 @@ const NutritionGoals = () => {
   useEffect(() => {
     const fetchGoals = async () => {
       try {
-        const response = await fetch('http://localhost:5000/nutrition/goals', {
+        const response = await fetch(`${API_BASE_URL}/nutrition/goals`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
@@ -42,7 +43,7 @@ const NutritionGoals = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/nutrition/goals', {
+      const response = await fetch(`${API_BASE_URL}/nutrition/goals`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

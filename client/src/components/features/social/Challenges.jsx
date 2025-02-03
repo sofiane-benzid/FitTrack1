@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../../hooks/useAuth';
 import Feedback from '../../common/Feedback';
 import ThemedDatePicker from '../../common/ThemedDatePicker';
+import { API_BASE_URL } from '../../../../../server/config/env';
 
 
 
@@ -169,7 +170,7 @@ const Challenges = () => {
 
     const fetchChallenges = async () => {
         try {
-            const response = await fetch('http://localhost:5000/social/challenges', {
+            const response = await fetch(`${API_BASE_URL}/social/challenges`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
@@ -198,7 +199,7 @@ const Challenges = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:5000/social/challenges', {
+            const response = await fetch(`${API_BASE_URL}/social/challenges`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -227,7 +228,7 @@ const Challenges = () => {
 
     const handleJoinChallenge = async (challengeId) => {
         try {
-            const response = await fetch(`http://localhost:5000/social/challenges/${challengeId}/join`, {
+            const response = await fetch(`${API_BASE_URL}/social/challenges/${challengeId}/join`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -251,7 +252,7 @@ const Challenges = () => {
 
     const handleUpdateProgress = async (challengeId, newProgress) => {
         try {
-            const response = await fetch(`http://localhost:5000/social/challenges/${challengeId}/progress`, {
+            const response = await fetch(`${API_BASE_URL}/social/challenges/${challengeId}/progress`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

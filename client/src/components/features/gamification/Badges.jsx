@@ -1,6 +1,7 @@
 ﻿import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Feedback from '../../common/Feedback';
+import { API_BASE_URL } from '../../../../../server/config/env';
 
 const Badges = () => {
     const [badges, setBadges] = useState([]);
@@ -9,7 +10,7 @@ const Badges = () => {
 
     const fetchBadges = async () => {
         try {
-            const response = await fetch('http://localhost:5000/auth/me', {
+            const response = await fetch(`${API_BASE_URL}/auth/me`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }

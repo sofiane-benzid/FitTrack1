@@ -3,6 +3,7 @@ import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, X
 import { useAuth } from '../hooks/useAuth';
 import PageHeader from '../components/common/PageHeader';
 import { motion } from 'framer-motion';
+import { API_BASE_URL } from '../../../server/config/env';
 
 const AnalyticsDashboard = () => {
     useAuth();
@@ -33,14 +34,14 @@ const AnalyticsDashboard = () => {
         const fetchAnalyticsData = async () => {
             try {
                 // Fetch workout data
-                const workoutResponse = await fetch('http://localhost:5000/activity/list', {
+                const workoutResponse = await fetch(`${API_BASE_URL}/activity/list`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }
                 });
 
                 // Fetch nutrition data
-                const nutritionResponse = await fetch('http://localhost:5000/nutrition/meals', {
+                const nutritionResponse = await fetch(`${API_BASE_URL}/nutrition/meals`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }

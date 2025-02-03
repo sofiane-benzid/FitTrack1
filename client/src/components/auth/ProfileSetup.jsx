@@ -2,6 +2,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { API_BASE_URL } from '../../../../server/config/env';
 
 // Fitness Achievement Quotes
 const achievementQuotes = [
@@ -97,7 +98,7 @@ const ProfileSetup = () => {
         height: Number(formData.height)
       };
 
-      const response = await fetch('http://localhost:5000/auth/me', {
+      const response = await fetch(`${API_BASE_URL}/auth/me`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

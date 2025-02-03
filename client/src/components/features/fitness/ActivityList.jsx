@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
+import { API_BASE_URL } from '../../../../../server/config/env';
 
 const activityIcons = {
     running: (
@@ -73,7 +74,7 @@ const ActivityList = ({ onError }) => {
     useEffect(() => {
         const fetchActivities = async () => {
             try {
-                let url = 'http://localhost:5000/activity/list';
+                let url = `${API_BASE_URL}/activity/list`;
                 const queryParams = [];
     
                 if (filter.type !== 'all') {
@@ -120,7 +121,7 @@ const ActivityList = ({ onError }) => {
         }
 
         try {
-            const response = await fetch(`http://localhost:5000/activity/${activityId}`, {
+            const response = await fetch(`${API_BASE_URL}/activity/${activityId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`

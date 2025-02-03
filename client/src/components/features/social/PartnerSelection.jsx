@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { motion, AnimatePresence } from 'framer-motion';
 import Feedback from '../../common/Feedback';
 import { useAuth } from '../../../hooks/useAuth';
+import { API_BASE_URL } from '../../../../../server/config/env';
 
 const PartnerSelection = ({ onPartnerSelect }) => {
     const { user } = useAuth();
@@ -16,10 +17,10 @@ const PartnerSelection = ({ onPartnerSelect }) => {
             setLoading(true);
             
             const [friendsRes, partnershipsRes] = await Promise.all([
-                fetch('http://localhost:5000/social/friends', {
+                fetch(`${API_BASE_URL}/social/friends`, {
                     headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
                 }),
-                fetch('http://localhost:5000/partnerships', {
+                fetch(`${API_BASE_URL}/partnerships`, {
                     headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
                 })
             ]);
@@ -54,7 +55,7 @@ const PartnerSelection = ({ onPartnerSelect }) => {
     const handleCreatePartnership = async (friendId) => {
         try {
             setLoading(true);
-            const response = await fetch('http://localhost:5000/partnerships/create', {
+            const response = await fetch(`${API_BASE_URL}/partnerships/create`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

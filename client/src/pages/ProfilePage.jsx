@@ -9,6 +9,7 @@ import {
   InteractiveProgressBar, 
   ParticleBackground 
 } from '../components/features/profile/EnhancedProfileComponents';
+import { API_BASE_URL } from '../../../server/config/env';
 
 const ProfilePage = () => {
   const { user } = useAuth();
@@ -43,7 +44,7 @@ const ProfilePage = () => {
 
   const fetchProfileData = async () => {
     try {
-      const response = await fetch('http://localhost:5000/auth/me', {
+      const response = await fetch(`${API_BASE_URL}/auth/me`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -96,7 +97,7 @@ const ProfilePage = () => {
 
   const handleProfileUpdate = async (updatedData) => {
     try {
-      const response = await fetch('http://localhost:5000/auth/me', {
+      const response = await fetch(`h${API_BASE_URL}/auth/me`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

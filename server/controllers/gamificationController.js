@@ -13,6 +13,18 @@ const POINT_VALUES = {
   'streak_milestone': 75
 };
 
+const POINT_DESCRIPTIONS = {
+  'workout_complete': '💪 Workout Complete',
+  'challenge_progress': '🎯 Challenge Progress', 
+  'challenge_complete': '🏆 Challenge Completed',
+  'meal_logged': '🍎 Meal Logged',
+  'friend_added': '🤝 New Friend Added',
+  'profile_complete': '✨ Profile Complete',
+  'streak_milestone': '🔥 Streak Milestone',
+  'achievement_unlocked': '🌟 Achievement Unlocked',
+  'join_challenge': '🎮 Joined Challenge'
+};
+
 exports.getPoints = async (req, res) => {
   try {
     let points = await Points.findOne({ userId: req.userId });
@@ -29,28 +41,28 @@ exports.getPoints = async (req, res) => {
 
     // Calculate current level and next threshold
     let currentLevel = 1;
-    let nextThreshold = levelThresholds[1]; // Default to first threshold
+    let nextThreshold = levelThresholds[1];
 
     for (let i = 0; i < levelThresholds.length; i++) {
       if (points.totalPoints >= levelThresholds[i]) {
         currentLevel = i + 1;
-        nextThreshold = levelThresholds[i + 1] || levelThresholds[i]; // Use next threshold or current if at max
+        nextThreshold = levelThresholds[i + 1] || levelThresholds[i];
       } else {
         break;
       }
     }
 
-    // Save the calculated level if it's different
-    if (points.level !== currentLevel) {
-      points.level = currentLevel;
-      await points.save();
-    }
+    // Just update the reason text, leave everything else unchanged
+    const formattedHistory = points.history.map(historyItem => ({
+      ...historyItem.toObject(),
+      reason: POINT_DESCRIPTIONS[historyItem.reason] || historyItem.reason
+    }));
 
     res.json({
       totalPoints: points.totalPoints || 0,
       level: currentLevel,
       nextLevelThreshold: nextThreshold,
-      history: points.history || []
+      history: formattedHistory
     });
   } catch (error) {
     console.error('Points fetch error:', error);

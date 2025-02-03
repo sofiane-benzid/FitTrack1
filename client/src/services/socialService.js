@@ -1,4 +1,6 @@
-﻿const BASE_URL = 'http://localhost:5000/social';
+﻿import { API_BASE_URL } from "../../../server/config/env";
+
+const BASE_URL = `${API_BASE_URL}/social`;
 
 const getAuthHeaders = () => ({
   'Authorization': `Bearer ${localStorage.getItem('token')}`,

@@ -2,6 +2,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import Feedback from '../../common/Feedback';
 import PropTypes from 'prop-types';
+import { API_BASE_URL } from '../../../../../server/config/env';
 
 const MealTracker = ({ onMealLogged }) => {
   const [formData, setFormData] = useState({
@@ -107,7 +108,7 @@ const MealTracker = ({ onMealLogged }) => {
         }))
       };
 
-      const response = await fetch('http://localhost:5000/nutrition/meals', {
+      const response = await fetch(`${API_BASE_URL}/nutrition/meals`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

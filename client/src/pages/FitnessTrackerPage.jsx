@@ -4,6 +4,7 @@ import ActivityLogger from '../components/features/fitness/ActivityLogger';
 import ActivityList from '../components/features/fitness/ActivityList';
 import PageHeader from '../components/common/PageHeader';
 import Feedback from '../components/common/Feedback';
+import { API_BASE_URL } from '../../../server/config/env';
 
 const FitnessTrackerPage = () => {
   const [activeTab, setActiveTab] = useState('log');
@@ -20,7 +21,7 @@ const FitnessTrackerPage = () => {
 
   const fetchActivityStats = async () => {
     try {
-      const response = await fetch('http://localhost:5000/activity/summary', {
+      const response = await fetch(`${API_BASE_URL}/activity/summary`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }

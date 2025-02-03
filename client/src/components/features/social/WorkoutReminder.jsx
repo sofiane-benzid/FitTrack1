@@ -2,6 +2,7 @@ import { useState} from 'react';
 import PropTypes from 'prop-types';
 import { motion, AnimatePresence } from 'framer-motion';
 import Feedback from '../../common/Feedback';
+import { API_BASE_URL } from '../../../../../server/config/env';
 
 const WorkoutReminder = ({ partnership }) => {
     const [reminders, setReminders] = useState(partnership?.reminderPreferences || {
@@ -22,7 +23,7 @@ const WorkoutReminder = ({ partnership }) => {
         }
 
         try {
-            const response = await fetch(`http://localhost:5000/partnerships/${partnership._id}/reminders`, {
+            const response = await fetch(`${API_BASE_URL}/partnerships/${partnership._id}/reminders`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -90,9 +91,9 @@ const WorkoutReminder = ({ partnership }) => {
                                     className="w-full bg-black/40 border border-orange-500/20 rounded-lg px-4 py-2 
                            text-white focus:outline-none focus:border-orange-500"
                                 >
-                                    <option value="daily">Daily</option>
-                                    <option value="weekly">Weekly</option>
-                                    <option value="custom">Custom</option>
+                                    <option className="bg-black" value="daily">Daily</option>
+                                    <option className="bg-black" value="weekly">Weekly</option>
+                                    <option className="bg-black" value="custom">Custom</option>
                                 </select>
                             </div>
 

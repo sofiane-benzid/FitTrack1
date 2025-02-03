@@ -2,6 +2,7 @@
 import { motion } from 'framer-motion';
 import Feedback from '../../common/Feedback';
 import { useAuth } from '../../../hooks/useAuth';
+import { API_BASE_URL } from '../../../../../server/config/env';
 
 const Leaderboard = () => {
     const [leaderboard, setLeaderboard] = useState([]);
@@ -15,7 +16,7 @@ const Leaderboard = () => {
 
     const fetchLeaderboard = async () => {
         try {
-            const response = await fetch('http://localhost:5000/gamification/leaderboard', {
+            const response = await fetch(`${API_BASE_URL}/gamification/leaderboard`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }

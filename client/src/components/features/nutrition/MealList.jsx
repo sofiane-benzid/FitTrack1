@@ -2,6 +2,7 @@ import  { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Feedback from '../../common/Feedback';
 import PropTypes from 'prop-types';
+import { API_BASE_URL } from '../../../../../server/config/env';
 
 const MealList = ({ refresh }) => {
     const [meals, setMeals] = useState([]);
@@ -24,7 +25,7 @@ const MealList = ({ refresh }) => {
 
     const fetchMeals = async () => {
         try {
-            let url = 'http://localhost:5000/nutrition/meals';
+            let url = `${API_BASE_URL}/nutrition/meals`;
             const queryParams = [];
 
             if (filter.type !== 'all') {
@@ -73,7 +74,7 @@ const MealList = ({ refresh }) => {
         }
 
         try {
-            const response = await fetch(`http://localhost:5000/nutrition/meals/${mealId}`, {
+            const response = await fetch(`${API_BASE_URL}/nutrition/meals/${mealId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`

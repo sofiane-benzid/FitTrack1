@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { API_BASE_URL } from '../../../../../server/config/env';
 import Feedback from '../../common/Feedback';
 
 const SocialStats = () => {
@@ -27,10 +28,10 @@ const SocialStats = () => {
 
                 // Fetch all stats in parallel
                 const [friendsRes, challengesRes, pointsRes, badgesRes] = await Promise.all([
-                    fetch('http://localhost:5000/social/friends', { headers }),
-                    fetch('http://localhost:5000/social/challenges', { headers }),
-                    fetch('http://localhost:5000/gamification/points', { headers }),
-                    fetch('http://localhost:5000/gamification/badges', { headers })
+                    fetch(`${API_BASE_URL}/social/friends`, { headers }),
+                    fetch(`${API_BASE_URL}/social/challenges`, { headers }),
+                    fetch(`${API_BASE_URL}//points`, { headers }),
+                    fetch(`${API_BASE_URL}/gamification/badges`, { headers })
                 ]);
 
                 // Check if any request failed
@@ -84,7 +85,7 @@ const SocialStats = () => {
             animate={{ opacity: 1 }}
             className="p-6"
         >
-            <motion.h2 
+            <motion.h2
                 initial={{ y: -20 }}
                 animate={{ y: 0 }}
                 className="text-xl font-bold text-white mb-6"
@@ -92,7 +93,7 @@ const SocialStats = () => {
                 Social Overview
             </motion.h2>
 
-            <motion.div 
+            <motion.div
                 initial={{ y: 20 }}
                 animate={{ y: 0 }}
                 className="grid grid-cols-1 md:grid-cols-4 gap-6"

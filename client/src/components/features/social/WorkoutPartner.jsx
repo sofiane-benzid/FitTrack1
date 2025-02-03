@@ -6,6 +6,7 @@ import WorkoutReminder from './WorkoutReminder';
 import SharedActivities from './SharedActivities';
 import ChatWindow from './ChatWindow';
 import ThemedDatePicker from '../../common/ThemedDatePicker';
+import { API_BASE_URL } from '../../../../../server/config/env';
 
 const WorkoutPartner = ({ partnerId }) => {
     const [partnership, setPartnership] = useState(null);
@@ -28,12 +29,12 @@ const WorkoutPartner = ({ partnerId }) => {
         const fetchPartnershipData = async () => {
             try {
                 const [partnershipRes, partnerRes] = await Promise.all([
-                    fetch(`http://localhost:5000/partnerships/${partnerId}`, { // Fixed URL
+                    fetch(`${API_BASE_URL}partnerships/${partnerId}`, { // Fixed URL
                         headers: {
                             'Authorization': `Bearer ${localStorage.getItem('token')}`
                         }
                     }),
-                    fetch(`http://localhost:5000/social/users/${partnerId}/profile`, {
+                    fetch(`${API_BASE_URL}/social/users/${partnerId}/profile`, {
                         headers: {
                             'Authorization': `Bearer ${localStorage.getItem('token')}`
                         }
@@ -94,7 +95,7 @@ const WorkoutPartner = ({ partnerId }) => {
         }
     
         try {
-            const response = await fetch(`http://localhost:5000/partnerships/${partnership._id}/goals`, {
+            const response = await fetch(`${API_BASE_URL}/partnerships/${partnership._id}/goals`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -106,7 +107,7 @@ const WorkoutPartner = ({ partnerId }) => {
             if (!response.ok) throw new Error('Failed to add goal');
     
             // Refetch partnership data to get updated goals
-            const partnershipRes = await fetch(`http://localhost:5000/partnerships/${partnerId}`, {
+            const partnershipRes = await fetch(`${API_BASE_URL}/partnerships/${partnerId}`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
@@ -141,7 +142,7 @@ const WorkoutPartner = ({ partnerId }) => {
 
     const toggleGoalComplete = async (goalId) => {
         try {
-            const response = await fetch(`http://localhost:5000/partnerships/${partnership._id}/goals/${goalId}`, {
+            const response = await fetch(`${API_BASE_URL}partnerships/${partnership._id}/goals/${goalId}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',

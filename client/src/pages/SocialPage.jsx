@@ -11,6 +11,7 @@ import ActivityFeed from '../components/features/social/ActivityFeed';
 import NotificationsDropdown from '../components/features/notifications/NotificationsDropdown';
 import Feedback from '../components/common/Feedback';
 import PartnerSelection from '../components/features/social/PartnerSelection';
+import { API_BASE_URL } from '../../../server/config/env';
 
 const SocialPage = () => {
   const [activeTab, setActiveTab] = useState('feed');
@@ -27,7 +28,7 @@ const SocialPage = () => {
 
   const fetchNotifications = async () => {
     try {
-      const response = await fetch('http://localhost:5000/social/notifications', {
+      const response = await fetch(`${API_BASE_URL}/social/notifications`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
