@@ -15,6 +15,7 @@ router.get('/friends/requests', socialController.getFriendRequests);
 router.post('/friends/respond/:friendshipId', socialController.respondToFriendRequest);
 router.delete('/friends/request/:requestId', socialController.cancelFriendRequest);
 router.delete('/friends/:friendId', socialController.removeFriend);
+router.get('/add-friend/:userId', authMiddleware, socialController.handleQRFriendRequest);
 
 // User search route
 router.get('/users/search', socialController.searchUsers);

@@ -16,7 +16,10 @@ const analyticsRoutes = require('./routes/analyticsRoutes');
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: true, // Allows all origins
+  credentials: true
+}));
 app.use(express.json());
 
 // Routes
@@ -34,7 +37,7 @@ app.use('/analytics', analyticsRoutes);
 connectDatabase();
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });
 

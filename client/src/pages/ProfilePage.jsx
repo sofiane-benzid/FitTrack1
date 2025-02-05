@@ -4,12 +4,14 @@ import { useAuth } from '../hooks/useAuth';
 import Feedback from '../components/common/Feedback';
 import PageHeader from '../components/common/PageHeader';
 import ProfileEditForm from '../components/auth/ProfileEditForm';
-import { 
-  AnimatedAchievementCard, 
-  InteractiveProgressBar, 
-  ParticleBackground 
+import {
+  AnimatedAchievementCard,
+  ParticleBackground
 } from '../components/features/profile/EnhancedProfileComponents';
 import { API_BASE_URL } from '../../../server/config/env';
+
+import { QRCodeGenerator } from '../components/common/QRCodeComponents';
+
 
 const ProfilePage = () => {
   const { user } = useAuth();
@@ -116,7 +118,7 @@ const ProfilePage = () => {
         type: 'success',
         message: 'Profile updated successfully!'
       });
-      
+
       // Refresh profile data
       fetchProfileData();
     } catch (error) {
@@ -129,19 +131,19 @@ const ProfilePage = () => {
 
   if (loading) {
     return (
-      <motion.div 
+      <motion.div
         className="min-h-screen bg-black/90 flex justify-center items-center"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
-        <motion.div 
+        <motion.div
           className="w-16 h-16 border-4 border-transparent border-b-red-500 rounded-full animate-spin"
-          animate={{ 
+          animate={{
             rotate: 360,
-            transition: { 
-              repeat: Infinity, 
-              duration: 1, 
-              ease: "linear" 
+            transition: {
+              repeat: Infinity,
+              duration: 1,
+              ease: "linear"
             }
           }}
         />
@@ -152,9 +154,9 @@ const ProfilePage = () => {
   return (
     <div className="relative min-h-screen bg-black py-6 overflow-hidden">
       <ParticleBackground />
-      
+
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-orange-500 z-10"></div>
-      
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -163,10 +165,10 @@ const ProfilePage = () => {
         >
           <PageHeader title="Profile" className="text-white" />
         </motion.div>
-        
+
         <AnimatePresence>
           {feedback && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -181,7 +183,7 @@ const ProfilePage = () => {
           )}
         </AnimatePresence>
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
@@ -215,35 +217,15 @@ const ProfilePage = () => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
               >
-                {/* Fitness Progression */}
+
                 <div className="border-b border-orange-500/20 py-6 px-4">
                   <h3 className="text-xl font-bold text-white text-center mb-6">
-                    Fitness Progression
+                    Add Friend QR Code
                   </h3>
-                  <div className="max-w-2xl mx-auto">
-                    <InteractiveProgressBar 
-                      label="Total Workouts" 
-                      value={profileData.stats.totalWorkouts} 
-                      maxValue={100} 
-                    />
-                    <InteractiveProgressBar 
-                      label="Total Minutes" 
-                      value={profileData.stats.totalMinutes} 
-                      maxValue={500} 
-                    />
-                    <InteractiveProgressBar 
-                      label="Workout Streak" 
-                      value={profileData.stats.workoutStreak} 
-                      maxValue={30} 
-                    />
-                    <InteractiveProgressBar 
-                      label="Points Earned" 
-                      value={profileData.stats.points} 
-                      maxValue={1000} 
-                    />
+                  <div className="max-w-sm mx-auto">
+                    <QRCodeGenerator userId={user?.id} />
                   </div>
                 </div>
-
                 {/* Achievements Section */}
                 <div className="border-b border-orange-500/20">
                   <div className="bg-black/40 px-4 py-5 sm:px-6">
@@ -252,10 +234,10 @@ const ProfilePage = () => {
                   <div className="px-4 py-5 sm:p-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     {profileData.achievements.length > 0 ? (
                       profileData.achievements.map((achievement, index) => (
-                        <AnimatedAchievementCard 
-                          key={index} 
-                          achievement={achievement} 
-                          index={index} 
+                        <AnimatedAchievementCard
+                          key={index}
+                          achievement={achievement}
+                          index={index}
                         />
                       ))
                     ) : (
@@ -273,25 +255,25 @@ const ProfilePage = () => {
                   </div>
                   <div className="px-4 py-5 sm:p-6">
                     {profileData.recentActivities.length > 0 ? (
-                      <motion.ul 
-                        initial="hidden" 
-                        animate="visible" 
+                      <motion.ul
+                        initial="hidden"
+                        animate="visible"
                         className="-mb-8"
                       >
                         {profileData.recentActivities.map((activity, activityIdx) => (
-                          <motion.li 
+                          <motion.li
                             key={activity._id || activityIdx}
                             initial={{ opacity: 0, x: -20 }}
-                            animate={{ 
-                              opacity: 1, 
+                            animate={{
+                              opacity: 1,
                               x: 0,
-                              transition: { 
+                              transition: {
                                 delay: activityIdx * 0.1,
                                 type: "spring",
                                 stiffness: 300
                               }
                             }}
-                            whileHover={{ 
+                            whileHover={{
                               scale: 1.02,
                               transition: { duration: 0.2 }
                             }}
@@ -335,6 +317,7 @@ const ProfilePage = () => {
                 onSubmit={handleProfileUpdate}
                 onCancel={() => setShowEditForm(false)}
               />
+
             )}
           </AnimatePresence>
         </motion.div>

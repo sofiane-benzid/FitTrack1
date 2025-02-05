@@ -327,7 +327,46 @@ exports.removeFriend = async (req, res) => {
   }
 };
 
+exports.handleQRFriendRequest = async (req, res) => {
+  try {
+      const { userId } = req.params;
 
+      // Check if users are already friends
+      const existingFriendship = await Friendship.findOne({
+          $or: [
+              { requester: req.userId, recipient: userId },
+              { requester: userId, recipient: req.userId }
+          ]
+      });
+
+      if (existingFriendship) {
+          return res.status(400).json({ message: 'Friendship request already exists' });
+      }
+
+      // Get user data to display
+      const user = await User.findById(userId)
+          .select('email profile.fullName profile.fitnessLevel')
+          .lean();
+
+      if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+
+      // Return user data with preApproved flag
+      res.json({
+          ...user,
+          preApproved: true,  // This indicates the QR code scan origin
+          qrCodeScanned: true // Additional flag for UI handling
+      });
+
+  } catch (error) {
+      console.error('Error handling QR friend request:', error);
+      res.status(500).json({
+          message: 'Failed to process QR friend request',
+          error: error.message
+      });
+  }
+};
 
 
 exports.getChallenges = async (req, res) => {

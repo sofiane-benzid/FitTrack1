@@ -29,7 +29,7 @@ export function AuthProvider({ children }) {
 
   const login = async (userData, token) => {
     try {
-      console.log('Login attempt with:', { userData, token });
+
       
       if (!token) {
         throw new Error('No token provided');
@@ -61,8 +61,7 @@ export function AuthProvider({ children }) {
       setUser(normalizedUserData);
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(normalizedUserData));
-      
-      console.log('Login successful:', normalizedUserData);
+
     } catch (err) {
       console.error('Error during login:', err);
       setError(err.message);
