@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { motion, AnimatePresence } from 'framer-motion';
 import NotificationsDropdown from '../components/features/notifications/NotificationsDropdown';
+import { NavigationMenu, MobileNavigationDrawer,BreadcrumbNavigation } from '../components/navigation';
 import PropTypes from 'prop-types';
 
 // Tooltip Component
@@ -208,6 +209,7 @@ const Dashboard = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [showWeeklyInsight, setShowWeeklyInsight] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -344,89 +346,124 @@ const Dashboard = () => {
                 Welcome, {user?.profile?.fullName || user?.email || 'User'}
               </span>
 
+              {/* Profile and Logout Buttons */}
+              <div className="hidden md:flex items-center space-x-4">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => navigate('/profile')}
+                  className="text-orange-200 hover:text-orange-400 px-4 py-2 rounded-md transition-colors"
+                >
+                  Edit Profile
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleLogout}
+                  className="bg-gradient-to-r from-red-600 to-orange-600 text-white px-4 py-2 rounded-md 
+                            transition-all duration-300 hover:shadow-lg hover:shadow-red-500/20"
+                >
+                  Logout
+                </motion.button>
+              </div>
+
+              {/* Mobile Menu Button */}
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => navigate('/profile')}
-                className="text-orange-200 hover:text-orange-400 px-4 py-2 rounded-md transition-colors"
+                onClick={() => setIsMobileMenuOpen(true)}
+                className="md:hidden text-orange-200 hover:text-orange-400"
               >
-                Edit Profile
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleLogout}
-                className="bg-gradient-to-r from-red-600 to-orange-600 text-white px-4 py-2 rounded-md 
-                          transition-all duration-300 hover:shadow-lg hover:shadow-red-500/20"
-              >
-                Logout
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
               </motion.button>
             </div>
           </div>
         </div>
       </motion.nav>
 
-      {/* Main Content */}
+      {/* Main Content with Sidebar Navigation */}
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {stats.map((stat, index) => (
-            <StatCard
-              key={stat.title}
-              stat={stat}
-              index={index}
-              onClick={stat.isClickable ? () => setShowWeeklyInsight(true) : undefined}
-            />
-          ))}
-        </div>
-
-        {/* Quick Actions Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {quickActions.map((action, index) => (
-            <QuickActionButton
-              key={action.name}
-              action={action}
-              index={index}
-            />
-          ))}
-        </div>
-
-        {/* Weekly Insight Modal */}
-        <WeeklyInsightModal
-          isOpen={showWeeklyInsight}
-          onClose={() => setShowWeeklyInsight(false)}
-        />
-
-        {/* Recent Activity */}
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="bg-gradient-to-br from-black to-red-950/30 rounded-xl border border-red-500/10"
-        >
-          <div className="p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium text-orange-200">Recent Activity</h3>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                onClick={() => navigate('/fitness')}
-                className="text-sm text-red-400 hover:text-red-300 transition-colors"
-              >
-                View All
-              </motion.button>
+        <div className="px-4 sm:px-0">
+          <BreadcrumbNavigation />
+          
+          <div className="grid md:grid-cols-[240px,1fr] gap-6 mt-6">
+            {/* Navigation Sidebar - Hidden on mobile */}
+            <div className="hidden md:block">
+              <NavigationMenu />
             </div>
-            <div className="space-y-4">
-              {recentActivities.map((activity, index) => (
-                <ActivityItem
-                  key={activity.id}
-                  activity={activity}
-                  index={index}
-                />
-              ))}
+            
+            {/* Dashboard Content */}
+            <div className="space-y-6">
+              {/* Stats Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {stats.map((stat, index) => (
+                  <StatCard
+                    key={stat.title}
+                    stat={stat}
+                    index={index}
+                    onClick={stat.isClickable ? () => setShowWeeklyInsight(true) : undefined}
+                  />
+                ))}
+              </div>
+
+              {/* Quick Actions Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {quickActions.map((action, index) => (
+                  <QuickActionButton
+                    key={action.name}
+                    action={action}
+                    index={index}
+                  />
+                ))}
+              </div>
+
+              {/* Recent Activity */}
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className="bg-gradient-to-br from-black to-red-950/30 rounded-xl border border-red-500/10"
+              >
+                <div className="p-6">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-lg font-medium text-orange-200">Recent Activity</h3>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      onClick={() => navigate('/fitness')}
+                      className="text-sm text-red-400 hover:text-red-300 transition-colors"
+                    >
+                      View All
+                    </motion.button>
+                  </div>
+                  <div className="space-y-4">
+                    {recentActivities.map((activity, index) => (
+                      <ActivityItem
+                        key={activity.id}
+                        activity={activity}
+                        index={index}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
+
+      {/* Mobile Navigation Drawer */}
+      <MobileNavigationDrawer 
+        isOpen={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
+      />
+
+      {/* Weekly Insight Modal */}
+      <WeeklyInsightModal
+        isOpen={showWeeklyInsight}
+        onClose={() => setShowWeeklyInsight(false)}
+      />
     </div>
   );
 };
