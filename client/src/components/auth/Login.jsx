@@ -1,3 +1,4 @@
+'use client'
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
@@ -51,10 +52,13 @@ const Login = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
             });
+            
 
             const data = await response.json();
 
+
             if (!response.ok) throw new Error(data.message);
+
 
             const userData = {
                 id: data.userId,

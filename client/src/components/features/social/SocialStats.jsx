@@ -30,7 +30,7 @@ const SocialStats = () => {
                 const [friendsRes, challengesRes, pointsRes, badgesRes] = await Promise.all([
                     fetch(`${API_BASE_URL}/social/friends`, { headers }),
                     fetch(`${API_BASE_URL}/social/challenges`, { headers }),
-                    fetch(`${API_BASE_URL}//points`, { headers }),
+                    fetch(`${API_BASE_URL}/points`, { headers }),
                     fetch(`${API_BASE_URL}/gamification/badges`, { headers })
                 ]);
 

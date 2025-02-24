@@ -99,7 +99,7 @@ const ProfilePage = () => {
 
   const handleProfileUpdate = async (updatedData) => {
     try {
-      const response = await fetch(`h${API_BASE_URL}/auth/me`, {
+      const response = await fetch(`${API_BASE_URL}/auth/me`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

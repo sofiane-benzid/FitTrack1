@@ -24,12 +24,13 @@ const WorkoutPartner = ({ partnerId }) => {
     const [activeSection, setActiveSection] = useState('overview');
     const [showChat, setShowChat] = useState(false);
 
+
     useEffect(() => {
 
         const fetchPartnershipData = async () => {
             try {
                 const [partnershipRes, partnerRes] = await Promise.all([
-                    fetch(`${API_BASE_URL}partnerships/${partnerId}`, { // Fixed URL
+                    fetch(`${API_BASE_URL}/partnerships/${partnerId}`, { // Fixed URL
                         headers: {
                             'Authorization': `Bearer ${localStorage.getItem('token')}`
                         }
@@ -49,6 +50,7 @@ const WorkoutPartner = ({ partnerId }) => {
                     partnershipRes.json(),
                     partnerRes.json()
                 ]);
+                
 
                 setPartnership(partnershipData);
                 setPartnerDetails(partnerData);
@@ -142,7 +144,7 @@ const WorkoutPartner = ({ partnerId }) => {
 
     const toggleGoalComplete = async (goalId) => {
         try {
-            const response = await fetch(`${API_BASE_URL}partnerships/${partnership._id}/goals/${goalId}`, {
+            const response = await fetch(`${API_BASE_URL}/partnerships/${partnership._id}/goals/${goalId}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -198,6 +200,7 @@ const WorkoutPartner = ({ partnerId }) => {
             </div>
         );
     }
+   
     return (
         <div className="space-y-6">
             <AnimatePresence>

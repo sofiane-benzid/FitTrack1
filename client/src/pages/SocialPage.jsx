@@ -48,6 +48,7 @@ const SocialPage = () => {
       console.error('Error fetching notifications:', error);
     }
   };
+  
 
   const getTabIcon = (tab) => {
     switch (tab) {
@@ -116,195 +117,196 @@ const SocialPage = () => {
     }
 };
 
-  return (
-    <div className="min-h-screen bg-black">
-      {/* Navigation Bar */}
-      <motion.nav
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        className="bg-black/80 backdrop-blur-sm border-b border-red-500/10 sticky top-0 z-50"
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <span className="text-xl font-bold bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
-                Social Hub
-              </span>
-            </div>
-            <div className="flex items-center space-x-4">
-              <NotificationsDropdown
-                notifications={notifications}
-                onNotificationClick={fetchNotifications}
-              />
-              <span className="text-orange-200">
-                Welcome, {user?.profile?.fullName || user?.email || 'User'}
-              </span>
+return (
+  <div className="min-h-screen bg-black">
+    {/* Navigation Bar */}
+    <motion.nav 
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      className="bg-black/80 backdrop-blur-sm border-b border-red-500/10 sticky top-0 z-50"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16 items-center">
+          <span className="text-lg md:text-xl font-bold bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
+            Social Hub
+          </span>
+          
+          <div className="flex items-center space-x-2 md:space-x-4">
+            <NotificationsDropdown />
+            <span className="hidden md:inline text-orange-200">
+              Welcome, {user?.profile?.fullName || user?.email || 'User'}
+            </span>
 
-              {/* Mobile Menu Button */}
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setIsMobileMenuOpen(true)}
-                className="md:hidden text-orange-200 hover:text-orange-400"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </motion.button>
-            </div>
+            {/* Mobile Menu Button */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="p-2 md:hidden text-orange-200 hover:text-orange-400"
+              aria-label="Menu"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </motion.button>
           </div>
         </div>
-      </motion.nav>
+      </div>
+    </motion.nav>
 
-      <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 sm:px-0">
-          {/* Breadcrumb */}
+    <div className="max-w-7xl mx-auto py-4 md:py-6">
+      <div className="px-4 sm:px-6 lg:px-8">
+        {/* Breadcrumb - Hide on mobile */}
+        <div className="hidden md:block">
           <BreadcrumbNavigation />
+        </div>
 
-          <div className="grid md:grid-cols-[240px,1fr] gap-6 mt-6">
-            {/* Navigation Sidebar - Hidden on mobile */}
-            <div className="hidden md:block">
-              <NavigationMenu />
-            </div>
+        <div className="grid md:grid-cols-[240px,1fr] gap-4 md:gap-6 mt-4 md:mt-6">
+          {/* Navigation Sidebar - Hidden on mobile */}
+          <div className="hidden md:block">
+            <NavigationMenu />
+          </div>
 
-            {/* Main Content */}
-            <div className="space-y-6">
-              <AnimatePresence>
-                {feedback && (
-                  <Feedback
-                    type={feedback.type}
-                    message={feedback.message}
-                    onClose={() => setFeedback(null)}
-                  />
-                )}
-              </AnimatePresence>
+          {/* Main Content */}
+          <div className="space-y-4 md:space-y-6">
+            <AnimatePresence>
+              {feedback && (
+                <Feedback
+                  type={feedback.type}
+                  message={feedback.message}
+                  onClose={() => setFeedback(null)}
+                />
+              )}
+            </AnimatePresence>
 
-              {/* Social Tabs */}
-              <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="border-b border-orange-500/20 mb-6"
-              >
-                <nav className="-mb-px flex space-x-8">
-                  {['feed', 'partners', 'challenges', 'friends'].map((tab) => (
-                    <motion.button
-                      key={tab}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => setActiveTab(tab)}
-                      className={`${activeTab === tab
+            {/* Social Tabs - Scrollable on mobile */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="border-b border-orange-500/20 mb-4 md:mb-6"
+            >
+              <nav className="-mb-px flex space-x-2 md:space-x-8 overflow-x-auto scrollbar-hide py-2">
+                {['feed', 'partners', 'challenges', 'friends'].map((tab) => (
+                  <motion.button
+                    key={tab}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setActiveTab(tab)}
+                    className={`${
+                      activeTab === tab
                         ? 'border-red-500 text-orange-200'
                         : 'border-transparent text-orange-200/70 hover:text-orange-200 hover:border-red-500/50'
-                        } whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center gap-2`}
-                    >
-                      {/* Tab Icons */}
-                      {getTabIcon(tab)}
-                      {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                    </motion.button>
-                  ))}
-                </nav>
-              </motion.div>
+                    } whitespace-nowrap pb-2 px-1 border-b-2 font-medium text-sm transition-colors min-h-[44px] flex items-center gap-2`}
+                  >
+                    {getTabIcon(tab)}
+                    <span className="capitalize">{tab}</span>
+                  </motion.button>
+                ))}
+              </nav>
+            </motion.div>
 
-              {/* Tab Content */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeTab}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  {activeTab === 'feed' && <ActivityFeed />}
-                  {activeTab === 'partners' && (
-                    <div className="space-y-8">
-                      {selectedPartner ? (
-                        <div className="flex justify-between items-center">
-                          <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => setSelectedPartner(null)}
-                            className="px-4 py-2 bg-black/40 text-white rounded-lg border border-orange-500/20"
-                          >
-                            ← Back to Partners
-                          </motion.button>
-                        </div>
-                      ) : (
-                        <PartnerSelection
-                          onPartnerSelect={(partnerId) => setSelectedPartner(partnerId)}
-                        />
-                      )}
-
-                      {selectedPartner && (
-                        <WorkoutPartner
-                          partnerId={selectedPartner}
-                        />
-                      )}
-                    </div>
-                  )}
-                  {activeTab === 'challenges' && <Challenges />}
-                  {activeTab === 'friends' && (
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                      
-                      <div className="space-y-8">
-                        <FriendsList
-                          onChatOpen={setSelectedChat}
-                          onPartnerSelect={setSelectedPartner}
-                        />
-                        <FriendRequests />
+            {/* Tab Content */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                {activeTab === 'feed' && <ActivityFeed />}
+                {activeTab === 'partners' && (
+                  <div className="space-y-4 md:space-y-8">
+                    {selectedPartner ? (
+                      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => setSelectedPartner(null)}
+                          className="w-full md:w-auto px-4 py-3 md:py-2 bg-black/40 text-white rounded-lg border border-orange-500/20"
+                        >
+                          ← Back to Partners
+                        </motion.button>
                       </div>
+                    ) : (
+                      <PartnerSelection
+                        onPartnerSelect={(partnerId) => setSelectedPartner(partnerId)}
+                      />
+                    )}
+
+                    {selectedPartner && (
+                      <WorkoutPartner
+                        partnerId={selectedPartner}
+                      />
+                    )}
+                  </div>
+                )}
+                {activeTab === 'challenges' && <Challenges />}
+                {activeTab === 'friends' && (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
+                    <div className="space-y-4 md:space-y-8">
+                      <FriendsList
+                        onChatOpen={setSelectedChat}
+                        onPartnerSelect={setSelectedPartner}
+                      />
+                      <FriendRequests />
+                    </div>
+                    <div className="space-y-4">
                       <UserSearch onSuccess={fetchNotifications} />
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setShowScanner(true)}
-                        className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg"
+                        className="w-full md:w-auto px-4 py-3 md:py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg"
                       >
                         Scan QR Code
                       </motion.button>
                     </div>
-                  )}
-                </motion.div>
-              </AnimatePresence>
-            </div>
+                  </div>
+                )}
+              </motion.div>
+            </AnimatePresence>
           </div>
         </div>
       </div>
+    </div>
 
-      {/* Mobile Navigation Drawer */}
-      <MobileNavigationDrawer
-        isOpen={isMobileMenuOpen}
-        onClose={() => setIsMobileMenuOpen(false)}
-      />
-     
+    {/* Mobile Navigation Drawer */}
+    <MobileNavigationDrawer 
+      isOpen={isMobileMenuOpen}
+      onClose={() => setIsMobileMenuOpen(false)}
+    />
 
-      {/* Chat Window Modal */}
-      <AnimatePresence>
-        {selectedChat && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
-          >
+    {/* Chat Window Modal */}
+    <AnimatePresence>
+      {selectedChat && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+        >
+          <div className="w-full max-w-2xl h-[90vh] md:h-[600px] bg-black/90 rounded-xl border border-orange-500/20">
             <ChatWindow
               chatId={selectedChat}
               onClose={() => setSelectedChat(null)}
             />
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
 
-      <AnimatePresence>
-        {showScanner && (
-          <QRCodeScanner
-            onScan={handleQRCodeScan}
-            onClose={() => setShowScanner(false)}
-          />
-        )}
-      </AnimatePresence>
-    </div>
-  );
-
+    {/* QR Scanner Modal */}
+    <AnimatePresence>
+      {showScanner && (
+        <QRCodeScanner
+          onScan={handleQRCodeScan}
+          onClose={() => setShowScanner(false)}
+        />
+      )}
+    </AnimatePresence>
+  </div>
+);
 
 };
 
