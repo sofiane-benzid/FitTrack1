@@ -206,10 +206,11 @@ export const MobileNavigationDrawer = ({ isOpen, onClose }) => {
                 initial={{ x: '100%' }}
                 animate={{ x: isOpen ? 0 : '100%' }}
                 transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                className="fixed right-0 top-0 h-full w-72 bg-black/80 border-l border-blue-500/10 p-4 z-50"
+                className="fixed right-0 top-0 h-full w-72 bg-black/80 border-l border-blue-500/10 flex flex-col z-50"
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className="flex justify-between items-center mb-6">
+                {/* Fixed Header */}
+                <div className="flex justify-between items-center p-4 border-b border-blue-500/10">
                     <h2 className="text-lg font-bold bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">Fitness Tracker</h2>
                     <motion.button
                         whileHover={{ scale: 1.1, rotate: 90 }}
@@ -223,11 +224,14 @@ export const MobileNavigationDrawer = ({ isOpen, onClose }) => {
                     </motion.button>
                 </div>
                 
-                {/* Pass the onClose function to NavigationMenu */}
-                <NavigationMenu onClose={onClose} />
+                {/* Scrollable Navigation Area */}
+                <div className="flex-1 overflow-y-auto p-4">
+                    {/* Pass the onClose function to NavigationMenu */}
+                    <NavigationMenu onClose={onClose} />
+                </div>
                 
-                {/* Quick Actions */}
-                <div className="mt-8 pt-6 border-t border-blue-500/10">
+                {/* Fixed Quick Actions at Bottom */}
+                <div className="p-4 border-t border-blue-500/10 bg-black/40">
                     <h3 className="text-xs uppercase text-blue-200/50 font-medium tracking-wider mb-3">Quick Actions</h3>
                     <div className="space-y-2">
                         <motion.button
@@ -275,6 +279,12 @@ MobileNavigationDrawer.propTypes = {
     onClose: PropTypes.func.isRequired
 };
 
+// Add this to your CSS or global styles
+// .nav-glass {
+//   background: rgba(0, 0, 0, 0.3);
+//   backdrop-filter: blur(10px);
+//   box-shadow: 0 4px 30px rgba(254, 0, 0, 0.1);
+// }
 
 export default {
     NavigationMenu,
