@@ -1,6 +1,6 @@
-import { useNavigate, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence as FramerAnimatePresence } from 'framer-motion';
+import { AnimatePresence as FramerAnimatePresence, motion } from 'framer-motion';
 import PropTypes from 'prop-types';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 // Icons mapping (reusing existing icons from the app)
 const navigationItems = [
@@ -85,8 +85,8 @@ export const NavigationMenu = ({ onClose }) => {
                         onClick={() => handleNavigation(item.path)}
                         className={`w-full flex items-center px-4 py-3 space-x-3 rounded-lg transition-colors
                     ${isActive
-                                ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white'
-                                : 'text-orange-200/70 hover:bg-black/40 hover:text-orange-200'}`}
+                                ? 'bg-gradient-to-r from-blue-500 to-blue-700 text-white'
+                                : 'text-neutral-300 hover:bg-black/40 hover:text-neutral-200'}`}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                     >
@@ -110,7 +110,7 @@ export const BreadcrumbNavigation = () => {
     const pathSegments = location.pathname.split('/').filter(Boolean);
 
     return (
-        <div className="flex items-center space-x-2 text-sm text-orange-200/70">
+        <div className="flex items-center space-x-2 text-sm text-neutral-300">
             {pathSegments.map((segment, index) => (
                 <div key={index} className="flex items-center">
                     {index > 0 && <span className="mx-2">/</span>}
@@ -141,7 +141,7 @@ export const MobileNavigationDrawer = ({ isOpen, onClose }) => {
                         initial={{ x: '100%' }}
                         animate={{ x: 0 }}
                         exit={{ x: '100%' }}
-                        className="fixed right-0 top-0 h-full w-64 bg-zinc-900 border-l border-red-500/10 p-4 z-50"
+                        className="fixed right-0 top-0 h-full w-64 bg-zinc-900 border-l border-blue-500/10 p-4 z-50"
                     >
                         <div className="flex justify-between items-center mb-6">
                             <h2 className="text-lg font-bold text-white">Menu</h2>
@@ -149,7 +149,7 @@ export const MobileNavigationDrawer = ({ isOpen, onClose }) => {
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
                                 onClick={onClose}
-                                className="text-orange-200/70 hover:text-orange-200"
+                                className="text-neutral-300 hover:text-neutral-200"
                             >
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

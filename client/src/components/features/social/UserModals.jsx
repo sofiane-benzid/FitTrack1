@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import PropTypes from 'prop-types';
-import Feedback from '../../common/Feedback';
+import { useEffect, useState } from 'react';
 import { API_BASE_URL } from '../../../../../server/config/env';
+import Feedback from '../../common/Feedback';
 
 export const UserProfileModal = ({ userId, onClose }) => {
     const [loading, setLoading] = useState(true);
@@ -45,7 +45,7 @@ export const UserProfileModal = ({ userId, onClose }) => {
                 initial={{ scale: 0.95, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.95, y: 20 }}
-                className="bg-black/40 rounded-xl p-6 max-w-md w-full border border-orange-500/20 shadow-lg"
+                className="bg-black/40 rounded-xl p-6 max-w-md w-full border border-blue-500/20 shadow-lg"
             >
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-2xl font-bold text-white">User Profile</h2>
@@ -63,16 +63,16 @@ export const UserProfileModal = ({ userId, onClose }) => {
 
                 {loading ? (
                     <div className="flex justify-center py-8">
-                        <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+                        <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                     </div>
                 ) : error ? (
-                    <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400">
+                    <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg text-blue-400">
                         {error}
                     </div>
                 ) : profile && (
                     <div className="space-y-6">
                         <div className="flex items-center gap-4">
-                            <div className="h-16 w-16 rounded-full bg-gradient-to-r from-red-500 to-orange-500 flex items-center justify-center">
+                            <div className="h-16 w-16 rounded-full bg-gradient-to-r from-blue-500 to-blue-700 flex items-center justify-center">
                                 <span className="text-white font-bold text-2xl">
                                     {profile.fullName?.charAt(0) || profile.email.charAt(0)}
                                 </span>
@@ -83,27 +83,27 @@ export const UserProfileModal = ({ userId, onClose }) => {
                             </div>
                         </div>
 
-                        <div className="border-t border-orange-500/20 pt-4">
+                        <div className="border-t border-blue-500/20 pt-4">
                             <h4 className="text-lg font-medium text-white mb-3">Stats</h4>
                             <div className="grid grid-cols-2 gap-4">
-                                <div className="bg-black/40 p-4 rounded-lg border border-orange-500/10">
+                                <div className="bg-black/40 p-4 rounded-lg border border-blue-500/10">
                                     <p className="text-gray-400 text-sm">Total Workouts</p>
                                     <p className="text-xl font-medium text-white">{profile.stats?.totalWorkouts || 0}</p>
                                 </div>
-                                <div className="bg-black/40 p-4 rounded-lg border border-orange-500/10">
+                                <div className="bg-black/40 p-4 rounded-lg border border-blue-500/10">
                                     <p className="text-gray-400 text-sm">Workout Streak</p>
                                     <p className="text-xl font-medium text-white">{profile.stats?.workoutStreak || 0} days</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="border-t border-orange-500/20 pt-4">
+                        <div className="border-t border-blue-500/20 pt-4">
                             <h4 className="text-lg font-medium text-white mb-3">Fitness Goals</h4>
                             <div className="flex flex-wrap gap-2">
                                 {profile.fitnessGoals?.map((goal, index) => (
                                     <span
                                         key={index}
-                                        className="px-3 py-1 bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-orange-500/20 rounded-full text-sm text-orange-400"
+                                        className="px-3 py-1 bg-gradient-to-r from-blue-500/10 to-blue-500/10 border border-blue-500/20 rounded-full text-sm text-blue-400"
                                     >
                                         {goal.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                                     </span>
@@ -111,7 +111,7 @@ export const UserProfileModal = ({ userId, onClose }) => {
                             </div>
                         </div>
 
-                        <div className="border-t border-orange-500/20 pt-4">
+                        <div className="border-t border-blue-500/20 pt-4">
                             <h4 className="text-lg font-medium text-white mb-3">Recent Achievements</h4>
                             {profile.achievements?.length > 0 ? (
                                 <div className="space-y-2">
@@ -120,7 +120,7 @@ export const UserProfileModal = ({ userId, onClose }) => {
                                             key={index}
                                             className="flex items-center gap-2 text-sm"
                                         >
-                                            <div className="w-2 h-2 bg-gradient-to-r from-red-500 to-orange-500 rounded-full"></div>
+                                            <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-blue-700 rounded-full"></div>
                                             <span className="text-gray-300">{achievement.name}</span>
                                         </div>
                                     ))}
@@ -190,7 +190,7 @@ export const MessageModal = ({ recipientId, recipientName, onClose }) => {
                 initial={{ scale: 0.95, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.95, y: 20 }}
-                className="bg-black/40 rounded-xl p-6 max-w-md w-full border border-orange-500/20 shadow-lg"
+                className="bg-black/40 rounded-xl p-6 max-w-md w-full border border-blue-500/20 shadow-lg"
             >
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-xl font-bold text-white">Message {recipientName}</h2>
@@ -220,7 +220,7 @@ export const MessageModal = ({ recipientId, recipientName, onClose }) => {
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
                             rows="4"
-                            className="w-full bg-black/40 border border-orange-500/20 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-orange-500/50"
+                            className="w-full bg-black/40 border border-blue-500/20 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500/50"
                             placeholder="Type your message here..."
                             required
                         />
@@ -241,7 +241,7 @@ export const MessageModal = ({ recipientId, recipientName, onClose }) => {
                             whileTap={{ scale: 0.98 }}
                             type="submit"
                             disabled={loading}
-                            className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg hover:from-red-600 hover:to-orange-600 disabled:opacity-50"
+                            className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-lg hover:from-blue-600 hover:to-blue-800 disabled:opacity-50"
                         >
                             {loading ? 'Sending...' : 'Send Message'}
                         </motion.button>

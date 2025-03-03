@@ -1,8 +1,8 @@
-﻿import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+﻿import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
 import { API_BASE_URL } from '../../../../server/config/env';
+import { useAuth } from '../../hooks/useAuth';
 
 // Motivational quotes for side panel
 const motivationalQuotes = [
@@ -68,7 +68,7 @@ const Register = () => {
       setError('Passwords do not match');
       return;
     }
-    
+
     setError('');
     setLoading(true);
 
@@ -82,9 +82,9 @@ const Register = () => {
           profile: formData.profile
         }),
       });
-      
+
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.message || 'Registration failed');
       }
@@ -94,7 +94,7 @@ const Register = () => {
         email: formData.email,
         profile: formData.profile
       };
-      
+
       await login(userData, data.token);
       navigate('/profile-setup');
     } catch (err) {
@@ -107,8 +107,8 @@ const Register = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-black/90 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-orange-500"></div>
-      <div className="flex w-full max-w-5xl bg-black/60 rounded-2xl overflow-hidden shadow-2xl border border-orange-500/20">
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-blue-700"></div>
+      <div className="flex w-full max-w-5xl bg-black/60 rounded-2xl overflow-hidden shadow-2xl border border-blue-500/20">
         {/* Registration Form */}
         <div className="w-full md:w-1/2 p-8 space-y-8">
           <motion.div
@@ -125,10 +125,10 @@ const Register = () => {
           </motion.div>
 
           {error && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="bg-red-900/50 border border-red-500 text-red-300 px-4 py-3 rounded-lg"
+              className="bg-blue-900/50 border border-blue-500 text-blue-300 px-4 py-3 rounded-lg"
             >
               {error}
             </motion.div>
@@ -144,7 +144,7 @@ const Register = () => {
                 name="email"
                 type="email"
                 required
-                className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Email address"
                 value={formData.email}
                 onChange={handleChange}
@@ -159,7 +159,7 @@ const Register = () => {
                 name="profile.fullName"
                 type="text"
                 required
-                className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Full Name"
                 value={formData.profile.fullName}
                 onChange={handleChange}
@@ -175,7 +175,7 @@ const Register = () => {
                 name="profile.age"
                 type="number"
                 required
-                className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Age"
                 value={formData.profile.age}
                 onChange={handleChange}
@@ -184,7 +184,7 @@ const Register = () => {
                 name="profile.gender"
                 value={formData.profile.gender}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-black border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full px-3 py-2 bg-black border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="male" className="bg-black text-white">Male</option>
                 <option value="female" className="bg-black text-white">Female</option>
@@ -200,7 +200,7 @@ const Register = () => {
                 name="profile.fitnessLevel"
                 value={formData.profile.fitnessLevel}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-black border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full px-3 py-2 bg-black border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="beginner" className="bg-black text-white">Beginner</option>
                 <option value="intermediate" className="bg-black text-white">Intermediate</option>
@@ -216,7 +216,7 @@ const Register = () => {
                 name="password"
                 type="password"
                 required
-                className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Password"
                 value={formData.password}
                 onChange={handleChange}
@@ -231,7 +231,7 @@ const Register = () => {
                 name="confirmPassword"
                 type="password"
                 required
-                className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Confirm Password"
                 value={formData.confirmPassword}
                 onChange={handleChange}
@@ -247,9 +247,9 @@ const Register = () => {
                 type="submit"
                 disabled={loading}
                 className={`w-full py-2 rounded-lg text-white transition-all duration-300 
-                  ${loading 
-                    ? 'bg-gray-700 cursor-not-allowed' 
-                    : 'bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600'
+                  ${loading
+                    ? 'bg-gray-700 cursor-not-allowed'
+                    : 'bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800'
                   }`}
               >
                 {loading ? 'Creating Account...' : 'Create Account'}
@@ -257,15 +257,15 @@ const Register = () => {
             </motion.div>
           </form>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8 }}
             className="text-center"
           >
-            <Link 
-              to="/login" 
-              className="text-sm text-orange-400 hover:text-orange-300 transition-colors"
+            <Link
+              to="/login"
+              className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
             >
               Already have an account? Sign in here
             </Link>
@@ -273,8 +273,8 @@ const Register = () => {
         </div>
 
         {/* Motivational Quote Panel */}
-        <motion.div 
-          className="hidden md:flex w-1/2 bg-gradient-to-br from-red-500 to-orange-500 p-8 items-center justify-center"
+        <motion.div
+          className="hidden md:flex w-1/2 bg-gradient-to-br from-blue-500 to-blue-700 p-8 items-center justify-center"
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}

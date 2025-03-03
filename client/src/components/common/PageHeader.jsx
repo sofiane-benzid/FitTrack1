@@ -1,6 +1,6 @@
+import { motion } from 'framer-motion';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
 
 const PageHeader = ({ title, showBack = true, previousPage = -1 }) => {
     const navigate = useNavigate();
@@ -16,11 +16,11 @@ const PageHeader = ({ title, showBack = true, previousPage = -1 }) => {
                     whileHover={{ scale: 1.1, backgroundColor: 'rgba(239, 68, 68, 0.1)' }}
                     whileTap={{ scale: 0.9 }}
                     onClick={() => navigate(previousPage)}
-                    className="p-2 rounded-full bg-black/20 border border-red-500/20 transition-colors"
+                    className="p-2 rounded-full bg-black/20 border border-blue-500/20 transition-colors"
                     aria-label="Go back"
                 >
                     <svg
-                        className="w-6 h-6 text-orange-200"
+                        className="w-6 h-6 text-neutral-200"
                         fill="none"
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -35,7 +35,7 @@ const PageHeader = ({ title, showBack = true, previousPage = -1 }) => {
             <motion.h1
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="text-3xl font-bold bg-gradient-to-r from-orange-200 to-red-400 bg-clip-text text-transparent"
+                className="text-3xl font-bold bg-gradient-to-r from-blue-200 to-blue-400 bg-clip-text text-transparent"
             >
                 {title}
             </motion.h1>
@@ -47,7 +47,7 @@ PageHeader.propTypes = {
     title: PropTypes.string.isRequired,
     showBack: PropTypes.bool,
     previousPage: PropTypes.oneOfType([
-        PropTypes.number, 
+        PropTypes.number,
         PropTypes.string
     ])
 };

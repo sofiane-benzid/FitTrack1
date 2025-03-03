@@ -1,8 +1,8 @@
-﻿import { useState } from 'react';
-import { motion } from 'framer-motion';
+﻿import { motion } from 'framer-motion';
 import PropTypes from 'prop-types';
-import ThemedDatePicker from '../../common/ThemedDatePicker';
+import { useState } from 'react';
 import { API_BASE_URL } from '../../../../../server/config/env';
+import ThemedDatePicker from '../../common/ThemedDatePicker';
 
 const ActivityLogger = ({ onSuccess, onError }) => {
   const [formData, setFormData] = useState({
@@ -115,13 +115,13 @@ const ActivityLogger = ({ onSuccess, onError }) => {
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium text-orange-200 mb-1">Activity Type</label>
+          <label className="block text-sm font-medium text-neutral-200 mb-1">Activity Type</label>
           <select
             name="type"
             value={formData.type}
             onChange={handleChange}
-            className="w-full bg-black/20 border border-red-500/20 rounded-lg text-orange-200
-                      focus:border-red-500/50 focus:ring-0 transition-colors"
+            className="w-full bg-black/20 border border-blue-500/20 rounded-lg text-neutral-200
+                      focus:border-blue-500/50 focus:ring-0 transition-colors"
             required
           >
             {activityTypes.map(type => (
@@ -131,48 +131,48 @@ const ActivityLogger = ({ onSuccess, onError }) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-orange-200 mb-1">Duration (minutes)</label>
+          <label className="block text-sm font-medium text-neutral-200 mb-1">Duration (minutes)</label>
           <input
             type="number"
             name="duration"
             value={formData.duration}
             onChange={handleChange}
-            className="w-full bg-black/20 border border-red-500/20 rounded-lg text-orange-200
-                     focus:border-red-500/50 focus:ring-0 transition-colors"
+            className="w-full bg-black/20 border border-blue-500/20 rounded-lg text-neutral-200
+                     focus:border-blue-500/50 focus:ring-0 transition-colors"
             required
           />
         </div>
 
         {activityTypes.find(t => t.value === formData.type)?.needsDistance && (
           <div>
-            <label className="block text-sm font-medium text-orange-200 mb-1">Distance (km)</label>
+            <label className="block text-sm font-medium text-neutral-200 mb-1">Distance (km)</label>
             <input
               type="number"
               step="0.01"
               name="distance"
               value={formData.distance}
               onChange={handleChange}
-              className="w-full bg-black/20 border border-red-500/20 rounded-lg text-orange-200
-                       focus:border-red-500/50 focus:ring-0 transition-colors"
+              className="w-full bg-black/20 border border-blue-500/20 rounded-lg text-neutral-200
+                       focus:border-blue-500/50 focus:ring-0 transition-colors"
               required
             />
           </div>
         )}
 
         <div>
-          <label className="block text-sm font-medium text-orange-200 mb-1">Calories (optional)</label>
+          <label className="block text-sm font-medium text-neutral-200 mb-1">Calories (optional)</label>
           <input
             type="number"
             name="calories"
             value={formData.calories}
             onChange={handleChange}
-            className="w-full bg-black/20 border border-red-500/20 rounded-lg text-orange-200
-                     focus:border-red-500/50 focus:ring-0 transition-colors"
+            className="w-full bg-black/20 border border-blue-500/20 rounded-lg text-neutral-200
+                     focus:border-blue-500/50 focus:ring-0 transition-colors"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-orange-200 mb-1">Date</label>
+          <label className="block text-sm font-medium text-neutral-200 mb-1">Date</label>
           <ThemedDatePicker
             selectedDate={formData.date}
             onDateChange={(date) => setFormData(prev => ({
@@ -186,8 +186,8 @@ const ActivityLogger = ({ onSuccess, onError }) => {
 
       {formData.type === 'weightlifting' && (
         <div className="space-y-4">
-          <div className="bg-black/20 p-4 rounded-lg border border-red-500/10">
-            <h3 className="text-lg font-medium text-orange-200 mb-4">Add Set</h3>
+          <div className="bg-black/20 p-4 rounded-lg border border-blue-500/10">
+            <h3 className="text-lg font-medium text-neutral-200 mb-4">Add Set</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <input
                 type="text"
@@ -195,8 +195,8 @@ const ActivityLogger = ({ onSuccess, onError }) => {
                 name="exercise"
                 value={currentSet.exercise}
                 onChange={handleSetChange}
-                className="w-full bg-black/20 border border-red-500/20 rounded-lg text-orange-200
-                         focus:border-red-500/50 focus:ring-0 transition-colors"
+                className="w-full bg-black/20 border border-blue-500/20 rounded-lg text-neutral-200
+                         focus:border-blue-500/50 focus:ring-0 transition-colors"
               />
               <input
                 type="number"
@@ -204,8 +204,8 @@ const ActivityLogger = ({ onSuccess, onError }) => {
                 name="weight"
                 value={currentSet.weight}
                 onChange={handleSetChange}
-                className="w-full bg-black/20 border border-red-500/20 rounded-lg text-orange-200
-                         focus:border-red-500/50 focus:ring-0 transition-colors"
+                className="w-full bg-black/20 border border-blue-500/20 rounded-lg text-neutral-200
+                         focus:border-blue-500/50 focus:ring-0 transition-colors"
               />
               <input
                 type="number"
@@ -213,8 +213,8 @@ const ActivityLogger = ({ onSuccess, onError }) => {
                 name="reps"
                 value={currentSet.reps}
                 onChange={handleSetChange}
-                className="w-full bg-black/20 border border-red-500/20 rounded-lg text-orange-200
-                         focus:border-red-500/50 focus:ring-0 transition-colors"
+                className="w-full bg-black/20 border border-blue-500/20 rounded-lg text-neutral-200
+                         focus:border-blue-500/50 focus:ring-0 transition-colors"
               />
             </div>
             <motion.button
@@ -222,8 +222,8 @@ const ActivityLogger = ({ onSuccess, onError }) => {
               onClick={addSet}
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
-              className="w-full mt-4 p-2 bg-gradient-to-r from-red-500/20 to-orange-500/20 
-                       text-orange-200 rounded-lg hover:from-red-500/30 hover:to-orange-500/30
+              className="w-full mt-4 p-2 bg-gradient-to-r from-blue-500/20 to-blue-500/20 
+                       text-neutral-200 rounded-lg hover:from-blue-500/30 hover:to-blue-500/30
                        transition-colors"
             >
               Add Set
@@ -238,16 +238,16 @@ const ActivityLogger = ({ onSuccess, onError }) => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   className="flex justify-between items-center bg-black/20 p-3 rounded-lg 
-                           border border-red-500/10"
+                           border border-blue-500/10"
                 >
                   <div className="flex-1">
-                    <span className="text-orange-200">{set.exercise}: </span>
-                    <span className="text-orange-200/70">{set.weight}kg × {set.reps} reps</span>
+                    <span className="text-neutral-200">{set.exercise}: </span>
+                    <span className="text-neutral-300">{set.weight}kg × {set.reps} reps</span>
                   </div>
                   <button
                     type="button"
                     onClick={() => removeSet(index)}
-                    className="text-red-400 hover:text-red-300 transition-colors"
+                    className="text-blue-400 hover:text-blue-300 transition-colors"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -262,20 +262,20 @@ const ActivityLogger = ({ onSuccess, onError }) => {
       )}
 
       <div>
-        <label className="block text-sm font-medium text-orange-200 mb-1">Notes (optional)</label>
+        <label className="block text-sm font-medium text-neutral-200 mb-1">Notes (optional)</label>
         <textarea
           name="notes"
           value={formData.notes}
           onChange={handleChange}
           rows="3"
-          className="w-full bg-black/20 border border-red-500/20 rounded-lg text-orange-200
-                   focus:border-red-500/50 focus:ring-0 transition-colors"
+          className="w-full bg-black/20 border border-blue-500/20 rounded-lg text-neutral-200
+                   focus:border-blue-500/50 focus:ring-0 transition-colors"
         ></textarea>
       </div>
 
       {/* Sharing Options */}
-      <div className="space-y-4 border-t border-orange-500/20 pt-4 mt-4">
-        <h3 className="text-sm font-medium text-orange-200">Sharing Options</h3>
+      <div className="space-y-4 border-t border-blue-500/20 pt-4 mt-4">
+        <h3 className="text-sm font-medium text-neutral-200">Sharing Options</h3>
         <div className="flex items-center space-x-2">
           <input
             type="checkbox"
@@ -286,17 +286,17 @@ const ActivityLogger = ({ onSuccess, onError }) => {
               ...prev,
               isShared: e.target.checked
             }))}
-            className="rounded border-orange-500/20 bg-black/40 text-orange-500 
-                 focus:ring-orange-500 focus:ring-offset-0"
+            className="rounded border-blue-500/20 bg-black/40 text-blue-500 
+                 focus:ring-blue-500 focus:ring-offset-0"
           />
-          <label htmlFor="isShared" className="text-orange-200">
+          <label htmlFor="isShared" className="text-neutral-200">
             Share with workout partner
           </label>
         </div>
 
         {formData.isShared && (
           <div>
-            <label className="block text-sm font-medium text-orange-200 mb-1">
+            <label className="block text-sm font-medium text-neutral-200 mb-1">
               Visibility
             </label>
             <select
@@ -306,14 +306,14 @@ const ActivityLogger = ({ onSuccess, onError }) => {
                 ...prev,
                 visibility: e.target.value
               }))}
-              className="w-full bg-black/40 border border-orange-500/20 rounded-lg px-4 py-2 
-                   text-orange-200 focus:border-orange-500 focus:ring-0"
+              className="w-full bg-black/40 border border-blue-500/20 rounded-lg px-4 py-2 
+                   text-neutral-200 focus:border-blue-500 focus:ring-0"
             >
               <option value="partners" className="bg-black">Workout Partners Only</option>
               <option value="friends" className="bg-black">All Friends</option>
               <option value="public" className="bg-black">Public</option>
             </select>
-            <p className="mt-1 text-sm text-orange-200/70">
+            <p className="mt-1 text-sm text-neutral-300">
               Choose who can see this activity
             </p>
           </div>
@@ -326,7 +326,7 @@ const ActivityLogger = ({ onSuccess, onError }) => {
         whileHover={{ scale: 1.01 }}
         whileTap={{ scale: 0.99 }}
         className={`w-full py-3 rounded-lg text-white font-medium
-                   ${loading ? 'bg-red-500/50' : 'bg-gradient-to-r from-red-500 to-orange-500 hover:shadow-lg hover:shadow-red-500/20'}
+                   ${loading ? 'bg-blue-500/50' : 'bg-gradient-to-r from-blue-500 to-blue-700 hover:shadow-lg hover:shadow-blue-500/20'}
                    transition-all duration-300`}
       >
         {loading ? 'Logging Activity...' : 'Log Activity'}

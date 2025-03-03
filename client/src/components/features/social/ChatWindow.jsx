@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import PropTypes from 'prop-types';
-import { motion, AnimatePresence } from 'framer-motion';
-import Feedback from '../../common/Feedback';
-import { useAuth } from '../../../hooks/useAuth';
+import { useEffect, useRef, useState } from 'react';
 import { API_BASE_URL } from '../../../../../server/config/env';
+import { useAuth } from '../../../hooks/useAuth';
+import Feedback from '../../common/Feedback';
 
 const ChatWindow = ({ chatId, onClose, partnerId }) => {
     const [messages, setMessages] = useState([]);
@@ -56,7 +56,7 @@ const ChatWindow = ({ chatId, onClose, partnerId }) => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 },
-                body: JSON.stringify({ 
+                body: JSON.stringify({
                     content: newMessage,
                     recipientId: partnerId
                 })
@@ -75,13 +75,13 @@ const ChatWindow = ({ chatId, onClose, partnerId }) => {
     return (
         <div className="flex flex-col h-full">
             {/* Chat Header */}
-            <div className="p-4 border-b border-orange-500/20 flex justify-between items-center">
+            <div className="p-4 border-b border-blue-500/20 flex justify-between items-center">
                 <h3 className="text-lg font-medium text-white">Chat</h3>
                 <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={onClose}
-                    className="text-orange-200 hover:text-orange-300"
+                    className="text-neutral-200 hover:text-blue-300"
                 >
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -93,7 +93,7 @@ const ChatWindow = ({ chatId, onClose, partnerId }) => {
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
                 {loading ? (
                     <div className="flex justify-center">
-                        <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"/>
+                        <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
                     </div>
                 ) : (
                     <AnimatePresence>
@@ -105,11 +105,10 @@ const ChatWindow = ({ chatId, onClose, partnerId }) => {
                                 className={`flex ${message.sender === user.id ? 'justify-end' : 'justify-start'}`}
                             >
                                 <div
-                                    className={`max-w-[70%] p-3 rounded-lg ${
-                                        message.sender === user.id
-                                            ? 'bg-gradient-to-r from-red-500/20 to-orange-500/20 text-orange-200'
-                                            : 'bg-black/40 text-white'
-                                    }`}
+                                    className={`max-w-[70%] p-3 rounded-lg ${message.sender === user.id
+                                        ? 'bg-gradient-to-r from-blue-500/20 to-blue-500/20 text-neutral-200'
+                                        : 'bg-black/40 text-white'
+                                        }`}
                                 >
                                     <p>{message.content}</p>
                                     <p className="text-xs mt-1 opacity-50">
@@ -124,7 +123,7 @@ const ChatWindow = ({ chatId, onClose, partnerId }) => {
             </div>
 
             {/* Message Input */}
-            <form onSubmit={handleSendMessage} className="p-4 border-t border-orange-500/20">
+            <form onSubmit={handleSendMessage} className="p-4 border-t border-blue-500/20">
                 {error && <Feedback type="error" message={error} onClose={() => setError(null)} />}
                 <div className="flex gap-2">
                     <input
@@ -132,14 +131,14 @@ const ChatWindow = ({ chatId, onClose, partnerId }) => {
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                         placeholder="Type a message..."
-                        className="flex-1 bg-black/40 border border-orange-500/20 rounded-lg px-4 py-2 
-                                 text-white focus:outline-none focus:border-orange-500"
+                        className="flex-1 bg-black/40 border border-blue-500/20 rounded-lg px-4 py-2 
+                                 text-white focus:outline-none focus:border-blue-500"
                     />
                     <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         type="submit"
-                        className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg"
+                        className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-lg"
                     >
                         Send
                     </motion.button>

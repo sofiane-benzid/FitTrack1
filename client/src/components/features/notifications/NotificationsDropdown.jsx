@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { socialService } from '../../../services/socialService';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { socialService } from '../../../services/socialService';
 
 const NotificationsDropdown = () => {
     const [notifications, setNotifications] = useState([]);
@@ -102,7 +102,7 @@ const NotificationsDropdown = () => {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsOpen(!isOpen)}
-                className="relative p-2 text-gray-400 hover:text-orange-500 focus:outline-none"
+                className="relative p-2 text-gray-400 hover:text-blue-500 focus:outline-none"
             >
                 <svg
                     className="w-6 h-6"
@@ -119,11 +119,11 @@ const NotificationsDropdown = () => {
                 </svg>
                 <AnimatePresence>
                     {unreadCount > 0 && (
-                        <motion.span 
+                        <motion.span
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
                             exit={{ scale: 0 }}
-                            className="absolute top-0 right-0 -mt-1 -mr-1 px-2 py-1 text-xs font-bold text-white bg-red-500 rounded-full"
+                            className="absolute top-0 right-0 -mt-1 -mr-1 px-2 py-1 text-xs font-bold text-white bg-blue-500 rounded-full"
                         >
                             {unreadCount}
                         </motion.span>
@@ -137,16 +137,16 @@ const NotificationsDropdown = () => {
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        className="absolute right-0 mt-2 w-96 bg-black/80 rounded-lg shadow-2xl border border-orange-500/20 z-50"
+                        className="absolute right-0 mt-2 w-96 bg-black/80 rounded-lg shadow-2xl border border-blue-500/20 z-50"
                     >
-                        <div className="p-4 border-b border-orange-500/20">
+                        <div className="p-4 border-b border-blue-500/20">
                             <div className="flex justify-between items-center">
                                 <h3 className="text-lg font-medium text-white">Notifications</h3>
                                 <motion.button
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     onClick={handleMarkAllRead}
-                                    className="text-sm text-orange-500 hover:text-orange-600"
+                                    className="text-sm text-blue-500 hover:text-blue-600"
                                 >
                                     Mark all as read
                                 </motion.button>
@@ -158,14 +158,14 @@ const NotificationsDropdown = () => {
                                     No notifications
                                 </div>
                             ) : (
-                                <div className="divide-y divide-orange-500/20">
+                                <div className="divide-y divide-blue-500/20">
                                     {notifications.map((notification) => (
                                         <motion.div
                                             key={notification._id}
                                             initial={{ opacity: 0, x: -20 }}
                                             animate={{ opacity: 1, x: 0 }}
                                             exit={{ opacity: 0, x: -20 }}
-                                            whileHover={{ 
+                                            whileHover={{
                                                 scale: 1.02,
                                                 backgroundColor: 'rgba(249, 88, 44, 0.1)'
                                             }}
@@ -174,13 +174,12 @@ const NotificationsDropdown = () => {
                                         >
                                             <div className="flex items-start">
                                                 <div className="flex-shrink-0">
-                                                    <div className={`p-2 rounded-full ${
-                                                        notification.type === 'friend_request' 
-                                                            ? 'bg-orange-100 text-orange-500' 
-                                                            : notification.type === 'challenge_invite' 
-                                                                ? 'bg-red-100 text-red-500' 
-                                                                : 'bg-gray-700 text-gray-400'
-                                                    }`}>
+                                                    <div className={`p-2 rounded-full ${notification.type === 'friend_request'
+                                                        ? 'bg-blue-100 text-blue-500'
+                                                        : notification.type === 'challenge_invite'
+                                                            ? 'bg-blue-100 text-blue-500'
+                                                            : 'bg-gray-700 text-gray-400'
+                                                        }`}>
                                                         {notification.type === 'friend_request' && (
                                                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -206,7 +205,7 @@ const NotificationsDropdown = () => {
                                                         e.stopPropagation();
                                                         handleDeleteNotification(notification._id);
                                                     }}
-                                                    className="ml-2 text-gray-500 hover:text-red-500"
+                                                    className="ml-2 text-gray-500 hover:text-blue-500"
                                                 >
                                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

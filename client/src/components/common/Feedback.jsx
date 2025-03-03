@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import PropTypes from 'prop-types';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useState } from 'react';
 
 const Feedback = ({ message, type = 'success', duration = 3000, onClose }) => {
     const [isVisible, setIsVisible] = useState(true);
@@ -17,8 +17,8 @@ const Feedback = ({ message, type = 'success', duration = 3000, onClose }) => {
 
     const styles = {
         success: 'bg-green-500/20 border-green-500/50 text-green-400',
-        error: 'bg-red-500/20 border-red-500/50 text-red-400',
-        warning: 'bg-orange-500/20 border-orange-500/50 text-orange-400',
+        error: 'bg-blue-500/20 border-blue-500/50 text-blue-400',
+        warning: 'bg-blue-500/20 border-blue-500/50 text-blue-400',
         info: 'bg-blue-500/20 border-blue-500/50 text-blue-400'
     };
 
@@ -42,9 +42,9 @@ const Feedback = ({ message, type = 'success', duration = 3000, onClose }) => {
                             onClose?.();
                         }}
                     >
-                        <svg className="fill-current h-6 w-6 opacity-75 hover:opacity-100 transition-opacity" 
-                            role="button" 
-                            xmlns="http://www.w3.org/2000/svg" 
+                        <svg className="fill-current h-6 w-6 opacity-75 hover:opacity-100 transition-opacity"
+                            role="button"
+                            xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 20 20"
                         >
                             <title>Close</title>

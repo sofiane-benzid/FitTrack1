@@ -1,16 +1,16 @@
-﻿import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import LevelProgressBar from '../components/features/gamification/LevelProgressBar';
-import StreakCard from '../components/features/gamification/StreakCard';
-import PointsHistory from '../components/features/gamification/PointsHistory';
+﻿import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { API_BASE_URL } from '../../../server/config/env';
+import Feedback from '../components/common/Feedback';
 import AchievementPopup from '../components/features/gamification/AchievementPopup';
 import Badges from '../components/features/gamification/Badges';
 import Leaderboard from '../components/features/gamification/Leaderboard';
-import { NavigationMenu, BreadcrumbNavigation, MobileNavigationDrawer } from '../components/navigation';
+import LevelProgressBar from '../components/features/gamification/LevelProgressBar';
+import PointsHistory from '../components/features/gamification/PointsHistory';
+import StreakCard from '../components/features/gamification/StreakCard';
 import NotificationsDropdown from '../components/features/notifications/NotificationsDropdown';
-import Feedback from '../components/common/Feedback';
+import { BreadcrumbNavigation, MobileNavigationDrawer, NavigationMenu } from '../components/navigation';
 import { useAuth } from '../hooks/useAuth';
-import { API_BASE_URL } from '../../../server/config/env';
 
 const GamificationPage = () => {
   const { user } = useAuth();
@@ -102,7 +102,7 @@ const GamificationPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-black/90 flex justify-center items-center">
-        <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -114,30 +114,30 @@ const GamificationPage = () => {
   return (
     <div className="min-h-screen bg-black">
       {/* Navigation Bar */}
-      <motion.nav 
+      <motion.nav
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="bg-black/80 backdrop-blur-sm border-b border-red-500/10 sticky top-0 z-50"
+        className="bg-black/80 backdrop-blur-sm border-b border-blue-500/10 sticky top-0 z-50"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <span className="text-xl font-bold bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-500 to-blue-700 bg-clip-text text-transparent">
                 Achievements & Progress
               </span>
             </div>
             <div className="flex items-center space-x-4">
               <NotificationsDropdown />
-              <span className="text-orange-200">
+              <span className="text-neutral-200">
                 Welcome, {user?.profile?.fullName || user?.email || 'User'}
               </span>
-              
+
               {/* Mobile Menu Button */}
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsMobileMenuOpen(true)}
-                className="md:hidden text-orange-200 hover:text-orange-400"
+                className="md:hidden text-neutral-200 hover:text-blue-400"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -187,7 +187,7 @@ const GamificationPage = () => {
               </div>
 
               {/* Tab Navigation */}
-              <div className="border-b border-red-500/10 mb-6">
+              <div className="border-b border-blue-500/10 mb-6">
                 <nav className="-mb-px flex space-x-8">
                   {['overview', 'badges', 'leaderboard'].map((tab) => (
                     <motion.button
@@ -195,11 +195,10 @@ const GamificationPage = () => {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => setActiveTab(tab)}
-                      className={`${
-                        activeTab === tab
-                          ? 'border-red-500 text-orange-200'
-                          : 'border-transparent text-orange-200/70 hover:text-orange-200 hover:border-red-500/50'
-                      } whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-colors`}
+                      className={`${activeTab === tab
+                        ? 'border-blue-500 text-neutral-200'
+                        : 'border-transparent text-neutral-300 hover:text-neutral-200 hover:border-blue-500/50'
+                        } whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-colors`}
                     >
                       {tab.charAt(0).toUpperCase() + tab.slice(1)}
                     </motion.button>
@@ -229,11 +228,11 @@ const GamificationPage = () => {
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: index * 0.1 }}
-                                className="bg-black/40 p-4 rounded-lg border border-orange-500/20"
+                                className="bg-black/40 p-4 rounded-lg border border-blue-500/20"
                               >
-                                <h4 className="text-orange-400">{achievement.name}</h4>
+                                <h4 className="text-blue-400">{achievement.name}</h4>
                                 <p className="text-gray-400 text-sm">{achievement.description}</p>
-                                <p className="text-orange-200/70 text-xs mt-2">
+                                <p className="text-neutral-300 text-xs mt-2">
                                   Unlocked {new Date(achievement.unlockedAt).toLocaleDateString()}
                                 </p>
                               </motion.div>
@@ -253,7 +252,7 @@ const GamificationPage = () => {
       </div>
 
       {/* Mobile Navigation Drawer */}
-      <MobileNavigationDrawer 
+      <MobileNavigationDrawer
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
       />
@@ -268,7 +267,7 @@ const GamificationPage = () => {
         )}
       </AnimatePresence>
     </div>
-);
+  );
 };
 
 export default GamificationPage;

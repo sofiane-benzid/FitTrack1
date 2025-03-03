@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import PropTypes from 'prop-types';
+import { useEffect, useRef, useState } from 'react';
 
 const ThemedDatePicker = ({ selectedDate, onDateChange, minDate }) => {
     const [showCalendar, setShowCalendar] = useState(false);
@@ -88,8 +88,8 @@ const ThemedDatePicker = ({ selectedDate, onDateChange, minDate }) => {
             ${isDisabled
                             ? 'text-gray-600 cursor-not-allowed'
                             : isSelected
-                                ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white'
-                                : 'text-orange-200 hover:bg-orange-500/20'
+                                ? 'bg-gradient-to-r from-blue-500 to-blue-700 text-white'
+                                : 'text-neutral-200 hover:bg-blue-500/20'
                         }
           `}
                     disabled={isDisabled}
@@ -106,7 +106,7 @@ const ThemedDatePicker = ({ selectedDate, onDateChange, minDate }) => {
         <div className="relative">
             <div
                 onClick={() => setShowCalendar(!showCalendar)}
-                className="w-full bg-black/20 border border-orange-500/20 rounded-lg px-4 py-2 text-white cursor-pointer"
+                className="w-full bg-black/20 border border-blue-500/20 rounded-lg px-4 py-2 text-white cursor-pointer"
             >
                 {selectedDate ? formatDate(selectedDate) : 'Select a date'}
             </div>
@@ -118,7 +118,7 @@ const ThemedDatePicker = ({ selectedDate, onDateChange, minDate }) => {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 10 }}
-                        className="absolute z-50 mt-2 w-full bg-black/95 border border-orange-500/20 rounded-lg p-4 shadow-xl"
+                        className="absolute z-50 mt-2 w-full bg-black/95 border border-blue-500/20 rounded-lg p-4 shadow-xl"
                     >
                         {/* Calendar Header */}
                         <div className="flex justify-between items-center mb-4">
@@ -126,14 +126,14 @@ const ThemedDatePicker = ({ selectedDate, onDateChange, minDate }) => {
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={prevMonth}
-                                className="p-1 rounded-full hover:bg-orange-500/20"
+                                className="p-1 rounded-full hover:bg-blue-500/20"
                             >
-                                <svg className="w-5 h-5 text-orange-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-5 h-5 text-neutral-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                                 </svg>
                             </motion.button>
 
-                            <span className="text-orange-200 font-medium">
+                            <span className="text-neutral-200 font-medium">
                                 {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                             </span>
 
@@ -141,9 +141,9 @@ const ThemedDatePicker = ({ selectedDate, onDateChange, minDate }) => {
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={nextMonth}
-                                className="p-1 rounded-full hover:bg-orange-500/20"
+                                className="p-1 rounded-full hover:bg-blue-500/20"
                             >
-                                <svg className="w-5 h-5 text-orange-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-5 h-5 text-neutral-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                 </svg>
                             </motion.button>
@@ -152,7 +152,7 @@ const ThemedDatePicker = ({ selectedDate, onDateChange, minDate }) => {
                         {/* Weekday Headers */}
                         <div className="grid grid-cols-7 gap-1 mb-2">
                             {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(day => (
-                                <div key={day} className="h-8 flex items-center justify-center text-orange-200/50 text-sm">
+                                <div key={day} className="h-8 flex items-center justify-center text-neutral-200/50 text-sm">
                                     {day}
                                 </div>
                             ))}

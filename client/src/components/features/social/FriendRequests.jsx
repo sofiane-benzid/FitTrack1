@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 import { socialService } from '../../../services/socialService';
 import Feedback from '../../common/Feedback';
 
@@ -12,12 +12,12 @@ const RequestCard = ({ request, onAccept, onDecline }) => (
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
-        className="bg-black/40 rounded-xl border border-orange-500/20 overflow-hidden"
+        className="bg-black/40 rounded-xl border border-blue-500/20 overflow-hidden"
     >
         <div className="p-4">
             <div className="flex items-center gap-4">
                 <div className="relative">
-                    <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center shadow-lg">
+                    <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg">
                         <span className="text-white font-bold text-xl">
                             {request.requester.fullName?.charAt(0) || request.requester.email.charAt(0)}
                         </span>
@@ -25,7 +25,7 @@ const RequestCard = ({ request, onAccept, onDecline }) => (
                     <motion.div
                         animate={{ rotate: 360 }}
                         transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                        className="absolute -top-1 -right-1 w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center"
+                        className="absolute -top-1 -right-1 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center"
                     >
                         <span className="text-white text-xs">+</span>
                     </motion.div>
@@ -44,7 +44,7 @@ const RequestCard = ({ request, onAccept, onDecline }) => (
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => onAccept(request._id)}
-                        className="flex-1 px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg hover:from-red-600 hover:to-orange-600 font-medium"
+                        className="flex-1 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-lg hover:from-blue-600 hover:to-blue-800 font-medium"
                     >
                         Accept Request
                     </motion.button>
@@ -52,7 +52,7 @@ const RequestCard = ({ request, onAccept, onDecline }) => (
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => onDecline(request._id)}
-                        className="px-4 py-2 bg-black/40 text-gray-300 rounded-lg hover:bg-black/60 border border-orange-500/20 font-medium"
+                        className="px-4 py-2 bg-black/40 text-gray-300 rounded-lg hover:bg-black/60 border border-blue-500/20 font-medium"
                     >
                         Decline
                     </motion.button>
@@ -68,12 +68,12 @@ const SentRequestCard = ({ request, onCancel }) => (
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
-        className="bg-black/40 rounded-xl border border-orange-500/20 overflow-hidden"
+        className="bg-black/40 rounded-xl border border-blue-500/20 overflow-hidden"
     >
         <div className="p-4">
             <div className="flex items-center gap-4">
                 <div className="relative">
-                    <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-red-500/40 to-orange-500/40 flex items-center justify-center">
+                    <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-blue-500/40 to-blue-500/40 flex items-center justify-center">
                         <span className="text-white font-bold text-xl">
                             {request.recipient.fullName?.charAt(0) || request.recipient.email.charAt(0)}
                         </span>
@@ -81,7 +81,7 @@ const SentRequestCard = ({ request, onCancel }) => (
                     <motion.div
                         animate={{ rotate: 360 }}
                         transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                        className="absolute -top-1 -right-1 w-5 h-5 bg-orange-500/50 rounded-full flex items-center justify-center"
+                        className="absolute -top-1 -right-1 w-5 h-5 bg-blue-500/50 rounded-full flex items-center justify-center"
                     >
                         <span className="text-white text-xs">→</span>
                     </motion.div>
@@ -96,7 +96,7 @@ const SentRequestCard = ({ request, onCancel }) => (
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => onCancel(request._id)}
-                    className="text-orange-500 hover:text-orange-400"
+                    className="text-blue-500 hover:text-blue-400"
                 >
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -179,7 +179,7 @@ const FriendRequests = () => {
     if (loading) {
         return (
             <div className="min-h-[200px] flex items-center justify-center">
-                <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
             </div>
         );
     }
@@ -202,16 +202,16 @@ const FriendRequests = () => {
                 />
             )}
 
-            <div className="bg-black/40 rounded-xl border border-orange-500/20 overflow-hidden">
-                <div className="p-4 border-b border-orange-500/20">
+            <div className="bg-black/40 rounded-xl border border-blue-500/20 overflow-hidden">
+                <div className="p-4 border-b border-blue-500/20">
                     <div className="flex gap-4">
                         <motion.button
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={() => setActiveTab('received')}
                             className={`px-4 py-2 rounded-lg font-medium transition-colors ${activeTab === 'received'
-                                    ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white'
-                                    : 'text-gray-400 hover:text-white'
+                                ? 'bg-gradient-to-r from-blue-500 to-blue-700 text-white'
+                                : 'text-gray-400 hover:text-white'
                                 }`}
                         >
                             Received ({requests.received.length})
@@ -221,8 +221,8 @@ const FriendRequests = () => {
                             whileTap={{ scale: 0.98 }}
                             onClick={() => setActiveTab('sent')}
                             className={`px-4 py-2 rounded-lg font-medium transition-colors ${activeTab === 'sent'
-                                    ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white'
-                                    : 'text-gray-400 hover:text-white'
+                                ? 'bg-gradient-to-r from-blue-500 to-blue-700 text-white'
+                                : 'text-gray-400 hover:text-white'
                                 }`}
                         >
                             Sent ({requests.sent.length})

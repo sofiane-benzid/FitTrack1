@@ -1,8 +1,8 @@
-﻿import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import Feedback from '../../common/Feedback';
-import { useAuth } from '../../../hooks/useAuth';
+﻿import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 import { API_BASE_URL } from '../../../../../server/config/env';
+import { useAuth } from '../../../hooks/useAuth';
+import Feedback from '../../common/Feedback';
 
 const Leaderboard = () => {
     const [leaderboard, setLeaderboard] = useState([]);
@@ -35,7 +35,7 @@ const Leaderboard = () => {
     if (loading) {
         return (
             <div className="flex justify-center items-center py-8">
-                <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
             </div>
         );
     }
@@ -48,8 +48,8 @@ const Leaderboard = () => {
         switch (rank) {
             case 1: return 'from-yellow-500 to-yellow-600';
             case 2: return 'from-slate-400 to-slate-500';
-            case 3: return 'from-orange-500 to-orange-600';
-            default: return 'from-red-500/20 to-orange-500/20';
+            case 3: return 'from-blue-500 to-blue-600';
+            default: return 'from-blue-500/20 to-blue-500/20';
         }
     };
 
@@ -57,14 +57,14 @@ const Leaderboard = () => {
         <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="bg-black/40 rounded-xl border border-orange-500/20"
+            className="bg-black/40 rounded-xl border border-blue-500/20"
         >
-            <div className="p-6 border-b border-orange-500/20">
+            <div className="p-6 border-b border-blue-500/20">
                 <h2 className="text-lg font-medium text-white">Fitness Leaderboard</h2>
-                <p className="mt-1 text-sm text-orange-200/70">Top performers this month</p>
+                <p className="mt-1 text-sm text-neutral-300">Top performers this month</p>
             </div>
 
-            <ul className="divide-y divide-orange-500/10">
+            <ul className="divide-y divide-blue-500/10">
                 {leaderboard.length === 0 ? (
                     <li className="p-6 text-center text-gray-400">No data available</li>
                 ) : (
@@ -74,7 +74,7 @@ const Leaderboard = () => {
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: index * 0.1 }}
-                            className={`p-4 flex items-center space-x-4 ${entry.userId === user?.id ? 'bg-red-500/10' : ''
+                            className={`p-4 flex items-center space-x-4 ${entry.userId === user?.id ? 'bg-blue-500/10' : ''
                                 }`}
                         >
                             {/* Rank Badge */}
@@ -88,7 +88,7 @@ const Leaderboard = () => {
                                 <p className="text-white font-medium truncate">
                                     {entry.fullName || entry.email}
                                 </p>
-                                <p className="text-orange-200/70 text-sm">
+                                <p className="text-neutral-300 text-sm">
                                     Level {Math.floor(entry.totalPoints / 100) + 1}
                                 </p>
                             </div>
@@ -96,7 +96,7 @@ const Leaderboard = () => {
                             {/* Points */}
                             <div className="text-right">
                                 <p className="text-white font-medium">{entry.totalPoints} points</p>
-                                <p className="text-orange-200/70 text-sm">{entry.totalActivities} activities</p>
+                                <p className="text-neutral-300 text-sm">{entry.totalActivities} activities</p>
                             </div>
                         </motion.li>
                     ))

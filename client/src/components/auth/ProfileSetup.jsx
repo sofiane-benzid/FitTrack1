@@ -1,8 +1,8 @@
-﻿import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+﻿import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
 import { API_BASE_URL } from '../../../../server/config/env';
+import { useAuth } from '../../hooks/useAuth';
 
 // Fitness Achievement Quotes
 const achievementQuotes = [
@@ -106,13 +106,13 @@ const ProfileSetup = () => {
         },
         body: JSON.stringify({ profile: processedData }),
       });
-      
+
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.message || 'Failed to update profile');
       }
-      
+
       updateProfile(processedData);
       navigate('/dashboard');
     } catch (err) {
@@ -124,9 +124,9 @@ const ProfileSetup = () => {
 
   return (
     <div className="min-h-screen bg-black/90 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-orange-500"></div>
-      
-      <div className="flex w-full max-w-5xl bg-black/60 rounded-2xl overflow-hidden shadow-2xl border border-orange-500/20">
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-blue-700"></div>
+
+      <div className="flex w-full max-w-5xl bg-black/60 rounded-2xl overflow-hidden shadow-2xl border border-blue-500/20">
         {/* Form Section */}
         <div className="w-full md:w-2/3 p-8 space-y-6">
           <motion.div
@@ -143,10 +143,10 @@ const ProfileSetup = () => {
           </motion.div>
 
           {error && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="bg-red-900/50 border border-red-500 text-red-300 px-4 py-3 rounded-lg"
+              className="bg-blue-900/50 border border-blue-500 text-blue-300 px-4 py-3 rounded-lg"
             >
               {error}
             </motion.div>
@@ -167,10 +167,10 @@ const ProfileSetup = () => {
                   value={formData.fullName}
                   onChange={handleChange}
                   required
-                  className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </motion.div>
-              
+
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -183,7 +183,7 @@ const ProfileSetup = () => {
                   value={formData.age}
                   onChange={handleChange}
                   required
-                  className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </motion.div>
             </div>
@@ -205,11 +205,10 @@ const ProfileSetup = () => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => handleGoalToggle(goal.value)}
-                    className={`flex items-center justify-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-                      formData.fitnessGoals.includes(goal.value)
-                        ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white'
-                        : 'bg-white/10 text-gray-300 hover:bg-white/20'
-                    }`}
+                    className={`flex items-center justify-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${formData.fitnessGoals.includes(goal.value)
+                      ? 'bg-gradient-to-r from-blue-500 to-blue-700 text-white'
+                      : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                      }`}
                   >
                     <span>{goal.icon}</span>
                     <span>{goal.label}</span>
@@ -235,11 +234,10 @@ const ProfileSetup = () => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => handleActivityToggle(activity.value)}
-                    className={`flex items-center justify-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-                      formData.activityPreferences.includes(activity.value)
-                        ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white'
-                        : 'bg-white/10 text-gray-300 hover:bg-white/20'
-                    }`}
+                    className={`flex items-center justify-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${formData.activityPreferences.includes(activity.value)
+                      ? 'bg-gradient-to-r from-blue-500 to-blue-700 text-white'
+                      : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                      }`}
                   >
                     <span>{activity.icon}</span>
                     <span>{activity.label}</span>
@@ -258,9 +256,9 @@ const ProfileSetup = () => {
                 type="submit"
                 disabled={loading}
                 className={`w-full py-2 rounded-lg text-white transition-all duration-300 
-                  ${loading 
-                    ? 'bg-gray-700 cursor-not-allowed' 
-                    : 'bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600'
+                  ${loading
+                    ? 'bg-gray-700 cursor-not-allowed'
+                    : 'bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800'
                   }`}
               >
                 {loading ? 'Setting Up Profile...' : 'Complete Profile'}
@@ -270,8 +268,8 @@ const ProfileSetup = () => {
         </div>
 
         {/* Motivational Panel */}
-        <motion.div 
-          className="hidden md:flex w-1/3 bg-gradient-to-br from-red-500 to-orange-500 p-8 items-center justify-center"
+        <motion.div
+          className="hidden md:flex w-1/3 bg-gradient-to-br from-blue-500 to-blue-700 p-8 items-center justify-center"
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}

@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
 import Feedback from '../common/Feedback';
 
 const ProfileEditForm = ({ initialData, onSubmit, onCancel }) => {
@@ -16,7 +16,7 @@ const ProfileEditForm = ({ initialData, onSubmit, onCancel }) => {
     });
     const [loading, setLoading] = useState(false);
     const [feedback, setFeedback] = useState(null);
-    
+
     useEffect(() => {
         setFormData({
             fullName: initialData.fullName || '',
@@ -100,7 +100,7 @@ const ProfileEditForm = ({ initialData, onSubmit, onCancel }) => {
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="max-w-2xl mx-auto bg-black/60 p-8 rounded-2xl border border-orange-500/20 shadow-2xl"
+                className="max-w-2xl mx-auto bg-black/60 p-8 rounded-2xl border border-blue-500/20 shadow-2xl"
             >
                 <h2 className="text-3xl font-bold text-white text-center mb-4">
                     Edit Profile
@@ -127,57 +127,57 @@ const ProfileEditForm = ({ initialData, onSubmit, onCancel }) => {
                     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                         {/* Basic Information */}
                         <div>
-                            <label className="block text-sm font-medium text-orange-200">Full Name</label>
+                            <label className="block text-sm font-medium text-neutral-200">Full Name</label>
                             <input
                                 type="text"
                                 name="fullName"
                                 value={formData.fullName}
                                 onChange={handleChange}
-                                className="mt-1 block w-full rounded-md bg-black/30 border border-orange-500/20 text-white focus:border-orange-500 focus:ring-orange-500"
+                                className="mt-1 block w-full rounded-md bg-black/30 border border-blue-500/20 text-white focus:border-blue-500 focus:ring-blue-500"
                                 required
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-orange-200">Age</label>
+                            <label className="block text-sm font-medium text-neutral-200">Age</label>
                             <input
                                 type="number"
                                 name="age"
                                 value={formData.age}
                                 onChange={handleChange}
-                                className="mt-1 block w-full rounded-md bg-black/30 border border-orange-500/20 text-white focus:border-orange-500 focus:ring-orange-500"
+                                className="mt-1 block w-full rounded-md bg-black/30 border border-blue-500/20 text-white focus:border-blue-500 focus:ring-blue-500"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-orange-200">Weight (kg)</label>
+                            <label className="block text-sm font-medium text-neutral-200">Weight (kg)</label>
                             <input
                                 type="number"
                                 name="weight"
                                 value={formData.weight}
                                 onChange={handleChange}
-                                className="mt-1 block w-full rounded-md bg-black/30 border border-orange-500/20 text-white focus:border-orange-500 focus:ring-orange-500"
+                                className="mt-1 block w-full rounded-md bg-black/30 border border-blue-500/20 text-white focus:border-blue-500 focus:ring-blue-500"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-orange-200">Height (cm)</label>
+                            <label className="block text-sm font-medium text-neutral-200">Height (cm)</label>
                             <input
                                 type="number"
                                 name="height"
                                 value={formData.height}
                                 onChange={handleChange}
-                                className="mt-1 block w-full rounded-md bg-black/30 border border-orange-500/20 text-white focus:border-orange-500 focus:ring-orange-500"
+                                className="mt-1 block w-full rounded-md bg-black/30 border border-blue-500/20 text-white focus:border-blue-500 focus:ring-blue-500"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-orange-200">Gender</label>
+                            <label className="block text-sm font-medium text-neutral-200">Gender</label>
                             <select
                                 name="gender"
                                 value={formData.gender}
                                 onChange={handleChange}
-                                className="mt-1 block w-full rounded-md bg-black/30 border border-orange-500/20 text-white focus:border-orange-500 focus:ring-orange-500"
+                                className="mt-1 block w-full rounded-md bg-black/30 border border-blue-500/20 text-white focus:border-blue-500 focus:ring-blue-500"
                             >
                                 <option value="" className="bg-black">Select gender</option>
                                 <option value="male" className="bg-black">Male</option>
@@ -187,12 +187,12 @@ const ProfileEditForm = ({ initialData, onSubmit, onCancel }) => {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-orange-200">Fitness Level</label>
+                            <label className="block text-sm font-medium text-neutral-200">Fitness Level</label>
                             <select
                                 name="fitnessLevel"
                                 value={formData.fitnessLevel}
                                 onChange={handleChange}
-                                className="mt-1 block w-full rounded-md bg-black/30 border border-orange-500/20 text-white focus:border-orange-500 focus:ring-orange-500"
+                                className="mt-1 block w-full rounded-md bg-black/30 border border-blue-500/20 text-white focus:border-blue-500 focus:ring-blue-500"
                             >
                                 <option value="beginner" className="bg-black">Beginner</option>
                                 <option value="intermediate" className="bg-black">Intermediate</option>
@@ -203,7 +203,7 @@ const ProfileEditForm = ({ initialData, onSubmit, onCancel }) => {
 
                     {/* Fitness Goals */}
                     <div>
-                        <label className="block text-sm font-medium text-orange-200 mb-2">
+                        <label className="block text-sm font-medium text-neutral-200 mb-2">
                             Fitness Goals
                         </label>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -214,11 +214,10 @@ const ProfileEditForm = ({ initialData, onSubmit, onCancel }) => {
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     onClick={() => handleMultiSelect('fitnessGoals', goal.value)}
-                                    className={`flex items-center justify-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-                                        formData.fitnessGoals.includes(goal.value)
-                                            ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white'
-                                            : 'bg-white/10 text-gray-300 hover:bg-white/20'
-                                    }`}
+                                    className={`flex items-center justify-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${formData.fitnessGoals.includes(goal.value)
+                                        ? 'bg-gradient-to-r from-blue-500 to-blue-700 text-white'
+                                        : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                                        }`}
                                 >
                                     <span>{goal.icon}</span>
                                     <span>{goal.label}</span>
@@ -229,7 +228,7 @@ const ProfileEditForm = ({ initialData, onSubmit, onCancel }) => {
 
                     {/* Activity Preferences */}
                     <div>
-                        <label className="block text-sm font-medium text-orange-200 mb-2">
+                        <label className="block text-sm font-medium text-neutral-200 mb-2">
                             Preferred Activities
                         </label>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -240,11 +239,10 @@ const ProfileEditForm = ({ initialData, onSubmit, onCancel }) => {
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     onClick={() => handleMultiSelect('activityPreferences', activity.value)}
-                                    className={`flex items-center justify-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-                                        formData.activityPreferences.includes(activity.value)
-                                            ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white'
-                                            : 'bg-white/10 text-gray-300 hover:bg-white/20'
-                                    }`}
+                                    className={`flex items-center justify-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${formData.activityPreferences.includes(activity.value)
+                                        ? 'bg-gradient-to-r from-blue-500 to-blue-700 text-white'
+                                        : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                                        }`}
                                 >
                                     <span>{activity.icon}</span>
                                     <span>{activity.label}</span>
@@ -272,9 +270,9 @@ const ProfileEditForm = ({ initialData, onSubmit, onCancel }) => {
                             whileTap={{ scale: 0.98 }}
                             disabled={loading}
                             className={`px-4 py-2 rounded-lg text-white
-                                ${loading 
-                                    ? 'bg-gray-700 cursor-not-allowed' 
-                                    : 'bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600'
+                                ${loading
+                                    ? 'bg-gray-700 cursor-not-allowed'
+                                    : 'bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800'
                                 } transition-all duration-300`}
                         >
                             {loading ? 'Saving...' : 'Save Changes'}

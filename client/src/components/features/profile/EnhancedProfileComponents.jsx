@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import PropTypes from 'prop-types';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
 
 const AnimatedAchievementCard = ({ achievement, index }) => {
     const [isHovered, setIsHovered] = useState(false);
@@ -20,7 +20,7 @@ const AnimatedAchievementCard = ({ achievement, index }) => {
             }}
             onHoverStart={() => setIsHovered(true)}
             onHoverEnd={() => setIsHovered(false)}
-            className="relative bg-black/40 rounded-lg overflow-hidden border border-orange-500/20 transform transition-all duration-300"
+            className="relative bg-black/40 rounded-lg overflow-hidden border border-blue-500/20 transform transition-all duration-300"
         >
             <div className="px-4 py-5 sm:p-6">
                 <h4 className="text-lg font-medium text-white">{achievement.name}</h4>
@@ -32,7 +32,7 @@ const AnimatedAchievementCard = ({ achievement, index }) => {
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: 10 }}
-                            className="absolute inset-0 bg-gradient-to-r from-red-500/30 to-orange-500/30 flex items-center justify-center"
+                            className="absolute inset-0 bg-gradient-to-r from-blue-500/30 to-blue-500/30 flex items-center justify-center"
                         >
                             <p className="text-white text-sm text-center">
                                 Earned on {new Date(achievement.earnedAt).toLocaleDateString()}
@@ -67,7 +67,7 @@ const InteractiveProgressBar = ({ label, value, maxValue }) => {
                         type: "spring",
                         stiffness: 100
                     }}
-                    className="h-full bg-gradient-to-r from-red-500 to-orange-500 rounded-full"
+                    className="h-full bg-gradient-to-r from-blue-500 to-blue-700 rounded-full"
                 />
             </div>
             <div className="w-1/4 text-white text-sm text-right">{value}</div>
@@ -106,7 +106,7 @@ const ParticleBackground = () => {
                         repeat: Infinity,
                         repeatType: "mirror"
                     }}
-                    className="absolute w-1 h-1 rounded-full bg-gradient-to-r from-red-500/50 to-orange-500/50"
+                    className="absolute w-1 h-1 rounded-full bg-gradient-to-r from-blue-500/50 to-blue-500/50"
                 />
             ))}
         </motion.div>
@@ -128,3 +128,4 @@ InteractiveProgressBar.propTypes = {
 };
 
 export { AnimatedAchievementCard, InteractiveProgressBar, ParticleBackground };
+

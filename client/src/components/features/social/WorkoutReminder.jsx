@@ -1,8 +1,8 @@
-import { useState} from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import PropTypes from 'prop-types';
-import { motion, AnimatePresence } from 'framer-motion';
-import Feedback from '../../common/Feedback';
+import { useState } from 'react';
 import { API_BASE_URL } from '../../../../../server/config/env';
+import Feedback from '../../common/Feedback';
 
 const WorkoutReminder = ({ partnership }) => {
     const [reminders, setReminders] = useState(partnership?.reminderPreferences || {
@@ -51,18 +51,18 @@ const WorkoutReminder = ({ partnership }) => {
         <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="bg-black/60 p-6 rounded-xl border border-orange-500/20"
+            className="bg-black/60 p-6 rounded-xl border border-blue-500/20"
         >
             <h3 className="text-lg font-medium text-white mb-4">Workout Reminders</h3>
 
             <div className="space-y-4">
                 {/* Enable/Disable Toggle */}
                 <div className="flex items-center justify-between">
-                    <span className="text-orange-200">Enable Reminders</span>
+                    <span className="text-neutral-200">Enable Reminders</span>
                     <motion.button
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setReminders(prev => ({ ...prev, enabled: !prev.enabled }))}
-                        className={`relative w-14 h-7 rounded-full transition-colors ${reminders.enabled ? 'bg-gradient-to-r from-red-500 to-orange-500' : 'bg-gray-600'
+                        className={`relative w-14 h-7 rounded-full transition-colors ${reminders.enabled ? 'bg-gradient-to-r from-blue-500 to-blue-700' : 'bg-gray-600'
                             }`}
                     >
                         <motion.div
@@ -82,14 +82,14 @@ const WorkoutReminder = ({ partnership }) => {
                         >
                             {/* Frequency Selection */}
                             <div>
-                                <label className="block text-sm font-medium text-orange-200 mb-2">
+                                <label className="block text-sm font-medium text-neutral-200 mb-2">
                                     Reminder Frequency
                                 </label>
                                 <select
                                     value={reminders.frequency}
                                     onChange={(e) => setReminders(prev => ({ ...prev, frequency: e.target.value }))}
-                                    className="w-full bg-black/40 border border-orange-500/20 rounded-lg px-4 py-2 
-                           text-white focus:outline-none focus:border-orange-500"
+                                    className="w-full bg-black/40 border border-blue-500/20 rounded-lg px-4 py-2 
+                           text-white focus:outline-none focus:border-blue-500"
                                 >
                                     <option className="bg-black" value="daily">Daily</option>
                                     <option className="bg-black" value="weekly">Weekly</option>
@@ -100,7 +100,7 @@ const WorkoutReminder = ({ partnership }) => {
                             {/* Custom Days Selection */}
                             {reminders.frequency === 'custom' && (
                                 <div>
-                                    <label className="block text-sm font-medium text-orange-200 mb-2">
+                                    <label className="block text-sm font-medium text-neutral-200 mb-2">
                                         Select Days
                                     </label>
                                     <div className="grid grid-cols-7 gap-2">
@@ -116,8 +116,8 @@ const WorkoutReminder = ({ partnership }) => {
                                                         : [...prev.customDays, day]
                                                 }))}
                                                 className={`p-2 rounded-lg text-sm ${reminders.customDays.includes(day)
-                                                        ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white'
-                                                        : 'bg-black/40 text-orange-200'
+                                                    ? 'bg-gradient-to-r from-blue-500 to-blue-700 text-white'
+                                                    : 'bg-black/40 text-neutral-200'
                                                     }`}
                                             >
                                                 {day}
@@ -129,15 +129,15 @@ const WorkoutReminder = ({ partnership }) => {
 
                             {/* Time Selection */}
                             <div>
-                                <label className="block text-sm font-medium text-orange-200 mb-2">
+                                <label className="block text-sm font-medium text-neutral-200 mb-2">
                                     Reminder Time
                                 </label>
                                 <input
                                     type="time"
                                     value={reminders.time}
                                     onChange={(e) => setReminders(prev => ({ ...prev, time: e.target.value }))}
-                                    className="w-full bg-black/40 border border-orange-500/20 rounded-lg px-4 py-2 
-                           text-white focus:outline-none focus:border-orange-500"
+                                    className="w-full bg-black/40 border border-blue-500/20 rounded-lg px-4 py-2 
+                           text-white focus:outline-none focus:border-blue-500"
                                 />
                             </div>
 
@@ -146,8 +146,8 @@ const WorkoutReminder = ({ partnership }) => {
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
                                 onClick={handleSaveReminders}
-                                className="w-full py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white 
-                         rounded-lg hover:from-red-600 hover:to-orange-600"
+                                className="w-full py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white 
+                         rounded-lg hover:from-blue-600 hover:to-blue-800"
                             >
                                 Save Reminder Settings
                             </motion.button>

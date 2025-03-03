@@ -1,18 +1,18 @@
-import { useState, useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import PropTypes from 'prop-types';
-import { motion, AnimatePresence } from 'framer-motion';
-import Feedback from '../../common/Feedback';
-import WorkoutReminder from './WorkoutReminder';
-import SharedActivities from './SharedActivities';
-import ChatWindow from './ChatWindow';
-import ThemedDatePicker from '../../common/ThemedDatePicker';
+import { useEffect, useState } from 'react';
 import { API_BASE_URL } from '../../../../../server/config/env';
+import Feedback from '../../common/Feedback';
+import ThemedDatePicker from '../../common/ThemedDatePicker';
+import ChatWindow from './ChatWindow';
+import SharedActivities from './SharedActivities';
+import WorkoutReminder from './WorkoutReminder';
 
 const WorkoutPartner = ({ partnerId }) => {
     const [partnership, setPartnership] = useState(null);
     const [, setPartnerDetails] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [ setError] = useState(null);
+    const [setError] = useState(null);
     const [feedback, setFeedback] = useState(null);
     const [goals, setGoals] = useState([]);
     const [newGoal, setNewGoal] = useState({ title: '', targetDate: '' });
@@ -50,7 +50,7 @@ const WorkoutPartner = ({ partnerId }) => {
                     partnershipRes.json(),
                     partnerRes.json()
                 ]);
-                
+
 
                 setPartnership(partnershipData);
                 setPartnerDetails(partnerData);
@@ -95,7 +95,7 @@ const WorkoutPartner = ({ partnerId }) => {
             });
             return;
         }
-    
+
         try {
             const response = await fetch(`${API_BASE_URL}/partnerships/${partnership._id}/goals`, {
                 method: 'POST',
@@ -105,29 +105,29 @@ const WorkoutPartner = ({ partnerId }) => {
                 },
                 body: JSON.stringify(newGoal)
             });
-    
+
             if (!response.ok) throw new Error('Failed to add goal');
-    
+
             // Refetch partnership data to get updated goals
             const partnershipRes = await fetch(`${API_BASE_URL}/partnerships/${partnerId}`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             });
-    
+
             if (!partnershipRes.ok) {
                 throw new Error('Failed to fetch updated partnership data');
             }
-    
+
             const partnershipData = await partnershipRes.json();
-    
+
             // Update goals and stats
             setGoals(partnershipData.sharedGoals || []);
             calculateStats(partnershipData);
-    
+
             // Reset new goal form
             setNewGoal({ title: '', targetDate: '' });
-            
+
             // Set success feedback
             setFeedback({
                 type: 'success',
@@ -183,10 +183,10 @@ const WorkoutPartner = ({ partnerId }) => {
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="text-center py-12 bg-black/60 rounded-xl border border-orange-500/20"
+                className="text-center py-12 bg-black/60 rounded-xl border border-blue-500/20"
             >
                 <h3 className="text-xl font-medium text-white mb-4">No Workout Partner Selected</h3>
-                <p className="text-orange-200/70">
+                <p className="text-neutral-300">
                     Select a friend from your Friends list to start a workout partnership
                 </p>
             </motion.div>
@@ -196,11 +196,11 @@ const WorkoutPartner = ({ partnerId }) => {
     if (loading) {
         return (
             <div className="flex justify-center items-center min-h-[200px]">
-                <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+                <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
             </div>
         );
     }
-   
+
     return (
         <div className="space-y-6">
             <AnimatePresence>
@@ -217,14 +217,14 @@ const WorkoutPartner = ({ partnerId }) => {
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-black/60 p-6 rounded-xl border border-orange-500/20"
+                className="bg-black/60 p-6 rounded-xl border border-blue-500/20"
             >
                 <div className="flex justify-between items-start">
                     <div>
                         <h2 className="text-xl font-bold text-white">
                             Workout Partnership with {partnership?.partners?.find(p => p._id !== partnerId)?.fullName || 'Partner'}
                         </h2>
-                        <p className="text-orange-200/70 mt-1">
+                        <p className="text-neutral-300 mt-1">
                             Started on {new Date(partnership?.createdAt).toLocaleDateString()}
                         </p>
                     </div>
@@ -233,7 +233,7 @@ const WorkoutPartner = ({ partnerId }) => {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={handleChatOpen}
-                            className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg"
+                            className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-lg"
                         >
                             Open Chat
                         </motion.button>
@@ -241,7 +241,7 @@ const WorkoutPartner = ({ partnerId }) => {
                 </div>
 
                 {/* Section Navigation */}
-                <div className="flex space-x-4 mt-6 border-b border-orange-500/20">
+                <div className="flex space-x-4 mt-6 border-b border-blue-500/20">
                     {['overview', 'goals', 'activities', 'reminders'].map((section) => (
                         <motion.button
                             key={section}
@@ -249,8 +249,8 @@ const WorkoutPartner = ({ partnerId }) => {
                             whileTap={{ scale: 0.95 }}
                             onClick={() => setActiveSection(section)}
                             className={`px-4 py-2 text-sm font-medium rounded-t-lg ${activeSection === section
-                                ? 'bg-orange-500/20 text-white'
-                                : 'text-orange-200/70 hover:text-white'
+                                ? 'bg-blue-500/20 text-white'
+                                : 'text-neutral-300 hover:text-white'
                                 }`}
                         >
                             {section.charAt(0).toUpperCase() + section.slice(1)}
@@ -273,7 +273,7 @@ const WorkoutPartner = ({ partnerId }) => {
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.95, opacity: 0 }}
                             onClick={e => e.stopPropagation()}
-                            className="bg-black/90 rounded-xl border border-orange-500/20 w-full max-w-2xl h-[600px] m-4"
+                            className="bg-black/90 rounded-xl border border-blue-500/20 w-full max-w-2xl h-[600px] m-4"
                         >
                             <ChatWindow
                                 chatId={partnership.chatRoom._id}
@@ -293,8 +293,8 @@ const WorkoutPartner = ({ partnerId }) => {
                 >
                     {Object.entries(stats).map(([key, value]) => (
                         <div key={key} className="bg-black/40 p-4 rounded-lg text-center">
-                            <p className="text-2xl font-bold text-orange-400">{value}</p>
-                            <p className="text-sm text-orange-200/70">
+                            <p className="text-2xl font-bold text-blue-400">{value}</p>
+                            <p className="text-sm text-neutral-300">
                                 {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
                             </p>
                         </div>
@@ -307,25 +307,25 @@ const WorkoutPartner = ({ partnerId }) => {
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-black/60 p-6 rounded-xl border border-orange-500/20"
+                    className="bg-black/60 p-6 rounded-xl border border-blue-500/20"
                 >
                     <h3 className="text-lg font-medium text-white mb-4">Shared Goals</h3>
 
                     {/* Add New Goal */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                         <div className="space-y-2">
-                            <label className="block text-sm text-orange-200/70">Goal Title</label>
+                            <label className="block text-sm text-neutral-300">Goal Title</label>
                             <input
                                 type="text"
                                 value={newGoal.title}
                                 onChange={(e) => setNewGoal({ ...newGoal, title: e.target.value })}
                                 placeholder="Enter your goal..."
-                                className="w-full bg-black/40 border border-orange-500/20 rounded-lg px-4 py-2 
-                             text-white focus:outline-none focus:border-orange-500"
+                                className="w-full bg-black/40 border border-blue-500/20 rounded-lg px-4 py-2 
+                             text-white focus:outline-none focus:border-blue-500"
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="block text-sm text-orange-200/70">Target Date</label>
+                            <label className="block text-sm text-neutral-300">Target Date</label>
                             <ThemedDatePicker
                                 selectedDate={newGoal.targetDate}
                                 onDateChange={(date) => setNewGoal(prev => ({ ...prev, targetDate: date }))}
@@ -337,7 +337,7 @@ const WorkoutPartner = ({ partnerId }) => {
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={handleAddGoal}
-                                className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg"
+                                className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-lg"
                             >
                                 Add Goal
                             </motion.button>
@@ -352,7 +352,7 @@ const WorkoutPartner = ({ partnerId }) => {
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 className="flex items-center justify-between bg-black/40 p-4 rounded-lg
-                                border border-orange-500/10"
+                                border border-blue-500/10"
                             >
                                 <div className="flex items-center gap-3">
                                     <motion.button
@@ -361,8 +361,8 @@ const WorkoutPartner = ({ partnerId }) => {
                                         onClick={() => toggleGoalComplete(goal._id)}
                                         className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
                                     ${goal.completed
-                                                ? 'bg-gradient-to-r from-red-500 to-orange-500 border-transparent'
-                                                : 'border-orange-500/50'
+                                                ? 'bg-gradient-to-r from-blue-500 to-blue-700 border-transparent'
+                                                : 'border-blue-500/50'
                                             }`}
                                     >
                                         {goal.completed && (
@@ -375,7 +375,7 @@ const WorkoutPartner = ({ partnerId }) => {
                                         <p className={`text-white ${goal.completed ? 'line-through opacity-50' : ''}`}>
                                             {goal.title}
                                         </p>
-                                        <p className="text-sm text-orange-200/70">
+                                        <p className="text-sm text-neutral-300">
                                             Target: {new Date(goal.targetDate).toLocaleDateString()}
                                         </p>
                                     </div>
@@ -383,7 +383,7 @@ const WorkoutPartner = ({ partnerId }) => {
                             </motion.div>
                         ))}
                         {goals.length === 0 && (
-                            <p className="text-center text-orange-200/70 py-4">No goals set yet</p>
+                            <p className="text-center text-neutral-300 py-4">No goals set yet</p>
                         )}
                     </div>
                 </motion.div>

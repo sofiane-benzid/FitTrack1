@@ -1,8 +1,8 @@
-﻿import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+﻿import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { API_BASE_URL } from '../../../../../server/config/env';
 import { useAuth } from '../../../hooks/useAuth';
 import Feedback from '../../common/Feedback';
-import { API_BASE_URL } from '../../../../../server/config/env';
 
 const NutritionGoals = () => {
   useAuth();
@@ -80,11 +80,11 @@ const NutritionGoals = () => {
 
   return (
     <div className="min-h-screen bg-black/90 py-12 px-4 sm:px-6 lg:px-8">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="max-w-4xl mx-auto bg-black/60 p-8 rounded-2xl border border-orange-500/20 shadow-2xl"
+        className="max-w-4xl mx-auto bg-black/60 p-8 rounded-2xl border border-blue-500/20 shadow-2xl"
       >
         <h2 className="text-2xl font-bold text-white mb-6">Nutrition Goals</h2>
 
@@ -105,7 +105,7 @@ const NutritionGoals = () => {
         </AnimatePresence>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
@@ -122,7 +122,7 @@ const NutritionGoals = () => {
                 <label className="block text-sm font-medium text-gray-400">
                   {field.label}
                 </label>
-                <motion.div 
+                <motion.div
                   whileHover={{ scale: 1.02 }}
                   className="mt-1 relative rounded-md"
                 >
@@ -131,7 +131,7 @@ const NutritionGoals = () => {
                     name={field.name}
                     value={goals[field.name]}
                     onChange={handleChange}
-                    className="block w-full rounded-md bg-black/30 border-orange-500/20 text-white focus:border-orange-500 focus:ring-orange-500 sm:text-sm"
+                    className="block w-full rounded-md bg-black/30 border-blue-500/20 text-white focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                     placeholder={goals[field.name].toString()}
                   />
                   <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -150,12 +150,12 @@ const NutritionGoals = () => {
                 name="mealsPerDay"
                 value={goals.mealsPerDay}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md bg-black/30 border-orange-500/20 text-white focus:border-orange-500 focus:ring-orange-500 sm:text-sm"
+                className="mt-1 block w-full rounded-md bg-black/30 border-blue-500/20 text-white focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               >
                 {[2, 3, 4, 5, 6].map(mealCount => (
-                  <option 
-                    key={mealCount} 
-                    value={mealCount} 
+                  <option
+                    key={mealCount}
+                    value={mealCount}
                     className="bg-black text-white"
                   >
                     {mealCount} meals
@@ -173,11 +173,11 @@ const NutritionGoals = () => {
               disabled={loading}
               className={`
                 inline-flex justify-center py-2 px-4 rounded-md text-sm font-medium text-white 
-                ${loading 
-                  ? 'bg-gray-700 cursor-not-allowed' 
-                  : 'bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600'
+                ${loading
+                  ? 'bg-gray-700 cursor-not-allowed'
+                  : 'bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800'
                 } 
-                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500
+                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
               `}
             >
               {loading ? 'Saving...' : 'Save Goals'}

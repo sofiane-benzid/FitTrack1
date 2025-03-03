@@ -1,8 +1,8 @@
-import  { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import Feedback from '../../common/Feedback';
+import { AnimatePresence, motion } from 'framer-motion';
 import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
 import { API_BASE_URL } from '../../../../../server/config/env';
+import Feedback from '../../common/Feedback';
 
 const MealList = ({ refresh }) => {
     const [meals, setMeals] = useState([]);
@@ -103,17 +103,17 @@ const MealList = ({ refresh }) => {
         const isExpanded = expandedMeal === meal._id;
 
         return (
-            <motion.div 
+            <motion.div
                 key={meal._id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
-                className="border rounded-lg mb-4 overflow-hidden bg-black/60 border-orange-500/20 shadow-2xl"
+                className="border rounded-lg mb-4 overflow-hidden bg-black/60 border-blue-500/20 shadow-2xl"
             >
                 {/* Meal Header */}
                 <motion.div
-                    whileHover={{ 
+                    whileHover={{
                         backgroundColor: 'rgba(249, 88, 44, 0.1)',
                         transition: { duration: 0.2 }
                     }}
@@ -122,7 +122,7 @@ const MealList = ({ refresh }) => {
                 >
                     <div className="flex items-center space-x-4">
                         <div className="flex-shrink-0">
-                            <div className="h-10 w-10 rounded-full bg-gradient-to-r from-red-500 to-orange-500 flex items-center justify-center">
+                            <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-500 to-blue-700 flex items-center justify-center">
                                 <span className="text-white font-medium">
                                     {meal.type.charAt(0).toUpperCase()}
                                 </span>
@@ -157,31 +157,31 @@ const MealList = ({ refresh }) => {
                     {isExpanded && (
                         <motion.div
                             initial={{ opacity: 0, height: 0 }}
-                            animate={{ 
-                                opacity: 1, 
+                            animate={{
+                                opacity: 1,
                                 height: 'auto',
-                                transition: { 
+                                transition: {
                                     duration: 0.3,
                                     height: { duration: 0.3 }
                                 }
                             }}
-                            exit={{ 
-                                opacity: 0, 
+                            exit={{
+                                opacity: 0,
                                 height: 0,
-                                transition: { 
+                                transition: {
                                     duration: 0.3,
                                     height: { duration: 0.3 }
                                 }
                             }}
-                            className="border-t border-orange-500/20 px-4 py-3 bg-black/40"
+                            className="border-t border-blue-500/20 px-4 py-3 bg-black/40"
                         >
                             <div className="grid grid-cols-3 gap-4 mb-4">
                                 {['Protein', 'Carbs', 'Fat'].map((nutrient, index) => (
-                                    <motion.div 
+                                    <motion.div
                                         key={nutrient}
                                         initial={{ opacity: 0, x: -20 }}
-                                        animate={{ 
-                                            opacity: 1, 
+                                        animate={{
+                                            opacity: 1,
                                             x: 0,
                                             transition: { delay: index * 0.1 }
                                         }}
@@ -197,15 +197,15 @@ const MealList = ({ refresh }) => {
                             <div className="space-y-3">
                                 <h4 className="font-medium text-white">Foods</h4>
                                 {meal.foods.map((food, index) => (
-                                    <motion.div 
+                                    <motion.div
                                         key={index}
                                         initial={{ opacity: 0, x: -20 }}
-                                        animate={{ 
-                                            opacity: 1, 
+                                        animate={{
+                                            opacity: 1,
                                             x: 0,
                                             transition: { delay: index * 0.1 }
                                         }}
-                                        className="bg-black/30 p-3 rounded border border-orange-500/20"
+                                        className="bg-black/30 p-3 rounded border border-blue-500/20"
                                     >
                                         <div className="flex justify-between items-center">
                                             <span className="font-medium text-white">{food.name}</span>
@@ -235,7 +235,7 @@ const MealList = ({ refresh }) => {
                                         e.stopPropagation();
                                         deleteMeal(meal._id);
                                     }}
-                                    className="text-red-500 hover:text-red-600 text-sm font-medium"
+                                    className="text-blue-500 hover:text-blue-600 text-sm font-medium"
                                 >
                                     Delete Meal
                                 </motion.button>
@@ -249,21 +249,21 @@ const MealList = ({ refresh }) => {
 
     if (loading) {
         return (
-            <motion.div 
+            <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="flex justify-center items-center py-8"
             >
-                <motion.div 
-                    animate={{ 
+                <motion.div
+                    animate={{
                         rotate: 360,
-                        transition: { 
-                            repeat: Infinity, 
-                            duration: 1, 
-                            ease: "linear" 
+                        transition: {
+                            repeat: Infinity,
+                            duration: 1,
+                            ease: "linear"
                         }
                     }}
-                    className="h-8 w-8 border-4 border-transparent border-b-red-500 rounded-full"
+                    className="h-8 w-8 border-4 border-transparent border-b-blue-500 rounded-full"
                 />
                 <span className="ml-2 text-gray-400">Loading meals...</span>
             </motion.div>
@@ -289,10 +289,10 @@ const MealList = ({ refresh }) => {
             </AnimatePresence>
 
             {/* Filters */}
-            <motion.div 
+            <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-black/60 p-4 rounded-lg border border-orange-500/20 shadow-2xl space-y-4"
+                className="bg-black/60 p-4 rounded-lg border border-blue-500/20 shadow-2xl space-y-4"
             >
                 <h2 className="text-lg font-medium text-white">Meal Filters</h2>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -301,7 +301,7 @@ const MealList = ({ refresh }) => {
                         <select
                             value={filter.type}
                             onChange={(e) => setFilter(prev => ({ ...prev, type: e.target.value }))}
-                            className="w-full rounded-md bg-black/60 border-orange-500/20 text-white focus:border-orange-500 focus:ring-orange-500"
+                            className="w-full rounded-md bg-black/60 border-blue-500/20 text-white focus:border-blue-500 focus:ring-blue-500"
                         >
                             {mealTypes.map(type => (
                                 <option key={type.value} value={type.value} className="bg-black text-white">
@@ -317,7 +317,7 @@ const MealList = ({ refresh }) => {
                             type="date"
                             value={filter.startDate}
                             onChange={(e) => setFilter(prev => ({ ...prev, startDate: e.target.value }))}
-                            className="w-full rounded-md bg-black/60 border-orange-500/20 text-white focus:border-orange-500 focus:ring-orange-500"
+                            className="w-full rounded-md bg-black/60 border-blue-500/20 text-white focus:border-blue-500 focus:ring-blue-500"
                         />
                     </div>
 
@@ -327,24 +327,24 @@ const MealList = ({ refresh }) => {
                             type="date"
                             value={filter.endDate}
                             onChange={(e) => setFilter(prev => ({ ...prev, endDate: e.target.value }))}
-                            className="w-full rounded-md bg-black/60 border-orange-500/20 text-white focus:border-orange-500 focus:ring-orange-500"
+                            className="w-full rounded-md bg-black/60 border-blue-500/20 text-white focus:border-blue-500 focus:ring-blue-500"
                         />
                     </div>
                 </div>
             </motion.div>
 
             {/* Meal List */}
-            <motion.div 
+            <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="space-y-4"
             >
                 <AnimatePresence>
                     {meals.length === 0 ? (
-                        <motion.div 
+                        <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            className="text-center py-8 bg-black/60 rounded-lg border border-orange-500/20"
+                            className="text-center py-8 bg-black/60 rounded-lg border border-blue-500/20"
                         >
                             <p className="text-gray-400">No meals found</p>
                         </motion.div>

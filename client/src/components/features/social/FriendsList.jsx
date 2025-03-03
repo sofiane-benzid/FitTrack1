@@ -1,5 +1,5 @@
-﻿import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+﻿import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 import { socialService } from '../../../services/socialService';
 import Feedback from '../../common/Feedback';
 import { UserProfileModal } from './UserModals';
@@ -37,7 +37,7 @@ const FriendsList = () => {
   if (loading) {
     return (
       <div className="min-h-[200px] flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -56,16 +56,16 @@ const FriendsList = () => {
         />
       )}
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-black/40 rounded-xl shadow-lg overflow-hidden border border-orange-500/20"
+        className="bg-black/40 rounded-xl shadow-lg overflow-hidden border border-blue-500/20"
       >
-        <div className="p-6 border-b border-orange-500/20">
+        <div className="p-6 border-b border-blue-500/20">
           <h2 className="text-xl font-bold text-white">Your Friends</h2>
         </div>
 
-        <ul className="divide-y divide-orange-500/10">
+        <ul className="divide-y divide-blue-500/10">
           {friends.length === 0 ? (
             <li className="p-6 text-center text-gray-400">
               No friends added yet
@@ -80,7 +80,7 @@ const FriendsList = () => {
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-full bg-gradient-to-r from-red-500 to-orange-500 flex items-center justify-center">
+                    <div className="h-12 w-12 rounded-full bg-gradient-to-r from-blue-500 to-blue-700 flex items-center justify-center">
                       <span className="text-white font-bold text-lg">
                         {friend.fullName?.charAt(0) || friend.email.charAt(0)}
                       </span>
@@ -93,7 +93,7 @@ const FriendsList = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                
+
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
@@ -120,7 +120,7 @@ const FriendsList = () => {
         />
       )}
 
-    
+
     </div>
   );
 };

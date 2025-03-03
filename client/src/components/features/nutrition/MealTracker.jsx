@@ -1,8 +1,8 @@
-﻿import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import Feedback from '../../common/Feedback';
+﻿import { AnimatePresence, motion } from 'framer-motion';
 import PropTypes from 'prop-types';
+import { useState } from 'react';
 import { API_BASE_URL } from '../../../../../server/config/env';
+import Feedback from '../../common/Feedback';
 
 const MealTracker = ({ onMealLogged }) => {
   const [formData, setFormData] = useState({
@@ -150,11 +150,11 @@ const MealTracker = ({ onMealLogged }) => {
 
   return (
     <div className="min-h-screen bg-black/90 py-12 px-4 sm:px-6 lg:px-8">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="max-w-2xl mx-auto bg-black/60 p-8 rounded-2xl border border-orange-500/20 shadow-2xl"
+        className="max-w-2xl mx-auto bg-black/60 p-8 rounded-2xl border border-blue-500/20 shadow-2xl"
       >
         <AnimatePresence>
           {feedback && (
@@ -182,7 +182,7 @@ const MealTracker = ({ onMealLogged }) => {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="mt-1 block w-full rounded-md bg-black/30 border-orange-500/20 text-white focus:border-orange-500 focus:ring-orange-500"
+                className="mt-1 block w-full rounded-md bg-black/30 border-blue-500/20 text-white focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
 
@@ -192,12 +192,12 @@ const MealTracker = ({ onMealLogged }) => {
                 name="type"
                 value={formData.type}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md bg-black/30 border-orange-500/20 text-white focus:border-orange-500 focus:ring-orange-500"
+                className="mt-1 block w-full rounded-md bg-black/30 border-blue-500/20 text-white focus:border-blue-500 focus:ring-blue-500"
               >
                 {mealTypes.map(type => (
-                  <option 
-                    key={type.value} 
-                    value={type.value} 
+                  <option
+                    key={type.value}
+                    value={type.value}
                     className="bg-black text-white"
                   >
                     {type.label}
@@ -208,11 +208,11 @@ const MealTracker = ({ onMealLogged }) => {
           </div>
 
           {/* Food Input Section */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="border border-orange-500/20 p-4 rounded-md bg-black/30"
+            className="border border-blue-500/20 p-4 rounded-md bg-black/30"
           >
             <h3 className="text-lg font-medium text-white mb-4">Add Foods</h3>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -223,7 +223,7 @@ const MealTracker = ({ onMealLogged }) => {
                   name="name"
                   value={currentFood.name}
                   onChange={handleFoodChange}
-                  className="mt-1 block w-full rounded-md bg-black/30 border-orange-500/20 text-white focus:border-orange-500 focus:ring-orange-500"
+                  className="mt-1 block w-full rounded-md bg-black/30 border-blue-500/20 text-white focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
 
@@ -235,7 +235,7 @@ const MealTracker = ({ onMealLogged }) => {
                     name="quantity"
                     value={currentFood.quantity}
                     onChange={handleFoodChange}
-                    className="mt-1 block w-full rounded-md bg-black/30 border-orange-500/20 text-white focus:border-orange-500 focus:ring-orange-500"
+                    className="mt-1 block w-full rounded-md bg-black/30 border-blue-500/20 text-white focus:border-blue-500 focus:ring-blue-500"
                   />
                 </div>
                 <div>
@@ -244,7 +244,7 @@ const MealTracker = ({ onMealLogged }) => {
                     name="unit"
                     value={currentFood.unit}
                     onChange={handleFoodChange}
-                    className="mt-1 block w-full rounded-md bg-black/30 border-orange-500/20 text-white focus:border-orange-500 focus:ring-orange-500"
+                    className="mt-1 block w-full rounded-md bg-black/30 border-blue-500/20 text-white focus:border-blue-500 focus:ring-blue-500"
                   >
                     <option value="g" className="bg-black text-white">grams</option>
                     <option value="ml" className="bg-black text-white">milliliters</option>
@@ -261,7 +261,7 @@ const MealTracker = ({ onMealLogged }) => {
                   name="calories"
                   value={currentFood.calories}
                   onChange={handleFoodChange}
-                  className="mt-1 block w-full rounded-md bg-black/30 border-orange-500/20 text-white focus:border-orange-500 focus:ring-orange-500"
+                  className="mt-1 block w-full rounded-md bg-black/30 border-blue-500/20 text-white focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
 
@@ -276,7 +276,7 @@ const MealTracker = ({ onMealLogged }) => {
                       name={nutrient}
                       value={currentFood[nutrient]}
                       onChange={handleFoodChange}
-                      className="mt-1 block w-full rounded-md bg-black/30 border-orange-500/20 text-white focus:border-orange-500 focus:ring-orange-500"
+                      className="mt-1 block w-full rounded-md bg-black/30 border-blue-500/20 text-white focus:border-blue-500 focus:ring-blue-500"
                     />
                   </div>
                 ))}
@@ -288,7 +288,7 @@ const MealTracker = ({ onMealLogged }) => {
               whileTap={{ scale: 0.95 }}
               type="button"
               onClick={addFood}
-              className="mt-4 w-full bg-gradient-to-r from-red-500 to-orange-500 text-white px-4 py-2 rounded hover:from-red-600 hover:to-orange-600"
+              className="mt-4 w-full bg-gradient-to-r from-blue-500 to-blue-700 text-white px-4 py-2 rounded hover:from-blue-600 hover:to-blue-800"
             >
               Add Food
             </motion.button>
@@ -305,12 +305,12 @@ const MealTracker = ({ onMealLogged }) => {
                 <h3 className="text-lg font-medium text-white mb-2">Added Foods</h3>
                 <div className="space-y-2">
                   {formData.foods.map((food, index) => (
-                    <motion.div 
+                    <motion.div
                       key={index}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: 20 }}
-                      className="flex justify-between items-center bg-black/30 p-3 rounded border border-orange-500/20"
+                      className="flex justify-between items-center bg-black/30 p-3 rounded border border-blue-500/20"
                     >
                       <div>
                         <span className="font-medium text-white">{food.name}</span>
@@ -323,7 +323,7 @@ const MealTracker = ({ onMealLogged }) => {
                         whileTap={{ scale: 0.9 }}
                         type="button"
                         onClick={() => removeFood(index)}
-                        className="text-red-500 hover:text-red-700"
+                        className="text-blue-500 hover:text-blue-700"
                       >
                         Remove
                       </motion.button>
@@ -341,7 +341,7 @@ const MealTracker = ({ onMealLogged }) => {
               name="date"
               value={formData.date}
               onChange={handleChange}
-              className="mt-1 block w-full rounded-md bg-black/30 border-orange-500/20 text-white focus:border-orange-500 focus:ring-orange-500"
+              className="mt-1 block w-full rounded-md bg-black/30 border-blue-500/20 text-white focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
 
@@ -352,7 +352,7 @@ const MealTracker = ({ onMealLogged }) => {
               value={formData.notes}
               onChange={handleChange}
               rows="3"
-              className="mt-1 block w-full rounded-md bg-black/30 border-orange-500/20 text-white focus:border-orange-500 focus:ring-orange-500"
+              className="mt-1 block w-full rounded-md bg-black/30 border-blue-500/20 text-white focus:border-blue-500 focus:ring-blue-500"
             ></textarea>
           </div>
 
@@ -361,11 +361,10 @@ const MealTracker = ({ onMealLogged }) => {
             whileTap={{ scale: 0.95 }}
             type="submit"
             disabled={loading}
-            className={`w-full flex justify-center py-2 px-4 rounded-md text-sm font-medium text-white ${
-              loading 
-                ? 'bg-gray-700 cursor-not-allowed' 
-                : 'bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600'
-            } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500`}
+            className={`w-full flex justify-center py-2 px-4 rounded-md text-sm font-medium text-white ${loading
+              ? 'bg-gray-700 cursor-not-allowed'
+              : 'bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800'
+              } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
           >
             {loading ? 'Logging Meal...' : 'Log Meal'}
           </motion.button>

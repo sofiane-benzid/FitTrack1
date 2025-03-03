@@ -6,11 +6,11 @@ import { API_BASE_URL } from '../../../../../server/config/env';
 const activityIcons = {
     running: (
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff">
-            <path d="M15.6205 5.53997C15.6205 6.35551 14.9593 7.01665 14.1438 7.01665C13.3282 7.01665 12.6671 6.35551 12.6671 5.53997C12.6671 4.72442 13.3282 4.06328 14.1438 4.06328C14.9593 4.06328 15.6205 4.72442 15.6205 5.53997Z" fill="#f9f5f5" stroke="#f9f5f5" strokeWidth="1.26573"></path>
-            <path d="M12.0933 9.23584C12.8705 9.23584 13.862 10.0475 13.862 10.0475C12.8953 12.1133 12.0933 12.8251 12.0933 14.4691H9.94097C11.6266 10.9973 11.1466 11.1017 12.0933 9.23584Z" fill="#f9f5f5"></path>
-            <path d="M9.94097 14.4691C8.64019 16.7679 5.86951 20.0585 5.86951 20.0585M9.94097 14.4691C10.6347 14.4691 11.3996 14.4691 12.0933 14.4691M9.94097 14.4691C11.6266 10.9973 11.1466 11.1017 12.0933 9.23584C12.8705 9.23584 13.862 10.0475 13.862 10.0475C12.8953 12.1133 12.0933 12.8251 12.0933 14.4691M12.0933 14.4691C13.4374 16.7679 11.4221 20.5695 11.4221 20.5695" stroke="#f9f5f5" strokeWidth="2.21502" strokeLinecap="round" strokeLinejoin="round"></path>
-            <path d="M14.0381 10.0635L14.9763 13.9662L18.1305 11.9881" stroke="#f9f5f5" strokeWidth="1.91969" strokeLinecap="round" strokeLinejoin="round"></path>
-            <path d="M12.0342 9.05542L9.18264 9.02772L7.54512 12.0129" stroke="#f9f5f5" strokeWidth="1.91969" strokeLinecap="round" strokeLinejoin="round"></path>
+            <path d="M15.6205 5.53997C15.6205 6.35551 14.9593 7.01665 14.1438 7.01665C13.3282 7.01665 12.6671 6.35551 12.6671 5.53997C12.6671 4.72442 13.3282 4.06328 14.1438 4.06328C14.9593 4.06328 15.6205 4.72442 15.6205 5.53997Z" fill="#e6f1ff" stroke="#e6f1ff" strokeWidth="1.26573"></path>
+            <path d="M12.0933 9.23584C12.8705 9.23584 13.862 10.0475 13.862 10.0475C12.8953 12.1133 12.0933 12.8251 12.0933 14.4691H9.94097C11.6266 10.9973 11.1466 11.1017 12.0933 9.23584Z" fill="#e6f1ff"></path>
+            <path d="M9.94097 14.4691C8.64019 16.7679 5.86951 20.0585 5.86951 20.0585M9.94097 14.4691C10.6347 14.4691 11.3996 14.4691 12.0933 14.4691M9.94097 14.4691C11.6266 10.9973 11.1466 11.1017 12.0933 9.23584C12.8705 9.23584 13.862 10.0475 13.862 10.0475C12.8953 12.1133 12.0933 12.8251 12.0933 14.4691M12.0933 14.4691C13.4374 16.7679 11.4221 20.5695 11.4221 20.5695" stroke="#e6f1ff" strokeWidth="2.21502" strokeLinecap="round" strokeLinejoin="round"></path>
+            <path d="M14.0381 10.0635L14.9763 13.9662L18.1305 11.9881" stroke="#e6f1ff" strokeWidth="1.91969" strokeLinecap="round" strokeLinejoin="round"></path>
+            <path d="M12.0342 9.05542L9.18264 9.02772L7.54512 12.0129" stroke="#e6f1ff" strokeWidth="1.91969" strokeLinecap="round" strokeLinejoin="round"></path>
         </svg>
     ),
     walking: (
@@ -76,7 +76,7 @@ const ActivityList = ({ onError }) => {
             try {
                 let url = `${API_BASE_URL}/activity/list`;
                 const queryParams = [];
-    
+
                 if (filter.type !== 'all') {
                     queryParams.push(`type=${filter.type}`);
                 }
@@ -86,21 +86,21 @@ const ActivityList = ({ onError }) => {
                 if (filter.endDate) {
                     queryParams.push(`endDate=${filter.endDate}`);
                 }
-    
+
                 if (queryParams.length > 0) {
                     url += `?${queryParams.join('&')}`;
                 }
-    
+
                 const response = await fetch(url, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }
                 });
-    
+
                 if (!response.ok) {
                     throw new Error('Failed to fetch activities');
                 }
-    
+
                 const data = await response.json();
                 setActivities(data);
             } catch (err) {
@@ -153,16 +153,16 @@ const ActivityList = ({ onError }) => {
     return (
         <div className="space-y-4">
             {/* Filters */}
-            <div className="bg-black/20 p-4 rounded-lg border border-red-500/10">
-                <h2 className="text-lg font-medium text-orange-200 mb-4">Activity Filters</h2>
+            <div className="bg-black/20 p-4 rounded-lg border border-blue-500/10">
+                <h2 className="text-lg font-medium text-neutral-200 mb-4">Activity Filters</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <label className="block text-sm font-medium text-orange-200/70 mb-1">Activity Type</label>
+                        <label className="block text-sm font-medium text-neutral-300 mb-1">Activity Type</label>
                         <select
                             value={filter.type}
                             onChange={(e) => setFilter(prev => ({ ...prev, type: e.target.value }))}
-                            className="w-full bg-black/20 border border-red-500/20 rounded-lg text-orange-200
-                     focus:border-red-500/50 focus:ring-0 transition-colors"
+                            className="w-full bg-black/20 border border-blue-500/20 rounded-lg text-neutral-200
+                     focus:border-blue-500/50 focus:ring-0 transition-colors"
                         >
                             {activityTypes.map(type => (
                                 <option className="bg-black text-white" key={type.value} value={type.value}>{type.label}</option>
@@ -171,24 +171,24 @@ const ActivityList = ({ onError }) => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-orange-200/70 mb-1">Start Date</label>
+                        <label className="block text-sm font-medium text-neutral-300 mb-1">Start Date</label>
                         <input
                             type="date"
                             value={filter.startDate}
                             onChange={(e) => setFilter(prev => ({ ...prev, startDate: e.target.value }))}
-                            className="w-full bg-black/20 border border-red-500/20 rounded-lg text-orange-200
-                            focus:border-red-500/50 focus:ring-0 transition-colors"
+                            className="w-full bg-black/20 border border-blue-500/20 rounded-lg text-neutral-200
+                            focus:border-blue-500/50 focus:ring-0 transition-colors"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-orange-200/70 mb-1">End Date</label>
+                        <label className="block text-sm font-medium text-neutral-300 mb-1">End Date</label>
                         <input
                             type="date"
                             value={filter.endDate}
                             onChange={(e) => setFilter(prev => ({ ...prev, endDate: e.target.value }))}
-                            className="w-full bg-black/20 border border-red-500/20 rounded-lg text-orange-200
-                     focus:border-red-500/50 focus:ring-0 transition-colors"
+                            className="w-full bg-black/20 border border-blue-500/20 rounded-lg text-neutral-200
+                     focus:border-blue-500/50 focus:ring-0 transition-colors"
                         />
                     </div>
                 </div>
@@ -197,7 +197,7 @@ const ActivityList = ({ onError }) => {
             {/* Activities List */}
             {activities.length === 0 ? (
                 <div className="text-center py-8">
-                    <p className="text-orange-200/70">No activities found</p>
+                    <p className="text-neutral-300">No activities found</p>
                 </div>
             ) : (
                 <div className="space-y-4">
@@ -209,7 +209,7 @@ const ActivityList = ({ onError }) => {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, x: -20 }}
-                                className="bg-black/20 rounded-lg border border-red-500/10 overflow-hidden"
+                                className="bg-black/20 rounded-lg border border-blue-500/10 overflow-hidden"
                             >
                                 {/* Activity Header */}
                                 <div
@@ -218,24 +218,24 @@ const ActivityList = ({ onError }) => {
                                 >
                                     <div className="flex justify-between items-start">
                                         <div className="flex items-center space-x-4">
-                                            <div className="p-2 bg-gradient-to-br from-red-500/20 to-orange-500/20 rounded-lg w-10 h-10 flex items-center justify-center">
+                                            <div className="p-2 bg-gradient-to-br from-blue-500/20 to-blue-500/20 rounded-lg w-10 h-10 flex items-center justify-center">
                                                 {activityIcons[activity.type]}
                                             </div>
                                             <div>
-                                                <h3 className="text-lg font-medium text-orange-200 capitalize">
+                                                <h3 className="text-lg font-medium text-neutral-200 capitalize">
                                                     {activity.type}
                                                 </h3>
-                                                <p className="text-orange-200/70">
+                                                <p className="text-neutral-300">
                                                     {new Date(activity.date).toLocaleDateString()}
                                                 </p>
                                             </div>
                                         </div>
                                         <div className="flex items-center space-x-4">
-                                            <span className="text-orange-200/70">
+                                            <span className="text-neutral-300">
                                                 {activity.duration} minutes
                                             </span>
                                             <svg
-                                                className={`w-5 h-5 text-orange-200/70 transform transition-transform 
+                                                className={`w-5 h-5 text-neutral-300 transform transition-transform 
                                 ${expandedActivity === activity._id ? 'rotate-180' : ''}`}
                                                 fill="none"
                                                 stroke="currentColor"
@@ -256,25 +256,25 @@ const ActivityList = ({ onError }) => {
                                             exit={{ height: 0 }}
                                             className="overflow-hidden"
                                         >
-                                            <div className="px-4 py-3 bg-black/10 border-t border-red-500/10">
+                                            <div className="px-4 py-3 bg-black/10 border-t border-blue-500/10">
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                     <div className="space-y-2">
-                                                        <p className="text-orange-200/70">Duration: {activity.duration} minutes</p>
+                                                        <p className="text-neutral-300">Duration: {activity.duration} minutes</p>
                                                         {activity.distance && (
-                                                            <p className="text-orange-200/70">Distance: {activity.distance} km</p>
+                                                            <p className="text-neutral-300">Distance: {activity.distance} km</p>
                                                         )}
                                                         {activity.calories && (
-                                                            <p className="text-orange-200/70">Calories: {activity.calories} kcal</p>
+                                                            <p className="text-neutral-300">Calories: {activity.calories} kcal</p>
                                                         )}
                                                     </div>
 
                                                     {activity.sets && activity.sets.length > 0 && (
                                                         <div className="space-y-2">
-                                                            <p className="text-orange-200">Sets:</p>
+                                                            <p className="text-neutral-200">Sets:</p>
                                                             {activity.sets.map((set, index) => (
                                                                 <div key={index} className="flex justify-between bg-black/20 p-2 rounded">
-                                                                    <span className="text-orange-200">{set.exercise}</span>
-                                                                    <span className="text-orange-200/70">{set.weight}kg × {set.reps}</span>
+                                                                    <span className="text-neutral-200">{set.exercise}</span>
+                                                                    <span className="text-neutral-300">{set.weight}kg × {set.reps}</span>
                                                                 </div>
                                                             ))}
                                                         </div>
@@ -282,8 +282,8 @@ const ActivityList = ({ onError }) => {
 
                                                     {activity.notes && (
                                                         <div className="col-span-2">
-                                                            <p className="text-orange-200">Notes:</p>
-                                                            <p className="text-orange-200/70 mt-1">{activity.notes}</p>
+                                                            <p className="text-neutral-200">Notes:</p>
+                                                            <p className="text-neutral-300 mt-1">{activity.notes}</p>
                                                         </div>
                                                     )}
                                                 </div>
@@ -293,7 +293,7 @@ const ActivityList = ({ onError }) => {
                                                         whileHover={{ scale: 1.05 }}
                                                         whileTap={{ scale: 0.95 }}
                                                         onClick={() => handleDelete(activity._id)}
-                                                        className="text-red-400 hover:text-red-300 transition-colors"
+                                                        className="text-blue-400 hover:text-blue-300 transition-colors"
                                                     >
                                                         Delete Activity
                                                     </motion.button>

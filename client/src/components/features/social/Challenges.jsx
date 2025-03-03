@@ -1,10 +1,10 @@
-﻿import { useState, useEffect } from 'react';
+﻿import { AnimatePresence, motion } from 'framer-motion';
 import PropTypes from 'prop-types';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { API_BASE_URL } from '../../../../../server/config/env';
 import { useAuth } from '../../../hooks/useAuth';
 import Feedback from '../../common/Feedback';
 import ThemedDatePicker from '../../common/ThemedDatePicker';
-import { API_BASE_URL } from '../../../../../server/config/env';
 
 
 
@@ -42,24 +42,24 @@ const ProgressUpdateModal = ({ challenge, onClose, onUpdate }) => {
                 initial={{ scale: 0.95 }}
                 animate={{ scale: 1 }}
                 exit={{ scale: 0.95 }}
-                className="bg-black/90 p-6 rounded-xl border border-orange-500/20 max-w-md w-full"
+                className="bg-black/90 p-6 rounded-xl border border-blue-500/20 max-w-md w-full"
                 onClick={e => e.stopPropagation()}
             >
                 <h3 className="text-xl font-bold text-white mb-4">Update Progress</h3>
-                <p className="text-orange-200 mb-6">{challenge.title}</p>
+                <p className="text-neutral-200 mb-6">{challenge.title}</p>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Progress Bar */}
                     <div className="space-y-2">
-                        <div className="flex justify-between text-sm text-orange-200/70">
+                        <div className="flex justify-between text-sm text-neutral-300">
                             <span>{progress} completed</span>
                             <span>Target: {challenge.target}</span>
                         </div>
-                        <div className="h-4 bg-black/40 rounded-full overflow-hidden border border-orange-500/20">
+                        <div className="h-4 bg-black/40 rounded-full overflow-hidden border border-blue-500/20">
                             <motion.div
                                 initial={{ width: `${(userProgress / challenge.target) * 100}%` }}
                                 animate={{ width: `${progressPercentage}%` }}
-                                className="h-full bg-gradient-to-r from-red-500 to-orange-500 rounded-full"
+                                className="h-full bg-gradient-to-r from-blue-500 to-blue-700 rounded-full"
                             />
                         </div>
                     </div>
@@ -73,7 +73,7 @@ const ProgressUpdateModal = ({ challenge, onClose, onUpdate }) => {
                                 whileTap={{ scale: 0.9 }}
                                 type="button"
                                 onClick={() => setProgress(Math.max(0, progress - 1))}
-                                className="w-12 h-12 rounded-full bg-black/40 border border-orange-500/20 text-orange-200 flex items-center justify-center"
+                                className="w-12 h-12 rounded-full bg-black/40 border border-blue-500/20 text-neutral-200 flex items-center justify-center"
                             >
                                 -
                             </motion.button>
@@ -83,7 +83,7 @@ const ProgressUpdateModal = ({ challenge, onClose, onUpdate }) => {
                                     type="number"
                                     value={progress}
                                     onChange={(e) => setProgress(Math.max(0, Math.min(challenge.target, Number(e.target.value))))}
-                                    className="w-24 text-center bg-black/40 border border-orange-500/20 rounded-lg py-2 text-orange-200 focus:outline-none focus:border-orange-500"
+                                    className="w-24 text-center bg-black/40 border border-blue-500/20 rounded-lg py-2 text-neutral-200 focus:outline-none focus:border-blue-500"
                                 />
                             </div>
 
@@ -92,7 +92,7 @@ const ProgressUpdateModal = ({ challenge, onClose, onUpdate }) => {
                                 whileTap={{ scale: 0.9 }}
                                 type="button"
                                 onClick={() => setProgress(Math.min(challenge.target, progress + 1))}
-                                className="w-12 h-12 rounded-full bg-black/40 border border-orange-500/20 text-orange-200 flex items-center justify-center"
+                                className="w-12 h-12 rounded-full bg-black/40 border border-blue-500/20 text-neutral-200 flex items-center justify-center"
                             >
                                 +
                             </motion.button>
@@ -107,7 +107,7 @@ const ProgressUpdateModal = ({ challenge, onClose, onUpdate }) => {
                                     whileTap={{ scale: 0.95 }}
                                     type="button"
                                     onClick={() => setProgress(Math.round((challenge.target * percent) / 100))}
-                                    className="px-2 py-1 bg-black/40 border border-orange-500/20 rounded-md text-sm text-orange-200 hover:bg-black/60"
+                                    className="px-2 py-1 bg-black/40 border border-blue-500/20 rounded-md text-sm text-neutral-200 hover:bg-black/60"
                                 >
                                     {percent}%
                                 </motion.button>
@@ -131,7 +131,7 @@ const ProgressUpdateModal = ({ challenge, onClose, onUpdate }) => {
                             whileTap={{ scale: 0.98 }}
                             type="submit"
                             disabled={loading}
-                            className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg"
+                            className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-lg"
                         >
                             {loading ? 'Updating...' : 'Update Progress'}
                         </motion.button>
@@ -280,7 +280,7 @@ const Challenges = () => {
     if (loading) {
         return (
             <div className="flex justify-center items-center py-8">
-                <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+                <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
             </div>
         );
     }
@@ -303,7 +303,7 @@ const Challenges = () => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setShowCreateForm(!showCreateForm)}
-                    className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg"
+                    className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-lg"
                 >
                     {showCreateForm ? 'Cancel' : 'Create Challenge'}
                 </motion.button>
@@ -316,7 +316,7 @@ const Challenges = () => {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="bg-black/40 rounded-xl border border-orange-500/20 p-6"
+                        className="bg-black/40 rounded-xl border border-blue-500/20 p-6"
                     >
                         <form onSubmit={handleCreateChallenge} className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -325,13 +325,13 @@ const Challenges = () => {
                                     placeholder="Challenge Title"
                                     value={formData.title}
                                     onChange={e => setFormData({ ...formData, title: e.target.value })}
-                                    className="bg-black/20 border border-orange-500/20 rounded-lg px-4 py-2 text-white"
+                                    className="bg-black/20 border border-blue-500/20 rounded-lg px-4 py-2 text-white"
                                     required
                                 />
                                 <select
                                     value={formData.type}
                                     onChange={e => setFormData({ ...formData, type: e.target.value })}
-                                    className="bg-black/20 border border-orange-500/20 rounded-lg px-4 py-2 text-white"
+                                    className="bg-black/20 border border-blue-500/20 rounded-lg px-4 py-2 text-white"
                                 >
                                     <option value="workout">Workout</option>
                                     <option value="nutrition">Nutrition</option>
@@ -342,7 +342,7 @@ const Challenges = () => {
                                     placeholder="Target (e.g., number of workouts)"
                                     value={formData.target}
                                     onChange={e => setFormData({ ...formData, target: e.target.value })}
-                                    className="bg-black/20 border border-orange-500/20 rounded-lg px-4 py-2 text-white"
+                                    className="bg-black/20 border border-blue-500/20 rounded-lg px-4 py-2 text-white"
                                     required
                                 />
 
@@ -357,7 +357,7 @@ const Challenges = () => {
                                 placeholder="Challenge Description"
                                 value={formData.description}
                                 onChange={e => setFormData({ ...formData, description: e.target.value })}
-                                className="w-full bg-black/20 border border-orange-500/20 rounded-lg px-4 py-2 text-white"
+                                className="w-full bg-black/20 border border-blue-500/20 rounded-lg px-4 py-2 text-white"
                                 rows={3}
                                 required
                             />
@@ -367,7 +367,7 @@ const Challenges = () => {
                                     whileTap={{ scale: 0.98 }}
                                     type="submit"
                                     disabled={loading}
-                                    className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg"
+                                    className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-lg"
                                 >
                                     {loading ? 'Creating...' : 'Create Challenge'}
                                 </motion.button>
@@ -378,8 +378,8 @@ const Challenges = () => {
             </AnimatePresence>
 
             {/* Active Challenges */}
-            <div className="bg-black/40 rounded-xl border border-orange-500/20 overflow-hidden">
-                <div className="p-6 border-b border-orange-500/20">
+            <div className="bg-black/40 rounded-xl border border-blue-500/20 overflow-hidden">
+                <div className="p-6 border-b border-blue-500/20">
                     <h2 className="text-lg font-medium text-white">Active Challenges</h2>
                 </div>
                 <div className="p-6">
@@ -392,7 +392,7 @@ const Challenges = () => {
                                     key={challenge._id}
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
-                                    className="bg-black/20 p-4 rounded-lg border border-orange-500/10"
+                                    className="bg-black/20 p-4 rounded-lg border border-blue-500/10"
                                 >
                                     <div className="flex justify-between items-start">
                                         <div className="flex-1">
@@ -401,7 +401,7 @@ const Challenges = () => {
 
                                             {/* Progress Bar */}
                                             <div className="mt-4 space-y-2">
-                                                <div className="flex justify-between text-sm text-orange-200/70">
+                                                <div className="flex justify-between text-sm text-neutral-300">
                                                     <span>
                                                         {challenge.participants.find(p => p.user._id === user?.id)?.progress || 0} / {challenge.target}
                                                     </span>
@@ -409,7 +409,7 @@ const Challenges = () => {
                                                 </div>
                                                 <div className="h-2 bg-black/40 rounded-full overflow-hidden">
                                                     <div
-                                                        className="h-full bg-gradient-to-r from-red-500 to-orange-500 rounded-full"
+                                                        className="h-full bg-gradient-to-r from-blue-500 to-blue-700 rounded-full"
                                                         style={{
                                                             width: `${((challenge.participants.find(p => p.user._id === user?.id)?.progress || 0) / challenge.target) * 100}%`
                                                         }}
@@ -422,7 +422,7 @@ const Challenges = () => {
                                                 whileHover={{ scale: 1.02 }}
                                                 whileTap={{ scale: 0.98 }}
                                                 onClick={() => setSelectedChallenge(challenge)}
-                                                className="mt-4 px-4 py-2 bg-black/40 border border-orange-500/20 rounded-lg text-orange-200 text-sm hover:bg-black/60"
+                                                className="mt-4 px-4 py-2 bg-black/40 border border-blue-500/20 rounded-lg text-neutral-200 text-sm hover:bg-black/60"
                                             >
                                                 Update Progress
                                             </motion.button>
@@ -450,8 +450,8 @@ const Challenges = () => {
             </div>
 
             {/* Available Challenges */}
-            <div className="bg-black/40 rounded-xl border border-orange-500/20 overflow-hidden">
-                <div className="p-6 border-b border-orange-500/20">
+            <div className="bg-black/40 rounded-xl border border-blue-500/20 overflow-hidden">
+                <div className="p-6 border-b border-blue-500/20">
                     <h2 className="text-lg font-medium text-white">Available Challenges</h2>
                 </div>
                 <div className="p-6">
@@ -464,17 +464,17 @@ const Challenges = () => {
                                     key={challenge._id}
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
-                                    className="bg-black/20 p-4 rounded-lg border border-orange-500/10"
+                                    className="bg-black/20 p-4 rounded-lg border border-blue-500/10"
                                 >
                                     <div className="flex justify-between items-start">
                                         <div>
                                             <h3 className="text-white font-medium">{challenge.title}</h3>
                                             <p className="text-sm text-gray-400 mt-1">{challenge.description}</p>
                                             <div className="mt-2">
-                                                <p className="text-sm text-orange-300">
+                                                <p className="text-sm text-blue-300">
                                                     Target: {challenge.target} | Type: {challenge.type}
                                                 </p>
-                                                <p className="text-sm text-orange-300">
+                                                <p className="text-sm text-blue-300">
                                                     Participants: {challenge.participants.length}
                                                 </p>
                                             </div>
@@ -487,7 +487,7 @@ const Challenges = () => {
                                                 whileHover={{ scale: 1.02 }}
                                                 whileTap={{ scale: 0.98 }}
                                                 onClick={() => handleJoinChallenge(challenge._id)}
-                                                className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg text-sm"
+                                                className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-lg text-sm"
                                             >
                                                 Join Challenge
                                             </motion.button>

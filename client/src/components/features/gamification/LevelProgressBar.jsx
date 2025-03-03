@@ -8,12 +8,12 @@ const LevelProgressBar = ({ currentPoints, nextLevelThreshold, level }) => {
         <div className="relative pt-1">
             <div className="flex items-center justify-between">
                 <div>
-                    <span className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full bg-red-500/20 text-red-400">
+                    <span className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full bg-blue-500/20 text-blue-400">
                         Level {level}
                     </span>
                 </div>
                 <div className="text-right">
-                    <span className="text-xs font-semibold inline-block text-orange-200">
+                    <span className="text-xs font-semibold inline-block text-neutral-200">
                         {currentPoints} / {nextLevelThreshold}
                     </span>
                 </div>
@@ -23,7 +23,7 @@ const LevelProgressBar = ({ currentPoints, nextLevelThreshold, level }) => {
                     initial={{ width: 0 }}
                     animate={{ width: `${progress}%` }}
                     transition={{ duration: 1, ease: "easeOut" }}
-                    className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-gradient-to-r from-red-500 to-orange-500"
+                    className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-gradient-to-r from-blue-500 to-blue-700"
                 />
             </div>
         </div>

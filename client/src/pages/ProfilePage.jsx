@@ -1,14 +1,14 @@
-﻿import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '../hooks/useAuth';
+﻿import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { API_BASE_URL } from '../../../server/config/env';
+import ProfileEditForm from '../components/auth/ProfileEditForm';
 import Feedback from '../components/common/Feedback';
 import PageHeader from '../components/common/PageHeader';
-import ProfileEditForm from '../components/auth/ProfileEditForm';
 import {
   AnimatedAchievementCard,
   ParticleBackground
 } from '../components/features/profile/EnhancedProfileComponents';
-import { API_BASE_URL } from '../../../server/config/env';
+import { useAuth } from '../hooks/useAuth';
 
 import { QRCodeGenerator } from '../components/common/QRCodeComponents';
 
@@ -137,7 +137,7 @@ const ProfilePage = () => {
         animate={{ opacity: 1 }}
       >
         <motion.div
-          className="w-16 h-16 border-4 border-transparent border-b-red-500 rounded-full animate-spin"
+          className="w-16 h-16 border-4 border-transparent border-b-blue-500 rounded-full animate-spin"
           animate={{
             rotate: 360,
             transition: {
@@ -155,7 +155,7 @@ const ProfilePage = () => {
     <div className="relative min-h-screen bg-black py-6 overflow-hidden">
       <ParticleBackground />
 
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-orange-500 z-10"></div>
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-blue-700 z-10"></div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
         <motion.div
@@ -187,10 +187,10 @@ const ProfilePage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-black/60 rounded-2xl overflow-hidden border border-orange-500/20 shadow-2xl"
+          className="bg-black/60 rounded-2xl overflow-hidden border border-blue-500/20 shadow-2xl"
         >
           {/* Profile Header */}
-          <div className="px-4 py-5 sm:px-6 flex justify-between items-center border-b border-orange-500/20">
+          <div className="px-4 py-5 sm:px-6 flex justify-between items-center border-b border-blue-500/20">
             <div>
               <h3 className="text-2xl font-bold text-white">
                 {profileData.basic.fullName}
@@ -203,7 +203,7 @@ const ProfilePage = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowEditForm(!showEditForm)}
-              className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg hover:from-red-600 hover:to-orange-600 transition-colors"
+              className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-lg hover:from-blue-600 hover:to-blue-800 transition-colors"
             >
               {showEditForm ? 'View Profile' : 'Edit Profile'}
             </motion.button>
@@ -218,7 +218,7 @@ const ProfilePage = () => {
                 exit={{ opacity: 0 }}
               >
 
-                <div className="border-b border-orange-500/20 py-6 px-4">
+                <div className="border-b border-blue-500/20 py-6 px-4">
                   <h3 className="text-xl font-bold text-white text-center mb-6">
                     Add Friend QR Code
                   </h3>
@@ -227,7 +227,7 @@ const ProfilePage = () => {
                   </div>
                 </div>
                 {/* Achievements Section */}
-                <div className="border-b border-orange-500/20">
+                <div className="border-b border-blue-500/20">
                   <div className="bg-black/40 px-4 py-5 sm:px-6">
                     <h3 className="text-lg font-medium text-white">Achievements</h3>
                   </div>
@@ -281,7 +281,7 @@ const ProfilePage = () => {
                           >
                             <div className="relative flex space-x-3">
                               <div>
-                                <span className="h-8 w-8 rounded-full bg-gradient-to-r from-red-500 to-orange-500 flex items-center justify-center">
+                                <span className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-blue-700 flex items-center justify-center">
                                   <span className="text-white text-sm capitalize">
                                     {activity.type?.charAt(0)}
                                   </span>

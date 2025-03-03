@@ -1,8 +1,8 @@
-import { useState, useEffect, forwardRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import PropTypes from 'prop-types';
+import { forwardRef, useEffect, useState } from 'react';
 import { socialService } from '../../../services/socialService';
 import Feedback from '../../common/Feedback';
-import PropTypes from 'prop-types';
 
 const SearchResult = forwardRef(({ user, onSendRequest }, ref) => (
     <motion.div
@@ -11,21 +11,21 @@ const SearchResult = forwardRef(({ user, onSendRequest }, ref) => (
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
-        className="group relative bg-black/40 border border-orange-500/20 rounded-xl overflow-hidden hover:bg-black/60 transition-colors"
+        className="group relative bg-black/40 border border-blue-500/20 rounded-xl overflow-hidden hover:bg-black/60 transition-colors"
     >
         <div className="p-6">
             <div className="flex items-center gap-4">
                 <div className="relative">
-                    <div className="h-16 w-16 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center transform rotate-3 group-hover:rotate-0 transition-transform">
+                    <div className="h-16 w-16 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center transform rotate-3 group-hover:rotate-0 transition-transform">
                         <span className="text-white font-bold text-2xl">
                             {user.fullName?.charAt(0) || user.email.charAt(0)}
                         </span>
                     </div>
                     {/* Decorative element */}
-                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-orange-500/30 rounded-full" />
+                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-blue-500/30 rounded-full" />
                 </div>
                 <div className="flex-1">
-                    <h3 className="text-white font-semibold group-hover:text-orange-400 transition-colors">
+                    <h3 className="text-white font-semibold group-hover:text-blue-400 transition-colors">
                         {user.fullName || 'No name set'}
                     </h3>
                     <p className="text-gray-400 text-sm">{user.email}</p>
@@ -34,7 +34,7 @@ const SearchResult = forwardRef(({ user, onSendRequest }, ref) => (
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => onSendRequest(user._id)}
-                    className="relative px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg font-medium group-hover:from-red-600 group-hover:to-orange-600 transition-all"
+                    className="relative px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-lg font-medium group-hover:from-blue-600 group-hover:to-blue-600 transition-all"
                 >
                     Add Friend
                     <motion.div
@@ -63,7 +63,7 @@ const UserSearch = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [ setError] = useState(null);
+    const [setError] = useState(null);
     const [feedback, setFeedback] = useState(null);
     const [isSearching, setIsSearching] = useState(false);
 
@@ -131,14 +131,14 @@ const UserSearch = () => {
 
             <motion.div
                 layout
-                className="bg-black/40 rounded-xl border border-orange-500/20 overflow-hidden"
+                className="bg-black/40 rounded-xl border border-blue-500/20 overflow-hidden"
             >
                 {/* Search Header */}
-                <div className="p-6 border-b border-orange-500/20">
+                <div className="p-6 border-b border-blue-500/20">
                     <form onSubmit={handleSearch} className="relative">
                         <motion.div
                             animate={isSearching ? { rotate: 360 } : { rotate: 0 }}
-                            className="absolute left-4 top-1/3 -translate-y-1/2 text-orange-500"
+                            className="absolute left-4 top-1/3 -translate-y-1/2 text-blue-500"
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -149,13 +149,13 @@ const UserSearch = () => {
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             placeholder="Search users by name or email..."
-                            className="w-full pl-12 pr-4 py-3 bg-black/40 border border-orange-500/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-orange-500/50"
+                            className="w-full pl-12 pr-4 py-3 bg-black/40 border border-blue-500/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500/50"
                         />
                         <motion.button
                             type="submit"
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
-                            className="absolute right-4 top-2 -translate-y-1/2 px-4 py-1.5 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg text-sm font-medium hover:from-red-600 hover:to-orange-600"
+                            className="absolute right-4 top-2 -translate-y-1/2 px-4 py-1.5 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-lg text-sm font-medium hover:from-blue-600 hover:to-blue-800"
                         >
                             Search
                         </motion.button>
@@ -166,7 +166,7 @@ const UserSearch = () => {
                 <div className="p-6">
                     {loading ? (
                         <div className="flex justify-center items-center py-12">
-                            <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+                            <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                         </div>
                     ) : users.length === 0 ? (
                         <motion.div
@@ -180,7 +180,7 @@ const UserSearch = () => {
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
                                     onClick={fetchAllUsers}
-                                    className="mt-4 px-4 py-2 bg-gradient-to-r from-red-500/20 to-orange-500/20 text-orange-400 rounded-lg text-sm hover:from-red-500/30 hover:to-orange-500/30"
+                                    className="mt-4 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-blue-500/20 text-blue-400 rounded-lg text-sm hover:from-blue-500/30 hover:to-blue-500/30"
                                 >
                                     Show all users
                                 </motion.button>
