@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { socialService } from '../../../services/socialService';
 import { useNavigate } from 'react-router-dom';
 
 const NotificationsDropdown = () => {

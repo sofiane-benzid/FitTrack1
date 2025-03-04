@@ -1,9 +1,8 @@
 'use client'
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import { API_BASE_URL } from '../../../../server/config/env';
 
 // Fitness facts for side panel
 const fitnessFacts = [
@@ -47,25 +46,6 @@ const Login = () => {
         setLoading(true);
 
         try {
-            const response = await fetch(`${API_BASE_URL}/auth/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
-            });
-            
-
-            const data = await response.json();
-
-
-            if (!response.ok) throw new Error(data.message);
-
-
-            const userData = {
-                id: data.userId,
-                email: formData.email,
-            };
-
-            login(userData, data.token);
             navigate('/dashboard');
         } catch (err) {
             setError(err.message || 'Failed to login');
@@ -76,11 +56,11 @@ const Login = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-black/90 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-orange-500"></div>
-            <div className="flex w-full max-w-4xl bg-black/60 rounded-2xl overflow-hidden shadow-2xl border border-orange-500/20">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-blue-700"></div>
+            <div className="flex w-full max-w-4xl bg-black/60 rounded-2xl overflow-hidden shadow-2xl border border-blue-500/20">
                 {/* Fitness Fact Panel */}
                 <motion.div
-                    className="hidden md:flex w-1/2 bg-gradient-to-br from-red-500 to-orange-500 p-8 items-center justify-center"
+                    className="hidden md:flex w-1/2 bg-gradient-to-br from-blue-500 to-blue-700 p-8 items-center justify-center"
                     initial={{ opacity: 0, x: -50 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.5 }}
@@ -123,7 +103,7 @@ const Login = () => {
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            className="bg-red-900/50 border border-red-500 text-red-300 px-4 py-3 rounded-lg"
+                            className="bg-blue-900/50 border border-blue-500 text-blue-300 px-4 py-3 rounded-lg"
                         >
                             {error}
                         </motion.div>
@@ -139,7 +119,7 @@ const Login = () => {
                                 name="email"
                                 type="email"
                                 required
-                                className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 placeholder="Email address"
                                 value={formData.email}
                                 onChange={handleChange}
@@ -154,7 +134,7 @@ const Login = () => {
                                 name="password"
                                 type="password"
                                 required
-                                className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 placeholder="Password"
                                 value={formData.password}
                                 onChange={handleChange}
@@ -172,7 +152,7 @@ const Login = () => {
                                 className={`w-full py-2 rounded-lg text-white transition-all duration-300 
                                     ${loading
                                         ? 'bg-gray-700 cursor-not-allowed'
-                                        : 'bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600'
+                                        : 'bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800'
                                     }`}
                             >
                                 {loading ? 'Signing in...' : 'Sign In'}
@@ -188,7 +168,7 @@ const Login = () => {
                     >
                         <Link
                             to="/register"
-                            className="text-sm text-orange-400 hover:text-orange-300 transition-colors"
+                            className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
                         >
                             Don&apos;t have an account? Register here
                         </Link>
