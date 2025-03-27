@@ -1,10 +1,11 @@
-﻿import { motion } from 'framer-motion';
+﻿import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { API_BASE_URL } from '../../../server/config/env';
 import Feedback from '../components/common/Feedback';
 import PageHeader from '../components/common/PageHeader';
 import ActivityList from '../components/features/fitness/ActivityList';
 import ActivityLogger from '../components/features/fitness/ActivityLogger';
+import WorkoutSummary from '../components/features/fitness/WorkoutSummary';
 import NotificationsDropdown from '../components/features/notifications/NotificationsDropdown';
 import { BreadcrumbNavigation, MobileNavigationDrawer, NavigationMenu } from '../components/navigation';
 import { useAuth } from '../hooks/useAuth';
@@ -19,11 +20,13 @@ const FitnessTrackerPage = () => {
     streak: 0
   });
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
+  const [showWorkoutSummary, setShowWorkoutSummary] = useState(false);
+  const [currentWorkout, setCurrentWorkout] = useState(null);
+  const [refreshList, setRefreshList] = useState(false);
 
   useEffect(() => {
     fetchActivityStats();
-  }, []);
+  }, [refreshList]);
 
   const fetchActivityStats = async () => {
     try {
@@ -52,13 +55,78 @@ const FitnessTrackerPage = () => {
     }
   };
 
-
   const handleActivityLogged = () => {
     setFeedback({
       type: 'success',
       message: 'Activity logged successfully!'
     });
-    fetchActivityStats(); // Refresh stats
+    fetchActivityStats();
+    setActiveTab('history');
+    setRefreshList(prev => !prev);
+
+    // Auto-dismiss feedback after 3 seconds
+    setTimeout(() => {
+      setFeedback(null);
+    }, 3000);
+  };
+
+  const handleWorkoutComplete = (workout) => {
+    setCurrentWorkout(workout);
+    setShowWorkoutSummary(true);
+  };
+
+  const handleSaveWorkout = async (workout) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/activity/log`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({
+          ...workout,
+          duration: Number(workout.duration),
+          distance: workout.distance ? Number(workout.distance) : undefined,
+          calories: workout.calories ? Number(workout.calories) : undefined
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to log activity');
+      }
+
+      setShowWorkoutSummary(false);
+      setFeedback({
+        type: 'success',
+        message: 'Workout saved successfully!'
+      });
+      fetchActivityStats();
+      setActiveTab('history');
+      setRefreshList(prev => !prev);
+
+      // Auto-dismiss feedback after 3 seconds
+      setTimeout(() => {
+        setFeedback(null);
+      }, 3000);
+    } catch (error) {
+      setFeedback({
+        type: 'error',
+        message: error.message || 'Failed to save workout'
+      });
+    }
+  };
+
+  const handleDiscardWorkout = () => {
+    setShowWorkoutSummary(false);
+    setFeedback({
+      type: 'info',
+      message: 'Workout discarded'
+    });
+
+    // Auto-dismiss feedback after 3 seconds
+    setTimeout(() => {
+      setFeedback(null);
+    }, 3000);
   };
 
   const handleError = (error) => {
@@ -66,6 +134,11 @@ const FitnessTrackerPage = () => {
       type: 'error',
       message: error.message || 'An error occurred'
     });
+
+    // Auto-dismiss feedback after 3 seconds
+    setTimeout(() => {
+      setFeedback(null);
+    }, 3000);
   };
 
   return (
@@ -79,13 +152,13 @@ const FitnessTrackerPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-500 to-blue-700 bg-clip-text text-transparent">
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">
                 Fitness Tracker
               </span>
             </div>
             <div className="flex items-center space-x-4">
               <NotificationsDropdown />
-              <span className="text-neutral-200">
+              <span className="text-blue-200">
                 Welcome, {user?.profile?.fullName || user?.email || 'User'}
               </span>
 
@@ -94,7 +167,7 @@ const FitnessTrackerPage = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsMobileMenuOpen(true)}
-                className="md:hidden text-neutral-200 hover:text-blue-400"
+                className="md:hidden text-blue-200 hover:text-blue-400"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -120,15 +193,17 @@ const FitnessTrackerPage = () => {
             <div className="space-y-6">
               <PageHeader title="Fitness Tracker" />
 
-              {feedback && (
-                <div className="mb-6">
-                  <Feedback
-                    type={feedback.type}
-                    message={feedback.message}
-                    onClose={() => setFeedback(null)}
-                  />
-                </div>
-              )}
+              <AnimatePresence>
+                {feedback && (
+                  <div className="mb-6">
+                    <Feedback
+                      type={feedback.type}
+                      message={feedback.message}
+                      onClose={() => setFeedback(null)}
+                    />
+                  </div>
+                )}
+              </AnimatePresence>
 
               {/* Activity Stats */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -138,8 +213,8 @@ const FitnessTrackerPage = () => {
                   className="bg-gradient-to-br from-black to-blue-950/30 p-6 rounded-xl 
                           border border-blue-500/10 hover:border-blue-500/20 transition-all duration-300"
                 >
-                  <h3 className="text-sm font-medium text-neutral-300">Total Activities</h3>
-                  <p className="mt-2 text-3xl font-bold text-neutral-200">{activityStats.totalActivities}</p>
+                  <h3 className="text-sm font-medium text-blue-200/70">Total Activities</h3>
+                  <p className="mt-2 text-3xl font-bold text-blue-200">{activityStats.totalActivities}</p>
                 </motion.div>
 
                 <motion.div
@@ -149,8 +224,8 @@ const FitnessTrackerPage = () => {
                   className="bg-gradient-to-br from-black to-blue-950/30 p-6 rounded-xl 
                           border border-blue-500/10 hover:border-blue-500/20 transition-all duration-300"
                 >
-                  <h3 className="text-sm font-medium text-neutral-300">This Week</h3>
-                  <p className="mt-2 text-3xl font-bold text-neutral-200">{activityStats.weeklyActivities}</p>
+                  <h3 className="text-sm font-medium text-blue-200/70">This Week</h3>
+                  <p className="mt-2 text-3xl font-bold text-blue-200">{activityStats.weeklyActivities}</p>
                 </motion.div>
 
                 <motion.div
@@ -160,8 +235,8 @@ const FitnessTrackerPage = () => {
                   className="bg-gradient-to-br from-black to-blue-950/30 p-6 rounded-xl 
                           border border-blue-500/10 hover:border-blue-500/20 transition-all duration-300"
                 >
-                  <h3 className="text-sm font-medium text-neutral-300">Activity Streak</h3>
-                  <p className="mt-2 text-3xl font-bold text-neutral-200">{activityStats.streak} days</p>
+                  <h3 className="text-sm font-medium text-blue-200/70">Activity Streak</h3>
+                  <p className="mt-2 text-3xl font-bold text-blue-200">{activityStats.streak} days</p>
                 </motion.div>
               </div>
 
@@ -171,8 +246,8 @@ const FitnessTrackerPage = () => {
                   <button
                     onClick={() => setActiveTab('log')}
                     className={`${activeTab === 'log'
-                      ? 'border-blue-500 text-neutral-200'
-                      : 'border-transparent text-neutral-300 hover:text-neutral-200 hover:border-blue-500/50'
+                      ? 'border-blue-500 text-blue-200'
+                      : 'border-transparent text-blue-200/70 hover:text-blue-200 hover:border-blue-500/50'
                       } whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-colors`}
                   >
                     Log Activity
@@ -180,8 +255,8 @@ const FitnessTrackerPage = () => {
                   <button
                     onClick={() => setActiveTab('history')}
                     className={`${activeTab === 'history'
-                      ? 'border-blue-500 text-neutral-200'
-                      : 'border-transparent text-neutral-300 hover:text-neutral-200 hover:border-blue-500/50'
+                      ? 'border-blue-500 text-blue-200'
+                      : 'border-transparent text-blue-200/70 hover:text-blue-200 hover:border-blue-500/50'
                       } whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-colors`}
                   >
                     Activity History
@@ -190,13 +265,36 @@ const FitnessTrackerPage = () => {
               </div>
 
               {/* Tab Content */}
-              <div className="bg-gradient-to-br from-black to-blue-950/30 rounded-xl border border-blue-500/10 p-6">
-                {activeTab === 'log' ? (
-                  <ActivityLogger onSuccess={handleActivityLogged} onError={handleError} />
+              <AnimatePresence mode="wait">
+                {showWorkoutSummary ? (
+                  <WorkoutSummary
+                    workout={currentWorkout}
+                    onClose={handleDiscardWorkout}
+                    onSave={handleSaveWorkout}
+                  />
                 ) : (
-                  <ActivityList onError={handleError} />
+                  <motion.div
+                    key={activeTab}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="bg-gradient-to-br from-black to-blue-950/30 rounded-xl border border-blue-500/10 p-6"
+                  >
+                    {activeTab === 'log' ? (
+                      <ActivityLogger
+                        onSuccess={handleActivityLogged}
+                        onError={handleError}
+                        onWorkoutComplete={handleWorkoutComplete}
+                      />
+                    ) : (
+                      <ActivityList
+                        onError={handleError}
+                        refreshTrigger={refreshList}
+                      />
+                    )}
+                  </motion.div>
                 )}
-              </div>
+              </AnimatePresence>
             </div>
           </div>
         </div>
